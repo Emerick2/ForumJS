@@ -2,22 +2,29 @@
 <html lang="fr">
     <head>
         <meta charset="URF8"/>
+        <link rel="stylesheet" href="style/pageConnexion.css"/>
     </head>
     <body>
         <main>
             <h2>Vous avez un compte ?<br/>Alors, connectez vous !</h2>
-            <form action='http://localhost:8080/Connexion' method='get'>
-                <input name="email" type="email"><label>E-Mail</label>
-                <input name="password" type="password" minlength="8"><label>Mot de passe</label>
-                <button type="submit">Inscription</button>
+            <form class="partieInscription" action='http://localhost:8080/Connexion' method='get'>
+                <label for="email">E-Mail</label>
+                <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
+                <label for="password">Mot de passe</label>
+                <input name="password" type="password" minlength="8" placeholder="Votre mot de passe"><br/>
+                <button type="submit">Connexion</button>
             </form>
-            <hr>
+            <!-- <hr> -->
+            <br/><br/>
             <h2>Vous n'avez pas de compte ?<br/>Alors, créé en un !</h2>
-            <form action='http://localhost:8080/Inscription' method='get'>
-                <input name="email" type="email"><label>E-Mail</label>
-                <input name="password" type="password" minlength="8"><label>Mot de passe</label>
+            <form class="partieInscription" action='http://localhost:8080/Inscription' method='get'>
+                <label for="email">E-Mail</label>
+                <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
+                <label for="password">Mot de passe</label>
+                <input name="password" type="password" minlength="8" placeholder="Votre mot de passe"><br/>
                 <button type="submit">Inscription</button>
             </form>
+            <br/><br/>
         </main>
     </body>
 </html>
