@@ -43,6 +43,11 @@ func main() {
 
 		réusie := AjouterUnUtilisateur(email, password)
 		fmt.Println(réusie)
+		if réusie {
+			http.ServeFile(w, r, "main.html")
+		} else {
+			http.ServeFile(w, r, "inscription.html")
+		}
 	})
 
 	http.HandleFunc("/Connexion", func(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +63,17 @@ func main() {
 			réusie = true
 		}
 		fmt.Println(réusie)
+
+		if réusie {
+			http.ServeFile(w, r, "main.html")
+		} else {
+			http.ServeFile(w, r, "inscription.html")
+		}
+	})
+
+	http.HandleFunc("/PageInscription", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "inscription.html")
 	})
 
 	// Au démarage du serveur :
@@ -128,6 +144,7 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
 	}
 	if err := rows.Err(); err != nil {
 		fmt.Println("rows error:", err)
+		return false
 	}
 
 	rows, err = db.Query(`
