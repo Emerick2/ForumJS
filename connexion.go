@@ -40,8 +40,9 @@ func main() {
 		// w.Write([]byte(DémarerUnePartie(informations, r)))
 		email := r.FormValue("email")
 		password := r.FormValue("password")
+		nomUtilisateur := r.FormValue("nomUtilisateur")
 
-		réusie := AjouterUnUtilisateur(email, password)
+		réusie := AjouterUnUtilisateur(email, password, nomUtilisateur)
 		fmt.Println(réusie)
 		if réusie {
 			http.ServeFile(w, r, "main.html")
@@ -99,7 +100,7 @@ func main() {
 
 // Les autres fonctions :
 
-func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
+func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string, nomUtilisateur string) bool {
 	id := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
 	if id != 0 {
 		CrééUnCookie(id)
@@ -117,7 +118,8 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
 		CREATE TABLE IF NOT EXISTS user (
 			UserId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			Email VARCHAR(80) NOT NULL,
-			MotDePasse VARCHAR(80) NOT NULL
+			MotDePasse VARCHAR(80) NOT NULL,
+			NomUtilisateur VARCHAR(80) NOT NULL
 		);
 	`)
 	if err != nil {
@@ -148,9 +150,9 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
 	}
 
 	rows, err = db.Query(`
-		INSERT INTO user (Email, MotDePasse)
-		VALUES (?, ?);
-	`, valeurEmail, valeurMotDePasse)
+		INSERT INTO user (Email, MotDePasse, NomUtilisateur)
+		VALUES (?, ?, ?);
+	`, valeurEmail, valeurMotDePasse, nomUtilisateur)
 	if err != nil {
 		fmt.Println("Erreur d'insertion :", err)
 		return false
@@ -174,7 +176,7 @@ func VoirLaListeDesUtilisateurs() []StructureUtilisateur {
 		return liste
 	}
 
-	rows, err := db.Query("SELECT UserId, Email, MotDePasse FROM user;")
+	rows, err := db.Query("SELECT UserId, Email, MotDePasse, NomUtilisateur FROM user;")
 	if err != nil {
 		fmt.Println("Erreur de sélection :", err)
 		return liste
@@ -185,7 +187,8 @@ func VoirLaListeDesUtilisateurs() []StructureUtilisateur {
 		var id int
 		var email string
 		var motDePasse string
-		if err := rows.Scan(&id, &email, &motDePasse); err != nil {
+		var nomUtilisateur string
+		if err := rows.Scan(&id, &email, &motDePasse, &nomUtilisateur); err != nil {
 			fmt.Println("scan error:", err)
 			return liste
 		}
@@ -193,6 +196,7 @@ func VoirLaListeDesUtilisateurs() []StructureUtilisateur {
 		utilisateur.iD = id
 		utilisateur.email = email
 		utilisateur.motDePasse = motDePasse
+		utilisateur.nom = nomUtilisateur
 		liste = append(liste, utilisateur)
 	}
 	if err := rows.Err(); err != nil {
@@ -215,7 +219,7 @@ func VoirUtilisateurs(id int) StructureUtilisateur {
 		return utilisateur
 	}
 
-	rows, err := db.Query("SELECT UserId, Email, MotDePasse FROM user WHERE UserId = ?;", id)
+	rows, err := db.Query("SELECT UserId, Email, MotDePasse, NomUtilisateur FROM user WHERE UserId = ?;", id)
 	if err != nil {
 		fmt.Println("Erreur de sélection :", err)
 		return utilisateur
@@ -226,13 +230,15 @@ func VoirUtilisateurs(id int) StructureUtilisateur {
 		var id int
 		var email string
 		var motDePasse string
-		if err := rows.Scan(&id, &email, &motDePasse); err != nil {
+		var nomUtilisateur string
+		if err := rows.Scan(&id, &email, &motDePasse, &nomUtilisateur); err != nil {
 			fmt.Println("scan error:", err)
 			return utilisateur
 		}
 		utilisateur.iD = id
 		utilisateur.email = email
 		utilisateur.motDePasse = motDePasse
+		utilisateur.nom = nomUtilisateur
 		return utilisateur
 	}
 	if err := rows.Err(); err != nil {
