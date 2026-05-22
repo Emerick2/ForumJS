@@ -15,6 +15,7 @@ type StructureUtilisateur struct {
 	iD         int
 	email      string
 	motDePasse string
+	nom        string
 }
 
 func main() {
@@ -40,7 +41,23 @@ func main() {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		AjouterUnUtilisateur(email, password)
+		réusie := AjouterUnUtilisateur(email, password)
+		fmt.Println(réusie)
+	})
+
+	http.HandleFunc("/Connexion", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		// w.Write([]byte(DémarerUnePartie(informations, r)))
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		réusie := false
+		iD_Utilisateur := ConnecterUtilisateur(email, password)
+		if iD_Utilisateur != 0 {
+			CrééUnCookie(iD_Utilisateur)
+			réusie = true
+		}
+		fmt.Println(réusie)
 	})
 
 	// Au démarage du serveur :
@@ -64,16 +81,20 @@ func main() {
 
 }
 
-
-
 // Les autres fonctions :
 
-func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) {
+func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
+	id := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
+	if id != 0{
+		CrééUnCookie(id)
+		return true
+	}
+	
 	dsnURI := "db/user.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
 		fmt.Println("Erreur d'ouverture :", err)
-		return
+		return false
 	}
 
 	rows, err := db.Query(`
@@ -86,7 +107,7 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) {
 	if err != nil {
 		fmt.Println("Erreur de création :", err)
 		fmt.Println(rows)
-		return
+		return false
 	}
 	defer db.Close()
 
@@ -96,10 +117,15 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) {
 	`, valeurEmail, valeurMotDePasse)
 	if err != nil {
 		fmt.Println("Erreur d'insertion :", err)
-		return
+		return false
 	}
 
-	VoirLaListeDesUtilisateurs()
+	iD_Utilisateur := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
+	if iD_Utilisateur != 0 {
+		CrééUnCookie(iD_Utilisateur)
+		return true
+	}
+	return false
 }
 
 func VoirLaListeDesUtilisateurs() []StructureUtilisateur {
@@ -178,4 +204,39 @@ func VoirUtilisateurs(id int) StructureUtilisateur {
 	}
 
 	return utilisateur
+}
+
+func ConnecterUtilisateur(email string, motDePasse string) int {
+	dsnURI := "db/user.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return 0
+	}
+
+	rows, err := db.Query("SELECT UserId FROM user WHERE Email = ? AND MotDePasse = ?;", email, motDePasse)
+	if err != nil {
+		fmt.Println("Erreur de sélection :", err)
+		return 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			fmt.Println("scan error:", err)
+			return 0
+		}
+		return id
+	}
+	if err := rows.Err(); err != nil {
+		fmt.Println("rows error:", err)
+	}
+
+	return 0
+}
+
+func CrééUnCookie(id int) {
+	// Les cookies dures 3h
+	// duréeDeVieDuCookie
 }
