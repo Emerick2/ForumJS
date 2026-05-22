@@ -85,11 +85,11 @@ func main() {
 
 func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
 	id := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
-	if id != 0{
+	if id != 0 {
 		CrééUnCookie(id)
 		return true
 	}
-	
+
 	dsnURI := "db/user.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -110,6 +110,25 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) bool {
 		return false
 	}
 	defer db.Close()
+
+	rows, err = db.Query("SELECT UserId FROM user WHERE Email = ?;", valeurEmail)
+	if err != nil {
+		fmt.Println("Erreur de sélection :", err)
+		return false
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			fmt.Println("scan error:", err)
+			return false
+		}
+		fmt.Println("Cette adresse e-mail est déjà utilisé")
+		return false
+	}
+	if err := rows.Err(); err != nil {
+		fmt.Println("rows error:", err)
+	}
 
 	rows, err = db.Query(`
 		INSERT INTO user (Email, MotDePasse)
