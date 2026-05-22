@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os/exec"
 
 	"database/sql"
 
@@ -15,21 +18,55 @@ type StructureUtilisateur struct {
 }
 
 func main() {
-	if true {
-		email := ""
-		fmt.Print("Quel est votre e-mail ? ")
-		fmt.Scan(&email)
+	// if true {
+	// 	email := ""
+	// 	fmt.Print("Quel est votre e-mail ? ")
+	// 	fmt.Scan(&email)
 
-		motDePasse := ""
-		fmt.Print("Quel est votre mot de passe ? ")
-		fmt.Scan(&motDePasse)
+	// 	motDePasse := ""
+	// 	fmt.Print("Quel est votre mot de passe ? ")
+	// 	fmt.Scan(&motDePasse)
 
-		AjouterUnUtilisateur(email, motDePasse)
+	// 	AjouterUnUtilisateur(email, motDePasse)
+	// }
+	// if false {
+	// 	fmt.Println(VoirUtilisateurs(5))
+	// }
+
+	// Les méthode HTTP :
+	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		// w.Write([]byte(DémarerUnePartie(informations, r)))
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		AjouterUnUtilisateur(email, password)
+	})
+
+	// Au démarage du serveur :
+	log.Println("Serveur lancé sur http://localhost:8080")
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "main.html")
+	})
+
+	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		go func() {
+			_ = exec.Command("xdg-open", "http://localhost:8080/").Start()
+		}()
+		w.Write([]byte("Attempted to open browser"))
+	})
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
 	}
-	if false {
-		fmt.Println(VoirUtilisateurs(5))
-	}
+
 }
+
+
+
+// Les autres fonctions :
 
 func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string) {
 	dsnURI := "db/user.db"
@@ -106,7 +143,7 @@ func VoirLaListeDesUtilisateurs() []StructureUtilisateur {
 	return liste
 }
 
-func VoirUtilisateurs(id int) StructureUtilisateur{
+func VoirUtilisateurs(id int) StructureUtilisateur {
 	var utilisateur = StructureUtilisateur{}
 
 	dsnURI := "db/user.db"
@@ -116,7 +153,7 @@ func VoirUtilisateurs(id int) StructureUtilisateur{
 		return utilisateur
 	}
 
-	rows, err := db.Query("SELECT UserId, Email, MotDePasse FROM user WHERE UserId = ?;",id)
+	rows, err := db.Query("SELECT UserId, Email, MotDePasse FROM user WHERE UserId = ?;", id)
 	if err != nil {
 		fmt.Println("Erreur de sélection :", err)
 		return utilisateur
