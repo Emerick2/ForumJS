@@ -9,6 +9,13 @@ import (
 	"database/sql"
 
 	_ "modernc.org/sqlite"
+
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"html/template"
+	"strconv"
+	"time"
 )
 
 type StructureUtilisateur struct {
@@ -19,21 +26,6 @@ type StructureUtilisateur struct {
 }
 
 func main() {
-	// if true {
-	// 	email := ""
-	// 	fmt.Print("Quel est votre e-mail ? ")
-	// 	fmt.Scan(&email)
-
-	// 	motDePasse := ""
-	// 	fmt.Print("Quel est votre mot de passe ? ")
-	// 	fmt.Scan(&motDePasse)
-
-	// 	AjouterUnUtilisateur(email, motDePasse)
-	// }
-	// if false {
-	// 	fmt.Println(VoirUtilisateurs(5))
-	// }
-
 	// Les méthode HTTP :
 	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -42,10 +34,10 @@ func main() {
 		password := r.FormValue("password")
 		nomUtilisateur := r.FormValue("nomUtilisateur")
 
-		réusie := AjouterUnUtilisateur(email, password, nomUtilisateur)
+		réusie := AjouterUnUtilisateur(w, email, password, nomUtilisateur)
 		fmt.Println(réusie)
 		if réusie {
-			http.ServeFile(w, r, "main.html")
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else {
 			http.ServeFile(w, r, "inscription.html")
 		}
@@ -60,13 +52,13 @@ func main() {
 		réusie := false
 		iD_Utilisateur := ConnecterUtilisateur(email, password)
 		if iD_Utilisateur != 0 {
-			CrééUnCookie(iD_Utilisateur)
+			CrééUnCookie(w, iD_Utilisateur)
 			réusie = true
 		}
 		fmt.Println(réusie)
 
 		if réusie {
-			http.ServeFile(w, r, "main.html")
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else {
 			http.ServeFile(w, r, "inscription.html")
 		}
@@ -77,11 +69,37 @@ func main() {
 		http.ServeFile(w, r, "inscription.html")
 	})
 
+	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
+
 	// Au démarage du serveur :
 	log.Println("Serveur lancé sur http://localhost:8080")
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeFile(w, r, "main.html")
+		idUtilisateur := VérifierCookie(r)
+		nomAAfficher := "Invité"
+
+		if idUtilisateur != 0 {
+			utilisateur := VoirUtilisateurs(idUtilisateur)
+			if utilisateur.nom != "" {
+				nomAAfficher = utilisateur.nom
+			}
+		}
+
+		données := map[string]interface{}{
+			"NomUtilisateur": nomAAfficher,
+		}
+
+		tmpl, err := template.ParseFiles("main.html")
+		if err != nil {
+			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+			return
+		}
+
+		err = tmpl.Execute(w, données)
+		if err != nil {
+			fmt.Println("Erreur lors de l'exécution du template :", err)
+		}
 	})
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
@@ -100,10 +118,10 @@ func main() {
 
 // Les autres fonctions :
 
-func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string, nomUtilisateur string) bool {
+func AjouterUnUtilisateur(w http.ResponseWriter, valeurEmail string, valeurMotDePasse string, nomUtilisateur string) bool {
 	id := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
 	if id != 0 {
-		CrééUnCookie(id)
+		CrééUnCookie(w, id)
 		return true
 	}
 
@@ -160,7 +178,7 @@ func AjouterUnUtilisateur(valeurEmail string, valeurMotDePasse string, nomUtilis
 
 	iD_Utilisateur := ConnecterUtilisateur(valeurEmail, valeurMotDePasse)
 	if iD_Utilisateur != 0 {
-		CrééUnCookie(iD_Utilisateur)
+		CrééUnCookie(w, iD_Utilisateur)
 		return true
 	}
 	return false
@@ -278,7 +296,67 @@ func ConnecterUtilisateur(email string, motDePasse string) int {
 	return 0
 }
 
-func CrééUnCookie(id int) {
-	// Les cookies dures 3h
-	// duréeDeVieDuCookie
+var cleSecrete = []byte("shjzaqfjkffzf5ver6ezrcf8rceez569z")
+
+func CrééUnCookie(w http.ResponseWriter, id int) {
+	durée := 3 * time.Hour
+	expiration := time.Now().Add(durée)
+
+	idTexte := strconv.Itoa(id)
+
+	mac := hmac.New(sha256.New, cleSecrete)
+	mac.Write([]byte(idTexte))
+	signature := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+
+	valeurSecurisée := idTexte + "." + signature
+
+	cookie := &http.Cookie{
+		Name:     "session_utilisateur",
+		Value:    valeurSecurisée,
+		Expires:  expiration,
+		MaxAge:   int(durée.Seconds()),
+		HttpOnly: true,
+		Secure:   false,
+		Path:     "/",
+	}
+
+	http.SetCookie(w, cookie)
+}
+
+func VérifierCookie(r *http.Request) int {
+	cookie, err := r.Cookie("session_utilisateur")
+	if err != nil {
+		return 0
+	}
+
+	valeur := cookie.Value
+
+	var idTexte, signatureRecue string
+	for i := 0; i < len(valeur); i++ {
+		if valeur[i] == '.' {
+			idTexte = valeur[:i]
+			signatureRecue = valeur[i+1:]
+			break
+		}
+	}
+
+	if idTexte == "" || signatureRecue == "" {
+		return 0
+	}
+
+	mac := hmac.New(sha256.New, cleSecrete)
+	mac.Write([]byte(idTexte))
+	signatureAttendue := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+
+	if signatureRecue != signatureAttendue {
+		fmt.Println("Tentative de modification de cookie détectée !")
+		return 0
+	}
+
+	id, err := strconv.Atoi(idTexte)
+	if err != nil {
+		return 0
+	}
+
+	return id
 }
