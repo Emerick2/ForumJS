@@ -70,36 +70,41 @@ func main() {
 	})
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 
 	// Au démarage du serveur :
 	log.Println("Serveur lancé sur http://localhost:8080")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		idUtilisateur := VérifierCookie(r)
-		nomAAfficher := "Invité"
+		if false {
+			idUtilisateur := VérifierCookie(r)
+			nomAAfficher := "Invité"
 
-		if idUtilisateur != 0 {
-			utilisateur := VoirUtilisateurs(idUtilisateur)
-			if utilisateur.nom != "" {
-				nomAAfficher = utilisateur.nom
+			if idUtilisateur != 0 {
+				utilisateur := VoirUtilisateurs(idUtilisateur)
+				if utilisateur.nom != "" {
+					nomAAfficher = utilisateur.nom
+				}
+			}
+
+			données := map[string]interface{}{
+				"NomUtilisateur": nomAAfficher,
+			}
+
+			tmpl, err := template.ParseFiles("main.html")
+			if err != nil {
+				http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+				return
+			}
+
+			err = tmpl.Execute(w, données)
+			if err != nil {
+				fmt.Println("Erreur lors de l'exécution du template :", err)
 			}
 		}
 
-		données := map[string]interface{}{
-			"NomUtilisateur": nomAAfficher,
-		}
-
-		tmpl, err := template.ParseFiles("main.html")
-		if err != nil {
-			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-			return
-		}
-
-		err = tmpl.Execute(w, données)
-		if err != nil {
-			fmt.Println("Erreur lors de l'exécution du template :", err)
-		}
+		AfficherPost(0, w, r)
 	})
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +118,6 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 // Les autres fonctions :
@@ -359,4 +363,42 @@ func VérifierCookie(r *http.Request) int {
 	}
 
 	return id
+}
+
+func AfficherPost(id int, w http.ResponseWriter, r *http.Request) {
+	// iD_publication := 1
+	iD_utilisateur_qui_poste := 1
+
+	// iD_fil_de_discussion := 0
+	contenu_du_message := "blabla"
+	date_de_publication := "29 mai 2026"
+	nombre_de_aime := 15
+	nombre_de_aime_pas := 2
+
+	nom_utilisateur := "Compte suprimé"
+	valeur := VoirUtilisateurs(iD_utilisateur_qui_poste)
+	if valeur.nom != "" {
+		nom_utilisateur = valeur.nom
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	données := map[string]interface{}{
+		"nom_utilisateur":     nom_utilisateur,
+		"contenu_du_message":  contenu_du_message,
+		"date_de_publication": date_de_publication,
+		"nombre_de_aime":      nombre_de_aime,
+		"nombre_de_aime_pas":  nombre_de_aime_pas,
+	}
+
+	tmpl, err := template.ParseFiles("main.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
 }
