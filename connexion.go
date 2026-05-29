@@ -69,6 +69,16 @@ func main() {
 		http.ServeFile(w, r, "inscription.html")
 	})
 
+	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
+		nomAction := r.FormValue("nomAction")
+		iD_publication := r.FormValue("iD_publication")
+		iD_fil_de_discussion := r.FormValue("iD_fil_de_discussion")
+
+		fmt.Println(nomAction)
+		fmt.Println(iD_publication)
+		fmt.Println(iD_fil_de_discussion)
+	})
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 
@@ -366,10 +376,10 @@ func VérifierCookie(r *http.Request) int {
 }
 
 func AfficherPost(id int, w http.ResponseWriter, r *http.Request) {
-	// iD_publication := 1
+	iD_publication := 1
 	iD_utilisateur_qui_poste := 1
 
-	// iD_fil_de_discussion := 0
+	iD_fil_de_discussion := 3
 	contenu_du_message := "blabla"
 	date_de_publication := "29 mai 2026"
 	nombre_de_aime := 15
@@ -384,11 +394,13 @@ func AfficherPost(id int, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	données := map[string]interface{}{
-		"nom_utilisateur":     nom_utilisateur,
-		"contenu_du_message":  contenu_du_message,
-		"date_de_publication": date_de_publication,
-		"nombre_de_aime":      nombre_de_aime,
-		"nombre_de_aime_pas":  nombre_de_aime_pas,
+		"nom_utilisateur":      nom_utilisateur,
+		"contenu_du_message":   contenu_du_message,
+		"date_de_publication":  date_de_publication,
+		"nombre_de_aime":       nombre_de_aime,
+		"nombre_de_aime_pas":   nombre_de_aime_pas,
+		"iD_publication":       iD_publication,
+		"iD_fil_de_discussion": iD_fil_de_discussion,
 	}
 
 	tmpl, err := template.ParseFiles("main.html")
