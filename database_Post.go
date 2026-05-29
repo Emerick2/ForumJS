@@ -1,16 +1,17 @@
-package main 
+package main
 
 import (
-	"database/sql" 
+	"database/sql"
 	"fmt"
-	"log" 
-	_ "github.com/mattn/go-sqlite3"
+	"log"
+
+	_ "modernc.org/sqlite"
 )
 
-var db *sql.DB 
+var db *sql.DB
 
 func InitDB() {
-	var err error 
+	var err error
 	db, err := sql.Open("sqlite3", "./forum.db")
 	if err != nil {
 		log.Fatal(err)
@@ -23,9 +24,9 @@ func InitDB() {
 	name        TEXT NOT NULL
 	user_id     INTEGER NOT NULL
 	FOREIGN KEY (user_id) REFERENCES utilusateurs(id)
-	);` 
+	);`
 
-	_, err = db.Exec(createThreads) 
+	_, err = db.Exec(createThreads)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,11 +45,10 @@ func InitDB() {
 	FOREIGN KEY (user_id) REFERENCES utilisateurs (id)
 	);`
 
-
-	_, err = db.Exec(createPosts) 
+	_, err = db.Exec(createPosts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("table posts créée")
-} 
+}
