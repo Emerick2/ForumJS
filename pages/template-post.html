@@ -1,25 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="URF8"/>
-        <link rel="stylesheet" href="style/pageAccueil.css"/> 
-        <link rel="stylesheet" href="style/post.css"/> 
-    </head>
-    <body>
-        <head>
-            <h1>Le super FORUM</h1>
-            <button>Recherche de discution</button>
-            <button>alléatoire</button>
-            <button>mon profil</button>
-        </head>
-        <main>
-            <form action='http://localhost:8080/PageInscription' method='get'>
-                <button type="submit">inscription</button>
-            </form>
-            
-            <p>Bonjour {{.NomUtilisateur}}</p>
-
-            <div class="unPoste">
+<div class="unPoste">
                 <form class="partieUtilisateur">
                     <img class="photo">
                     <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
@@ -55,6 +34,3 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </body>
-</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="URF8"/>
+        <link rel="stylesheet" href="style/pageAccueil.css"/> 
+        <link rel="stylesheet" href="style/post.css"/> 
+    </head>
+    <body>
+        <head>
+            <h1>Le super FORUM</h1>
+            <button>Recherche de discution</button>
+            <button>alléatoire</button>
+            <button>mon profil</button>
+        </head>
+        <main>
+            <form action='http://localhost:8080/PageInscription' method='get'>
+                <button type="submit">inscription</button>
+            </form>
+            
+            <p>Bonjour {{.NomUtilisateur}}</p>
+
+            <!-- <div class="unPoste">
+                <form class="partieUtilisateur">
+                    <img class="photo">
+                    <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
+                    <p class="date_de_publication">{{.date_de_publication}}</p>
+                </form>
+                <div class="partieTexte">
+                    <p class="contenu_du_message">{{.contenu_du_message}}</p>
+                    <div class="partieInteraction">
+                        <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                            <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                            <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                            <button name="nomAction" value="aime" type="submit" class="iconeAime">
+                                <img src="./images/aime.svg">
+                            </button>
+                            <p class="nombre_de_aime">{{.nombre_de_aime}}</p>
+                        </form>
+                        <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                            <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                            <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                            <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
+                                <img src="./images/aime.svg">
+                            </button>
+                            <p class="nombre_de_aime_pas">{{.nombre_de_aime_pas}}</p>
+                        </form>
+                        <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                            <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                            <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                            <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
+                                <img src="./images/commentaire.svg">
+                            </button>
+                            <p>Répondre</p>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+        </main>
+    </body>
+</html>

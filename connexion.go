@@ -39,7 +39,7 @@ func main() {
 		if réusie {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else {
-			http.ServeFile(w, r, "inscription.html")
+			http.ServeFile(w, r, "pages/inscription.html")
 		}
 	})
 
@@ -60,13 +60,13 @@ func main() {
 		if réusie {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else {
-			http.ServeFile(w, r, "inscription.html")
+			http.ServeFile(w, r, "pages/inscription.html")
 		}
 	})
 
 	http.HandleFunc("/PageInscription", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeFile(w, r, "inscription.html")
+		http.ServeFile(w, r, "pages/inscription.html")
 	})
 
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
@@ -81,13 +81,14 @@ func main() {
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
+	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
 
 	// Au démarage du serveur :
 	log.Println("Serveur lancé sur http://localhost:8080")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		if false {
+		if true {
 			idUtilisateur := VérifierCookie(r)
 			nomAAfficher := "Invité"
 
@@ -102,7 +103,7 @@ func main() {
 				"NomUtilisateur": nomAAfficher,
 			}
 
-			tmpl, err := template.ParseFiles("main.html")
+			tmpl, err := template.ParseFiles("pages/main.html")
 			if err != nil {
 				http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 				return
@@ -114,6 +115,7 @@ func main() {
 			}
 		}
 
+		AfficherPost(0, w, r)
 		AfficherPost(0, w, r)
 	})
 
@@ -403,7 +405,7 @@ func AfficherPost(id int, w http.ResponseWriter, r *http.Request) {
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 	}
 
-	tmpl, err := template.ParseFiles("main.html")
+	tmpl, err := template.ParseFiles("pages/template-post.html")
 	if err != nil {
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return
