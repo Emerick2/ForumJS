@@ -1,0 +1,116 @@
+{{define "title"}}{{.Post.Title}} — Forum{{end}}
+
+{{define "content"}}
+<article class="post-detail" aria-labelledby="post-title">
+  <div class="post-detail-header">
+    <div class="post-categories">
+      {{range .Post.Categories}}
+      <a href="/?category={{.Slug}}" class="category-tag">{{.Name}}</a>
+      {{end}}
+    </div>
+    <h1 id="post-title">{{.Post.Title}}</h1>
+    <div class="post-meta">
+      par <strong>{{.Post.Username}}</strong>
+      <time datetime="{{.Post.CreatedAt.Format "2006-01-02T15:04:05"}}">
+        {{.Post.CreatedAt.Format "02/01/2006 à 15:04"}}
+      </time>
+      {{if .Post.UpdatedAt.After .Post.CreatedAt}}
+        <span class="edited-badge">(modifié)</span>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="post-content">
+    {{.Post.Content}}
+  </div>
+
+  <div class="reaction-bar" data-id="{{.Post.ID}}" data-type="post">
+    <button class="react-btn like-btn {{if eq .Post.UserReaction 1}}active{{end}}"
+            aria-label="J'aime ({{.Post.Likes}})"
+            aria-pressed="{{if eq .Post.UserReaction 1}}true{{else}}false{{end}}"
+            {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3H5c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+      <span class="react-count">{{.Post.Likes}}</span>
+    </button>
+    <button class="react-btn dislike-btn {{if eq .Post.UserReaction -1}}active{{end}}"
+            aria-label="Je n'aime pas ({{.Post.Dislikes}})"
+            aria-pressed="{{if eq .Post.UserReaction -1}}true{{else}}false{{end}}"
+            {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="transform:scaleY(-1)"><path d="M16 3H5c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+      <span class="react-count">{{.Post.Dislikes}}</span>
+    </button>
+
+    {{if .CurrentUser}}
+      {{if eq .CurrentUser.ID .Post.UserID}}
+      <div class="post-actions">
+        <a href="/post/{{.Post.ID}}/edit" class="btn btn-ghost btn-sm">Modifier</a>
+        <form method="POST" action="/post/{{.Post.ID}}/delete" onsubmit="return confirm('Supprimer ce post ?')">
+          <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+      </div>
+      {{end}}
+    {{end}}
+  </div>
+</article>
+
+<section class="comments-section" id="comments" aria-labelledby="comments-title">
+  <h2 id="comments-title">{{len .Comments}} Commentaire{{if gt (len .Comments) 1}}s{{end}}</h2>
+
+  {{if .CurrentUser}}
+  <form class="comment-form" method="POST" action="/post/{{.Post.ID}}/comment" aria-label="Ajouter un commentaire">
+    <div class="form-group">
+      <label for="comment-content" class="sr-only">Votre commentaire</label>
+      <textarea id="comment-content" name="content" rows="3"
+                placeholder="Votre commentaire…"
+                required
+                aria-required="true"
+                maxlength="5000"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Commenter</button>
+  </form>
+  {{else}}
+  <p class="auth-notice">
+    <a href="/login">Connectez-vous</a> pour commenter.
+  </p>
+  {{end}}
+
+  <ul class="comment-list" role="list">
+    {{range .Comments}}
+    <li class="comment-card" id="comment-{{.ID}}" role="article">
+      <div class="comment-meta">
+        <strong>{{.Username}}</strong>
+        <time datetime="{{.CreatedAt.Format "2006-01-02T15:04:05"}}">
+          {{.CreatedAt.Format "02/01/2006 à 15:04"}}
+        </time>
+      </div>
+      <div class="comment-content">{{.Content}}</div>
+      <div class="reaction-bar" data-id="{{.ID}}" data-type="comment">
+        <button class="react-btn like-btn {{if eq .UserReaction 1}}active{{end}}"
+                aria-label="J'aime ce commentaire ({{.Likes}})"
+                aria-pressed="{{if eq .UserReaction 1}}true{{else}}false{{end}}"
+                {{if not $.CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3H5c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+          <span class="react-count">{{.Likes}}</span>
+        </button>
+        <button class="react-btn dislike-btn {{if eq .UserReaction -1}}active{{end}}"
+                aria-label="Je n'aime pas ce commentaire ({{.Dislikes}})"
+                aria-pressed="{{if eq .UserReaction -1}}true{{else}}false{{end}}"
+                {{if not $.CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="transform:scaleY(-1)"><path d="M16 3H5c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+          <span class="react-count">{{.Dislikes}}</span>
+        </button>
+        {{if $.CurrentUser}}
+          {{if eq $.CurrentUser.ID .UserID}}
+          <form method="POST" action="/comment/{{.ID}}/delete"
+                onsubmit="return confirm('Supprimer ce commentaire ?')"
+                style="margin-left:auto">
+            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+          </form>
+          {{end}}
+        {{end}}
+      </div>
+    </li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
