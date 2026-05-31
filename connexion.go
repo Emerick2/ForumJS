@@ -43,6 +43,10 @@ func main() {
 		forum.AfficherPost(0, w, r)
 	})
 
+	forum.InitDB()
+	// forum.createPost(1, 0, "Le titre !")
+	
+
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		go func() {
