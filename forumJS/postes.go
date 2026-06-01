@@ -70,6 +70,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request) {
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 		"iconeAime":            iconeAime,
 		"iconeAimePas":         iconeAimePas,
+		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -126,6 +127,15 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", changement, "Posts")
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", changement)
 	}
+
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
+	}
+	if iD_publication > 0 {
+		referer = fmt.Sprintf("%s#post-%d", referer, iD_publication)
+	}
+	http.Redirect(w, r, referer, http.StatusSeeOther)
 }
 
 func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) {
