@@ -40,6 +40,7 @@ func CrééUnCookie(w http.ResponseWriter, id int) {
 func VérifierCookie(r *http.Request) int {
 	cookie, err := r.Cookie("session_utilisateur")
 	if err != nil {
+		fmt.Println("Attention, l'utilisateur n'est pas connecté !")
 		return 0
 	}
 
@@ -55,6 +56,7 @@ func VérifierCookie(r *http.Request) int {
 	}
 
 	if idTexte == "" || signatureRecue == "" {
+		fmt.Println("Attention, l'utilisateur n'est pas connecté !")
 		return 0
 	}
 
@@ -69,6 +71,7 @@ func VérifierCookie(r *http.Request) int {
 
 	id, err := strconv.Atoi(idTexte)
 	if err != nil {
+		fmt.Println("Attention, l'utilisateur n'est pas connecté !")
 		return 0
 	}
 

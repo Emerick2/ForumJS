@@ -36,6 +36,10 @@ func main() {
 		EnvoyerCommentaire(w, r)
 	})
 
+	http.HandleFunc("/AjouterEspaceCommentaire", func(w http.ResponseWriter, r *http.Request) {
+		forum.AjouterEspaceCommentaire(w, r)
+	})
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
@@ -45,11 +49,12 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		forum.ComplétéLaPageAccueil(w, r)
-		forum.AfficherToutLesPost(0, w, r)
+		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
+		fmt.Println("id commentaire : ", iD_publication_commentaire)
+		forum.AfficherToutLesPost(0, w, r, 0)
 	})
 
 	forum.InitDB()
-	// forum.createPost(1, 0, "Le titre !")
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")

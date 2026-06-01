@@ -8,7 +8,8 @@ import (
 	"text/template"
 )
 
-func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request) {
+func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
+	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -25,11 +26,11 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i := 0; i < len(listePostes); i++ {
-		AfficherPost(listePostes[i], w, r)
+		AfficherPost(listePostes[i], w, r, iD_publication_commentaire == i)
 	}
 }
 
-func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request) {
+func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool) {
 	iD_publication := poste.Id
 	iD_utilisateur_qui_poste := poste.UserId
 
@@ -83,6 +84,57 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
+
+	if (mettre_espace_commentaire){
+		fmt.Println("On placeras bientôt ici un espace pour écrire les commentaire.")
+	}
+}
+
+func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
+	valeur := (r.FormValue("iD_publication"))
+	iD_publication, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println(err)
+	}
+	valeur = r.FormValue("iD_fil_de_discussion")
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println(err)
+	}
+	idUtilisateur := VérifierCookie(r)
+	if idUtilisateur == 0 {
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	données := map[string]interface{}{
+		"nom_utilisateur": "",
+	}
+
+	tmpl, err := template.ParseFiles("pages/template-post.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
+
+	fmt.Println(iD_fil_de_discussion)
+
+	// revenir sur la page :
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
+	}
+	if iD_publication > 0 {
+		// referer = fmt.Sprintf("%s#post-%d?iD_publication_commentaire=%d", referer, iD_publication,iD_publication)
+		referer = fmt.Sprintf("%s#post-%d", referer, iD_publication)
+	}
+	fmt.Println(referer)
+	http.Redirect(w, r, referer, http.StatusSeeOther)
 }
 
 func InteractionPost(w http.ResponseWriter, r *http.Request) {
