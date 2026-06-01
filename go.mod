@@ -1,3 +1,4 @@
+
 module example.com/m
 
 go 1.25.0
@@ -15,3 +16,4 @@ require (
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 )
+
