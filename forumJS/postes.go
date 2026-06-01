@@ -93,12 +93,20 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
 			changement = -1
 		}
+		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
+			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", -1, "Posts")
+			SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", -1)
+		}
 		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", changement, "Posts")
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes", changement)
 	} else if nomAction == "aimePas" {
 		changement := 1
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
 			changement = -1
+		}
+		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
+			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", -1, "Posts")
+			SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes", -1)
 		}
 		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", changement, "Posts")
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", changement)
@@ -133,7 +141,6 @@ func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string,
 	}
 
 	valeurObtenu := valeurRecup + modification
-	fmt.Println(valeurObtenu)
 	updateReq := fmt.Sprintf("UPDATE %s SET %s = ? WHERE id = ? AND thread_id = ?", nomTable, clef)
 	_, err = db.Exec(updateReq, valeurObtenu, iD_publication, iD_fil_de_discussion)
 	if err != nil {
@@ -212,8 +219,7 @@ func LireTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, U
 		return false
 	}
 
-	fmt.Println(valeurRecup)
-	return valeurRecup != 0
+	return valeurRecup > 0
 }
 
 func SauvegarderTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, UserId int, iD_publication int, iD_fil_de_discussion int, clef string, nouvelValeur int) {
