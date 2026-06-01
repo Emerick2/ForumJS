@@ -13,11 +13,15 @@
             <button>mon profil</button>
         </head>
         <main>
-            <form action='http://localhost:8080/PageInscription' method='get'>
-                <button type="submit">inscription</button>
+            <form action='http://localhost:8080/ChangerPage' method='get'>
+                <button name="pageDemandé" value="inscription.html" type="submit">inscription</button>
             </form>
             
             <p>Bonjour {{.NomUtilisateur}}</p>
+            <form  action='http://localhost:8080/EnvoyerCommentaire' method='get'>
+                <input type="text" name="leTexte" placeholder="Que voulez-vous dire ?">
+                <button type="submit">Envoyer</button>
+            </form>
 
             <!-- <div class="unPoste">
                 <form class="partieUtilisateur">

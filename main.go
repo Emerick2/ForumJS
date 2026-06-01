@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,7 +29,11 @@ func main() {
 	})
 
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
-		InteractionPost(w, r)
+		forum.InteractionPost(w, r)
+	})
+
+	http.HandleFunc("/EnvoyerCommentaire", func(w http.ResponseWriter, r *http.Request) {
+		EnvoyerCommentaire(w, r)
 	})
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
@@ -40,12 +45,11 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		forum.ComplétéLaPageAccueil(w, r)
-		forum.AfficherPost(0, w, r)
+		forum.AfficherToutLesPost(0, w, r)
 	})
 
 	forum.InitDB()
 	// forum.createPost(1, 0, "Le titre !")
-	
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
@@ -97,12 +101,20 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func InteractionPost(w http.ResponseWriter, r *http.Request) {
-	nomAction := r.FormValue("nomAction")
-	iD_publication := r.FormValue("iD_publication")
-	iD_fil_de_discussion := r.FormValue("iD_fil_de_discussion")
+func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
+	leTexte := r.FormValue("leTexte")
+	idUtilisateur := forum.VérifierCookie(r)
+	if idUtilisateur > 0 {
+		threadID := 0
+		dsnURI := "db/forum.db"
+		db, err := sql.Open("sqlite", dsnURI)
+		if err != nil {
+			fmt.Println("Erreur d'ouverture :", err)
+			return
+		}
 
-	fmt.Println(nomAction)
-	fmt.Println(iD_publication)
-	fmt.Println(iD_fil_de_discussion)
+		defer db.Close()
+
+		forum.CreatePost(idUtilisateur, threadID, leTexte, db)
+	}
 }

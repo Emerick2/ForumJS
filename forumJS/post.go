@@ -2,6 +2,7 @@ package forumjs
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -21,6 +22,7 @@ func CreatePost(userID int, threadID int, content string, db *sql.DB) error {
 	VALUES (?, ?, ?)`
 
 	_, err := db.Exec(requete, userID, threadID, content)
+	fmt.Println(content)
 	return err
 }
 
@@ -41,12 +43,12 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	for rows.Next() {
 		var unPost Post
 		err := rows.Scan(
-			&unPost.Id, 
-			&unPost.UserId, 
-			&unPost.ThreadId, 
-			&unPost.Content, 
-			&unPost.CreatedAt, 
-			&unPost.Likes, 
+			&unPost.Id,
+			&unPost.UserId,
+			&unPost.ThreadId,
+			&unPost.Content,
+			&unPost.CreatedAt,
+			&unPost.Likes,
 			&unPost.Dislikes,
 		)
 		if err != nil {
