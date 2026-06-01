@@ -47,6 +47,19 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
+	iconeAime := "images/aime.svg"
+	iconeAimePas := "images/aime.svg"
+
+	idUtilisateur := VérifierCookie(r)
+	if idUtilisateur != 0 {
+		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
+			iconeAime = "images/aimeActif.svg"
+		}
+		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
+			iconeAimePas = "images/aimeActif.svg"
+		}
+	}
+
 	données := map[string]interface{}{
 		"nom_utilisateur":      nom_utilisateur,
 		"contenu_du_message":   contenu_du_message,
@@ -55,6 +68,8 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request) {
 		"nombre_de_aime_pas":   nombre_de_aime_pas,
 		"iD_publication":       iD_publication,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
+		"iconeAime":            iconeAime,
+		"iconeAimePas":         iconeAimePas,
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -212,7 +227,6 @@ func LireTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, U
 	err = db.QueryRow(requete, UserId, iD_publication, iD_fil_de_discussion).Scan(&valeurRecup)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("ErrNoRows")
 			return false
 		}
 		fmt.Println("QueryRow error:", err)
