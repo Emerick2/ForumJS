@@ -1,0 +1,117 @@
+{{define "title"}}{{.Post.Title}} — Forum{{end}}
+
+{{define "content"}}
+<article class="post-full">
+
+  <div class="post-full-header">
+    <div class="post-full-meta">
+      {{range .Post.Categories}}
+        <a href="/?category={{.Slug}}" class="category-tag">{{.Name}}</a>
+      {{end}}
+      <span>par <strong>{{.Post.Username}}</strong></span>
+      <time datetime="{{.Post.CreatedAt.Format "2006-01-02T15:04:05"}}">
+        {{.Post.CreatedAt.Format "02/01/2006 à 15:04"}}
+      </time>
+    </div>
+
+    <h1 class="post-full-title">{{.Post.Title}}</h1>
+
+    <div class="post-full-content">
+      {{.Post.Content}}
+    </div>
+
+    {{/* boutons like/dislike sur le post */}}
+    <div class="reactions" data-id="{{.Post.ID}}" data-type="post">
+      <button class="btn-vote btn-like {{if eq .Post.UserReaction 1}}active{{end}}"
+              aria-label="J'aime ce post"
+              aria-pressed="{{if eq .Post.UserReaction 1}}true{{else}}false{{end}}"
+              {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+        👍 <span class="nb-likes">{{.Post.Likes}}</span>
+      </button>
+      <button class="btn-vote btn-dislike {{if eq .Post.UserReaction -1}}active{{end}}"
+              aria-label="Je n'aime pas ce post"
+              aria-pressed="{{if eq .Post.UserReaction -1}}true{{else}}false{{end}}"
+              {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+        👎 <span class="nb-dislikes">{{.Post.Dislikes}}</span>
+      </button>
+    </div>
+
+    {{/* boutons modifier / supprimer si c'est notre post */}}
+    {{if .CurrentUser}}
+      {{if eq .CurrentUser.ID .Post.UserID}}
+      <div class="post-actions">
+        <a href="/post/{{.Post.ID}}/edit" class="btn btn-ghost">Modifier</a>
+        <form method="POST" action="/post/{{.Post.ID}}/delete"
+              onsubmit="return confirm('Supprimer ce post ?')">
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+      </div>
+      {{end}}
+    {{end}}
+  </div>
+
+</article>
+
+{{/* section commentaires */}}
+<section class="comments-section" id="comments">
+  <h2>{{.Post.CommentCount}} commentaire{{if gt .Post.CommentCount 1}}s{{end}}</h2>
+
+  {{if .CurrentUser}}
+  <form class="comment-form" method="POST" action="/post/{{.Post.ID}}/comment">
+    <label for="comment-content">Votre commentaire</label>
+    <textarea id="comment-content" name="content" rows="3"
+              placeholder="Écrivez votre commentaire..." required></textarea>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+  </form>
+  {{else}}
+  <p class="login-prompt">
+    <a href="/login">Connectez-vous</a> pour commenter.
+  </p>
+  {{end}}
+
+  {{if not .Comments}}
+    <p class="empty-state">Aucun commentaire pour le moment. Soyez le premier !</p>
+  {{else}}
+  <ul class="comment-list" role="list">
+    {{range .Comments}}
+    <li class="comment-card" id="comment-{{.ID}}">
+      <div class="comment-meta">
+        <strong>{{.Username}}</strong>
+        <time datetime="{{.CreatedAt.Format "2006-01-02T15:04:05"}}">
+          {{.CreatedAt.Format "02/01/2006 à 15:04"}}
+        </time>
+      </div>
+
+      <p class="comment-content">{{.Content}}</p>
+
+      {{/* like/dislike sur le commentaire */}}
+      <div class="reactions" data-id="{{.ID}}" data-type="comment">
+        <button class="btn-vote btn-like {{if eq .UserReaction 1}}active{{end}}"
+                aria-label="J'aime ce commentaire"
+                {{if not $.CurrentUser}}disabled{{end}}>
+          👍 <span class="nb-likes">{{.Likes}}</span>
+        </button>
+        <button class="btn-vote btn-dislike {{if eq .UserReaction -1}}active{{end}}"
+                aria-label="Je n'aime pas ce commentaire"
+                {{if not $.CurrentUser}}disabled{{end}}>
+          👎 <span class="nb-dislikes">{{.Dislikes}}</span>
+        </button>
+      </div>
+
+      {{/* bouton supprimer si c'est notre commentaire */}}
+      {{if $.CurrentUser}}
+        {{if eq $.CurrentUser.ID .UserID}}
+        <form method="POST" action="/comment/{{.ID}}/delete">
+          <button type="submit" class="btn btn-ghost btn-small"
+                  onclick="return confirm('Supprimer ce commentaire ?')">
+            Supprimer
+          </button>
+        </form>
+        {{end}}
+      {{end}}
+    </li>
+    {{end}}
+  </ul>
+  {{end}}
+</section>
+{{end}}
