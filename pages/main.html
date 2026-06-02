@@ -4,6 +4,7 @@
         <meta charset="URF8"/>
         <link rel="stylesheet" href="style/pageAccueil.css"/> 
         <link rel="stylesheet" href="style/post.css"/> 
+        <link rel="stylesheet" href="../style/commentaire.css"/> 
     </head>
     <body>
         <head>
@@ -18,9 +19,15 @@
             </form>
             
             <p>Bonjour {{.NomUtilisateur}}</p>
-            <form  action='http://localhost:8080/EnvoyerCommentaire' method='get'>
-                <input type="text" name="leTexte" placeholder="Que voulez-vous dire ?">
-                <button type="submit">Envoyer</button>
+
+            <form action='http://localhost:8080/EnvoyerCommentaire' method='get'>
+                <div class="zone-commentaire">
+                    <textarea name="leTexte" placeholder="Que voulez-vous dire ?"></textarea>
+                    <div class="boutons">
+                        <button class="btn-annuler" type="button">Annuler</button>
+                        <button class="btn-envoyer" type="submit">Envoyer</button>
+                    </div>
+                </div>
             </form>
         </main>
         <div class="block">
