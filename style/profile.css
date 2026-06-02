@@ -1,0 +1,59 @@
+.bouton-bleu{
+    transition: 0.2s;
+    min-width: 150px;
+    min-height: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: solid;
+    border-width: 2px;
+    border-radius: 25px;
+    border-color: rgb(61, 101, 189);
+    background-color: rgb(221, 240, 255);
+    font-size: 1.2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+}
+
+.bouton-bleu:hover{
+    transition: 0.2s;
+    background-color: rgb(54, 135, 197);
+    color: white;
+}
+
+.bouton-bleu:active{
+    transition: 0.2s;
+    background-color: rgb(109, 150, 181);
+    transform:translateY(-8px);
+}
+
+.listeBouton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:20px;
+}
+
+.profilUtilisateur{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.photo-de-profile{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: solid;
+    margin-right: 20px;
+}
+
+.nomUtilisateur{
+    font-size: 1.8rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
