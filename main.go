@@ -60,8 +60,16 @@ func main() {
 				valeur_iD_publication_commentaire = valeur
 			}
 		}
+
+		valeur := (r.FormValue("iD_fil_de_discussion"))
+		iD_fil_de_discussion, err := strconv.Atoi(valeur)
+		if err != nil {
+			fmt.Println(err)
+			iD_fil_de_discussion = 0
+		}
+		fmt.Println(iD_fil_de_discussion)
 		forum.ComplétéLaPageAccueil(w, r)
-		forum.AfficherToutLesPost(0, w, r, valeur_iD_publication_commentaire)
+		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
 
 	forum.InitDB()
