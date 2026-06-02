@@ -125,10 +125,23 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 }
 
 func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	answer, err := strconv.Atoi(valeur)
+	if err != nil {
+		answer = 0
+	}
+	fmt.Println("Pensez à enregister answer : ",answer)
+	
+	valeur = (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		iD_fil_de_discussion = 0
+	}
+
 	leTexte := r.FormValue("leTexte")
 	idUtilisateur := forum.VérifierCookie(r)
 	if idUtilisateur > 0 {
-		threadID := 0
+		threadID := iD_fil_de_discussion
 		dsnURI := "db/forum.db"
 		db, err := sql.Open("sqlite", dsnURI)
 		if err != nil {
@@ -140,4 +153,7 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 
 		forum.CreatePost(idUtilisateur, threadID, leTexte, db)
 	}
+
+	forum.RevenirSurLaPageAccueil(w, r, answer, false)
+
 }

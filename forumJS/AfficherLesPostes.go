@@ -95,17 +95,12 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	iconeAime := "images/aime.svg"
-	iconeAimePas := "images/aime.svg"
-
 	données := map[string]interface{}{
-		"iD_publication":       iD_publication_réponce,
+		"answer":       iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
-		"iconeAime":            iconeAime,
-		"iconeAimePas":         iconeAimePas,
-		"nomPosteID":           "post-" + strconv.Itoa(iD_publication_réponce),
 	}
-	tmpl, err := template.ParseFiles("pages/template-post.html")
+
+	tmpl, err := template.ParseFiles("pages/template-commentaire.html")
 	if err != nil {
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return

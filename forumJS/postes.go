@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
@@ -21,20 +20,7 @@ func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	referer := r.Header.Get("Referer")
-	if referer == "" {
-		referer = "/"
-	}
-
-	if pos := strings.Index(referer, "?"); pos != -1 {
-		referer = referer[:pos]
-	}
-
-	if iD_publication > 0 {
-		referer = fmt.Sprintf("%s?iD_publication_commentaire=%d#post-%d", referer, iD_publication, iD_publication)
-	}
-
-	http.Redirect(w, r, referer, http.StatusSeeOther)
+	RevenirSurLaPageAccueil(w, r, iD_publication, true)
 }
 
 func InteractionPost(w http.ResponseWriter, r *http.Request) {
@@ -80,14 +66,7 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", changement)
 	}
 
-	referer := r.Header.Get("Referer")
-	if referer == "" {
-		referer = "/"
-	}
-	if iD_publication > 0 {
-		referer = fmt.Sprintf("%s#post-%d", referer, iD_publication)
-	}
-	http.Redirect(w, r, referer, http.StatusSeeOther)
+	RevenirSurLaPageAccueil(w, r, iD_publication, false)
 }
 
 func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) {
