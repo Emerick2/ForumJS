@@ -1,0 +1,61 @@
+{{define "title"}}Inscription — Forum{{end}}
+
+{{define "content"}}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>Créer un compte</h1>
+
+    {{if .Error}}
+    <div class="alert alert-error" role="alert">{{.Error}}</div>
+    {{end}}
+
+    <form method="POST" action="/register" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email"
+               required aria-required="true"
+               autocomplete="email"
+               placeholder="votre@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="username">
+          Pseudonyme
+          <small>(3–30 caractères)</small>
+        </label>
+        <input type="text" id="username" name="username"
+               required aria-required="true"
+               minlength="3" maxlength="30"
+               autocomplete="username"
+               placeholder="MonPseudo">
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          Mot de passe
+          <small>(6 caractères minimum)</small>
+        </label>
+        <input type="password" id="password" name="password"
+               required aria-required="true"
+               minlength="6"
+               autocomplete="new-password"
+               placeholder="••••••••">
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input type="password" id="confirm" name="confirm"
+               required aria-required="true"
+               autocomplete="new-password"
+               placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Créer mon compte</button>
+    </form>
+
+    <p class="auth-switch">
+      Déjà un compte ? <a href="/login">Se connecter</a>
+    </p>
+  </div>
+</div>
+{{end}}
