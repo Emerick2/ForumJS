@@ -25,6 +25,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
+	AjouterUnCommentaire(w, r, 0, 0)
 	for i := 0; i < len(listePostes); i++ {
 		AfficherPost(listePostes[i], w, r, iD_publication_commentaire-1 == i)
 	}
@@ -87,29 +88,31 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion)
+	}
+}
 
-		données := map[string]interface{}{
-			"nom_utilisateur":      nom_utilisateur,
-			"contenu_du_message":   "Réponce !",
-			"date_de_publication":  date_de_publication,
-			"nombre_de_aime":       nombre_de_aime,
-			"nombre_de_aime_pas":   nombre_de_aime_pas,
-			"iD_publication":       iD_publication,
-			"iD_fil_de_discussion": iD_fil_de_discussion,
-			"iconeAime":            iconeAime,
-			"iconeAimePas":         iconeAimePas,
-			"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
-		}
-		tmpl, err := template.ParseFiles("pages/template-post.html")
-		if err != nil {
-			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-			return
-		}
+func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		err = tmpl.Execute(w, données)
-		if err != nil {
-			fmt.Println("Erreur lors de l'exécution du template :", err)
-		}
+	iconeAime := "images/aime.svg"
+	iconeAimePas := "images/aime.svg"
+
+	données := map[string]interface{}{
+		"iD_publication":       iD_publication_réponce,
+		"iD_fil_de_discussion": iD_fil_de_discussion,
+		"iconeAime":            iconeAime,
+		"iconeAimePas":         iconeAimePas,
+		"nomPosteID":           "post-" + strconv.Itoa(iD_publication_réponce),
+	}
+	tmpl, err := template.ParseFiles("pages/template-post.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }
