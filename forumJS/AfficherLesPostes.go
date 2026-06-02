@@ -25,17 +25,17 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
-	AjouterUnCommentaire(w, r, 0, 0)
+	AjouterUnCommentaire(w, r, 0, 0, 0)
 	tableauPlacer := make([]int, 0)
-	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire)
+	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 }
 
-func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int) {
+func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
 	for i := 0; i < len(listePostes); i++ {
 		if listePostes[i].answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
 			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
-			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id)
-			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire)
+			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id, décalage)
+			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire, décalage+1)
 		}
 	}
 }
@@ -53,7 +53,7 @@ func EstDansLeTableau(tableau []int, valeur int) bool {
 	return false
 }
 
-func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool) {
+func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool, décalage int) {
 	iD_publication := poste.Id
 	iD_utilisateur_qui_poste := poste.UserId
 
@@ -95,6 +95,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		"iconeAime":            iconeAime,
 		"iconeAimePas":         iconeAimePas,
 		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
+		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -110,16 +111,17 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion)
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage)
 	}
 }
 
-func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int) {
+func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int, décalage int) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	données := map[string]interface{}{
 		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
+		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-commentaire.html")

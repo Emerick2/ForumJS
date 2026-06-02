@@ -52,7 +52,6 @@ func main() {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
 		if iD_publication_commentaire != "" {
-			fmt.Println("id commentaire : ", iD_publication_commentaire)
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
 			if err != nil {
 				fmt.Println(err)
@@ -64,10 +63,8 @@ func main() {
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
-			fmt.Println(err)
 			iD_fil_de_discussion = 0
 		}
-		fmt.Println(iD_fil_de_discussion)
 		forum.ComplétéLaPageAccueil(w, r)
 		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
@@ -131,11 +128,17 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		answer = 0
 	}
-	
+
 	valeur = (r.FormValue("iD_fil_de_discussion"))
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
 		iD_fil_de_discussion = 0
+	}
+
+	annulerCommentaire := r.FormValue("AnnulerCommentaire")
+	if annulerCommentaire == "oui" {
+		forum.RevenirSurLaPageAccueil(w, r, answer, true, true)
+		return
 	}
 
 	leTexte := r.FormValue("leTexte")
@@ -154,6 +157,6 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 		forum.CreatePost(idUtilisateur, threadID, leTexte, db, answer)
 	}
 
-	forum.RevenirSurLaPageAccueil(w, r, answer, false)
+	forum.RevenirSurLaPageAccueil(w, r, answer, false, false)
 
 }
