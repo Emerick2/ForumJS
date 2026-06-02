@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"strconv"
 
 	_ "modernc.org/sqlite"
 
@@ -48,10 +49,19 @@ func main() {
 	log.Println("Serveur lancé sur http://localhost:8080")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		forum.ComplétéLaPageAccueil(w, r)
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
-		fmt.Println("id commentaire : ", iD_publication_commentaire)
-		forum.AfficherToutLesPost(0, w, r, 0)
+		valeur_iD_publication_commentaire := -1
+		if iD_publication_commentaire != "" {
+			fmt.Println("id commentaire : ", iD_publication_commentaire)
+			valeur, err := strconv.Atoi(iD_publication_commentaire)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				valeur_iD_publication_commentaire = valeur
+			}
+		}
+		forum.ComplétéLaPageAccueil(w, r)
+		forum.AfficherToutLesPost(0, w, r, valeur_iD_publication_commentaire)
 	})
 
 	forum.InitDB()

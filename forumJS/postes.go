@@ -5,135 +5,35 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
+	"strings"
 )
 
-func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
-	// -1 si il n'y a rien.
-	dsnURI := "db/forum.db"
-	db, err := sql.Open("sqlite", dsnURI)
-	if err != nil {
-		fmt.Println("Erreur d'ouverture :", err)
-		return
-	}
-
-	defer db.Close()
-
-	listePostes, err := GetPostsByThread(threadID, db)
-	if err != nil {
-		fmt.Println("Erreur lors de la récupération des posts :", err)
-		return
-	}
-
-	for i := 0; i < len(listePostes); i++ {
-		AfficherPost(listePostes[i], w, r, iD_publication_commentaire == i)
-	}
-}
-
-func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool) {
-	iD_publication := poste.Id
-	iD_utilisateur_qui_poste := poste.UserId
-
-	iD_fil_de_discussion := poste.ThreadId
-	contenu_du_message := poste.Content
-	date_de_publication := poste.CreatedAt
-	nombre_de_aime := poste.Likes
-	nombre_de_aime_pas := poste.Dislikes
-
-	nom_utilisateur := "Compte suprimé"
-	valeur := VoirUtilisateurs(iD_utilisateur_qui_poste)
-	if valeur.nom != "" {
-		nom_utilisateur = valeur.nom
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	iconeAime := "images/aime.svg"
-	iconeAimePas := "images/aime.svg"
-
-	idUtilisateur := VérifierCookie(r)
-	if idUtilisateur != 0 {
-		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
-			iconeAime = "images/aimeActif.svg"
-		}
-		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
-			iconeAimePas = "images/aimeActif.svg"
-		}
-	}
-
-	données := map[string]interface{}{
-		"nom_utilisateur":      nom_utilisateur,
-		"contenu_du_message":   contenu_du_message,
-		"date_de_publication":  date_de_publication,
-		"nombre_de_aime":       nombre_de_aime,
-		"nombre_de_aime_pas":   nombre_de_aime_pas,
-		"iD_publication":       iD_publication,
-		"iD_fil_de_discussion": iD_fil_de_discussion,
-		"iconeAime":            iconeAime,
-		"iconeAimePas":         iconeAimePas,
-		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
-	}
-
-	tmpl, err := template.ParseFiles("pages/template-post.html")
-	if err != nil {
-		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, données)
-	if err != nil {
-		fmt.Println("Erreur lors de l'exécution du template :", err)
-	}
-
-	if (mettre_espace_commentaire){
-		fmt.Println("On placeras bientôt ici un espace pour écrire les commentaire.")
-	}
-}
-
 func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
-	valeur := (r.FormValue("iD_publication"))
+	valeur := r.FormValue("iD_publication")
 	iD_publication, err := strconv.Atoi(valeur)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Erreur ID Publication:", err)
 	}
-	valeur = r.FormValue("iD_fil_de_discussion")
-	iD_fil_de_discussion, err := strconv.Atoi(valeur)
-	if err != nil {
-		fmt.Println(err)
-	}
+
 	idUtilisateur := VérifierCookie(r)
 	if idUtilisateur == 0 {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	données := map[string]interface{}{
-		"nom_utilisateur": "",
-	}
-
-	tmpl, err := template.ParseFiles("pages/template-post.html")
-	if err != nil {
-		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, données)
-	if err != nil {
-		fmt.Println("Erreur lors de l'exécution du template :", err)
-	}
-
-	fmt.Println(iD_fil_de_discussion)
-
-	// revenir sur la page :
 	referer := r.Header.Get("Referer")
 	if referer == "" {
 		referer = "/"
 	}
-	if iD_publication > 0 {
-		// referer = fmt.Sprintf("%s#post-%d?iD_publication_commentaire=%d", referer, iD_publication,iD_publication)
-		referer = fmt.Sprintf("%s#post-%d", referer, iD_publication)
+
+	if pos := strings.Index(referer, "?"); pos != -1 {
+		referer = referer[:pos]
 	}
-	fmt.Println(referer)
+
+	if iD_publication > 0 {
+		referer = fmt.Sprintf("%s?iD_publication_commentaire=%d#post-%d", referer, iD_publication, iD_publication)
+	}
+
 	http.Redirect(w, r, referer, http.StatusSeeOther)
 }
 
