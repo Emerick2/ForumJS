@@ -6,6 +6,8 @@
 # Binaire compilé
 forum
 /forum
+server
+/server
 
 # Variables d'environnement (mots de passe, clés secrètes)
 .env
@@ -15,11 +17,11 @@ forum
 Thumbs.db
 
 
-Dockerfile
-cmd/
-go.mod
-go.sum
-docker-compose.yml
-internal/db/
-internal/handlers/app.go
-internal/models/
+# Dockerfile
+# cmd/
+# go.mod
+# go.sum
+# docker-compose.yml
+# internal/db/
+# internal/handlers/app.go
+# internal/models/
