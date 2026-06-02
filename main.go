@@ -151,7 +151,7 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 
 		defer db.Close()
 
-		forum.CreatePost(idUtilisateur, threadID, leTexte, db)
+		forum.CreatePost(idUtilisateur, threadID, leTexte, db, answer)
 	}
 
 	forum.RevenirSurLaPageAccueil(w, r, answer, false)

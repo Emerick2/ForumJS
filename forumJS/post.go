@@ -2,7 +2,6 @@ package forumjs
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -14,21 +13,21 @@ type Post struct {
 	CreatedAt time.Time
 	Likes     int
 	Dislikes  int
+	answer    int
 }
 
-func CreatePost(userID int, threadID int, content string, db *sql.DB) error {
+func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {
 	requete := `
-	INSERT INTO Posts (user_id, thread_id, content)
-	VALUES (?, ?, ?)`
+	INSERT INTO Posts (user_id, thread_id, content, answer)
+	VALUES (?, ?, ?, ?)`
 
-	_, err := db.Exec(requete, userID, threadID, content)
-	fmt.Println(content)
+	_, err := db.Exec(requete, userID, threadID, content, answer)
 	return err
 }
 
 func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	query := `
-	SELECT id, user_id, thread_id, content, created_at, likes, dislikes 
+	SELECT id, user_id, thread_id, content, created_at, likes, dislikes, answer 
 	FROM Posts 
 	WHERE thread_id = ?`
 
@@ -50,6 +49,7 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 			&unPost.CreatedAt,
 			&unPost.Likes,
 			&unPost.Dislikes,
+			&unPost.answer,
 		)
 		if err != nil {
 			return nil, err

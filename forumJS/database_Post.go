@@ -14,7 +14,7 @@ func InitDB() {
 		return
 	}
 
-	defer db.Close() 
+	defer db.Close()
 
 	fmt.Println("Connexion à la base de donnée réussie !")
 
@@ -42,6 +42,7 @@ func InitDB() {
 		created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
 		likes        INTEGER DEFAULT 0,
 		dislikes     INTEGER DEFAULT 0,
+		answer		 INTEGER DEFAULT 0,
 		FOREIGN KEY (user_id) REFERENCES utilisateurs (id)
 	);`
 
