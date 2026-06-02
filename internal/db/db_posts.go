@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // CreatePost crée un nouveau post avec ses catégories

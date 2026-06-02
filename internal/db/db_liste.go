@@ -1,6 +1,6 @@
 package db
 
-import "forum/internal/models"
+import "forumJS/internal/models"
 
 // PostFilter contient les critères de filtre pour la liste des posts
 type PostFilter struct {

@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"forum/internal/db"
-	"forum/internal/models"
+	"forumJS/internal/db"
+	"forumJS/internal/models"
 )
 
 // handleIndex affiche la page d'accueil avec la liste des posts

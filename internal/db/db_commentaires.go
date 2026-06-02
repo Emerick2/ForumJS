@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // CreateComment crée un commentaire sur un post

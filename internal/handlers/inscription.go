@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // handleFormulaireInscription affiche la page d'inscription

@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"forum/internal/db"
-	"forum/internal/models"
+	"forumJS/internal/db"
+	"forumJS/internal/models"
 )
 
 // App contient la base de données et les templates HTML du site

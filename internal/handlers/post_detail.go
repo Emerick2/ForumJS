@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // handleVoirPost affiche un post avec ses commentaires

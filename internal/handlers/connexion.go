@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // durée de vie d'une session : 24 heures

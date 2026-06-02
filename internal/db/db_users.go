@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"forum/internal/models"
+	"forumJS/internal/models"
 )
 
 // ─── Utilisateurs ─────────────────────────────────────────────────────────────
