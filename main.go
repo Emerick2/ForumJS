@@ -125,12 +125,12 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 }
 
 func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
-	valeur := (r.FormValue("iD_fil_de_discussion"))
+	valeur := (r.FormValue("answer"))
 	answer, err := strconv.Atoi(valeur)
 	if err != nil {
+		fmt.Println(err)
 		answer = 0
 	}
-	fmt.Println("Pensez à enregister answer : ",answer)
 	
 	valeur = (r.FormValue("iD_fil_de_discussion"))
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)

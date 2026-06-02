@@ -26,9 +26,31 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	}
 
 	AjouterUnCommentaire(w, r, 0, 0)
+	tableauPlacer := make([]int, 0)
+	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire)
+}
+
+func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int) {
 	for i := 0; i < len(listePostes); i++ {
-		AfficherPost(listePostes[i], w, r, iD_publication_commentaire-1 == i)
+		if listePostes[i].answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
+			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
+			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id)
+			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire)
+		}
 	}
+}
+
+/*
+un poste avec answer 3 signifie qu'il est le désendant de listePostes[i+1]. Cela signifie que dans l'ordre chronologique, je doit le mettre juste après.
+*/
+
+func EstDansLeTableau(tableau []int, valeur int) bool {
+	for i := 0; i < len(tableau); i++ {
+		if tableau[i] == valeur {
+			return true
+		}
+	}
+	return false
 }
 
 func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool) {
@@ -96,7 +118,7 @@ func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	données := map[string]interface{}{
-		"answer":       iD_publication_réponce,
+		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 	}
 

@@ -29,7 +29,7 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	query := `
 	SELECT id, user_id, thread_id, content, created_at, likes, dislikes, answer 
 	FROM Posts 
-	WHERE thread_id = ?`
+	WHERE thread_id = ? ORDER BY created_at ASC`
 
 	rows, err := db.Query(query, threadID)
 	if err != nil {
