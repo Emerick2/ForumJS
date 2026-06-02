@@ -1,0 +1,155 @@
+{{define "title"}}{{.Post.Title}} — Forum{{end}}
+
+{{define "content"}}
+
+<article class="post-detail" aria-labelledby="post-titre">
+
+  <div class="post-detail-header">
+    <div class="post-categories">
+      {{range .Post.Categories}}
+        <a href="/?category={{.Slug}}" class="category-tag">{{.Name}}</a>
+      {{end}}
+    </div>
+
+    <h1 id="post-titre" class="post-detail-title">{{.Post.Title}}</h1>
+
+    <div class="post-meta" style="font-size:.85rem; color:var(--text-muted); margin-bottom:.5rem;">
+      par <strong>{{.Post.Username}}</strong>
+      &nbsp;·&nbsp;
+      <time datetime="{{.Post.CreatedAt.Format "2006-01-02T15:04:05"}}">
+        {{.Post.CreatedAt.Format "02/01/2006 à 15:04"}}
+      </time>
+      {{if ne .Post.CreatedAt .Post.UpdatedAt}}
+        <span class="edited-badge">(modifié)</span>
+      {{end}}
+    </div>
+  </div>
+
+  <div id="post-contenu" class="post-content">{{.Post.Content}}</div>
+
+  {{/* Barre like / dislike + audio description */}}
+  <div class="reaction-bar" style="margin-top:.75rem;">
+
+    <button class="react-btn like-btn {{if eq .Post.UserReaction 1}}active{{end}}"
+            data-id="{{.Post.ID}}"
+            data-type="post"
+            data-value="1"
+            aria-label="J'aime ce post ({{.Post.Likes}} votes)"
+            aria-pressed="{{if eq .Post.UserReaction 1}}true{{else}}false{{end}}"
+            {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+      👍 <span class="react-count">{{.Post.Likes}}</span>
+    </button>
+
+    <button class="react-btn dislike-btn {{if eq .Post.UserReaction -1}}active{{end}}"
+            data-id="{{.Post.ID}}"
+            data-type="post"
+            data-value="-1"
+            aria-label="Je n'aime pas ce post ({{.Post.Dislikes}} votes)"
+            aria-pressed="{{if eq .Post.UserReaction -1}}true{{else}}false{{end}}"
+            {{if not .CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+      👎 <span class="react-count">{{.Post.Dislikes}}</span>
+    </button>
+
+    {{/* Bouton audio description — lit le post à voix haute */}}
+    <button class="audio-btn"
+            id="btn-audio"
+            data-titre="{{.Post.Title}}"
+            data-contenu-id="post-contenu"
+            aria-label="Lire ce post à voix haute"
+            title="Audiodescription — lire le post à voix haute">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      </svg>
+      <span id="audio-label">Écouter</span>
+    </button>
+
+    {{/* Boutons modifier / supprimer si c'est notre post */}}
+    {{if .CurrentUser}}
+      {{if eq .CurrentUser.ID .Post.UserID}}
+      <div class="post-actions">
+        <a href="/post/{{.Post.ID}}/edit" class="btn btn-ghost btn-sm">Modifier</a>
+        <form method="POST" action="/post/{{.Post.ID}}/delete"
+              onsubmit="return confirm('Supprimer ce post définitivement ?')">
+          <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+      </div>
+      {{end}}
+    {{end}}
+
+  </div>
+
+</article>
+
+{{/* Section commentaires */}}
+<section class="comments-section" id="commentaires" aria-label="Commentaires">
+  <h2>{{.Post.CommentCount}} commentaire{{if gt .Post.CommentCount 1}}s{{end}}</h2>
+
+  {{if .CurrentUser}}
+  <form class="comment-form" method="POST" action="/post/{{.Post.ID}}/comment">
+    <label for="comment-contenu">Votre commentaire</label>
+    <textarea id="comment-contenu" name="content" rows="3"
+              placeholder="Écrivez votre commentaire..." required
+              aria-required="true"></textarea>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+  </form>
+  {{else}}
+  <p class="auth-notice">
+    <a href="/login">Connectez-vous</a> pour laisser un commentaire.
+  </p>
+  {{end}}
+
+  {{if not .Comments}}
+    <div class="empty-state" role="status" style="padding:2rem; margin-top:.5rem;">
+      <p>Aucun commentaire pour le moment. Soyez le premier !</p>
+    </div>
+  {{else}}
+  <ul class="comment-list" role="list">
+    {{range .Comments}}
+    <li class="comment-card" id="commentaire-{{.ID}}">
+      <div class="comment-meta">
+        <strong>{{.Username}}</strong>
+        <time datetime="{{.CreatedAt.Format "2006-01-02T15:04:05"}}">
+          {{.CreatedAt.Format "02/01/2006 à 15:04"}}
+        </time>
+      </div>
+
+      <p class="comment-content">{{.Content}}</p>
+
+      <div class="reaction-bar">
+        <button class="react-btn like-btn {{if eq .UserReaction 1}}active{{end}}"
+                data-id="{{.ID}}"
+                data-type="comment"
+                data-value="1"
+                aria-label="J'aime ce commentaire"
+                aria-pressed="{{if eq .UserReaction 1}}true{{else}}false{{end}}"
+                {{if not $.CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+          👍 <span class="react-count">{{.Likes}}</span>
+        </button>
+        <button class="react-btn dislike-btn {{if eq .UserReaction -1}}active{{end}}"
+                data-id="{{.ID}}"
+                data-type="comment"
+                data-value="-1"
+                aria-label="Je n'aime pas ce commentaire"
+                aria-pressed="{{if eq .UserReaction -1}}true{{else}}false{{end}}"
+                {{if not $.CurrentUser}}disabled title="Connectez-vous pour voter"{{end}}>
+          👎 <span class="react-count">{{.Dislikes}}</span>
+        </button>
+
+        {{if $.CurrentUser}}
+          {{if eq $.CurrentUser.ID .UserID}}
+          <form method="POST" action="/comment/{{.ID}}/delete" style="display:inline">
+            <button type="submit" class="btn btn-sm btn-danger"
+                    onclick="return confirm('Supprimer ce commentaire ?')">
+              Supprimer
+            </button>
+          </form>
+          {{end}}
+        {{end}}
+      </div>
+    </li>
+    {{end}}
+  </ul>
+  {{end}}
+
+</section>
+{{end}}
