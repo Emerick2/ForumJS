@@ -1,0 +1,79 @@
+.unPoste{
+    background-color: rgba(255, 0, 0, 0.146);
+}
+
+.partieUtilisateur{
+    display: flex;
+    align-items: center;
+}
+
+.photo{
+    width: 30px;
+    height: 30px;
+    border: solid;
+    border-radius: 50%;
+    border-width: 1px;
+    background-color: white;
+}
+
+.nom_utilisateur{
+    margin-left: 10px;
+}
+
+.date_de_publication{
+    color: gray;
+}
+
+.date_de_publication::before{
+    content: "•";
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.partieTexte{
+    margin-left: 20px;
+}
+
+.partieInteraction{
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+
+.formulaireFlex{
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+
+.iconeAime, .iconeAimePas, .iconeCommentaire{
+    width: 20px;
+    height: 20px;
+    border: solid;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+}
+
+.iconeAime img{
+    width: 100%;
+    height: 100%;
+    transform: rotateZ(-90deg);
+}
+
+.iconeAimePas img{
+    width: 100%;
+    height: 100%;
+    transform: rotateZ(90deg);
+}
+
+.iconeCommentaire img{
+    width: 100%;
+    height: 100%;
+}
+
+.invisible{
+    display: none;
+}
