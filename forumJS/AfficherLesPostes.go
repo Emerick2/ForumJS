@@ -64,7 +64,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	}
 
 	AjouterUnCommentaire(w, r, 0, threadID, 0)
-	
+
 	tableauPlacer := make([]int, 0)
 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 }
@@ -153,7 +153,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage)
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage+1)
 	}
 }
 

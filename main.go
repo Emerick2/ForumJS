@@ -43,6 +43,10 @@ func main() {
 		forum.AjouterEspaceCommentaire(w, r)
 	})
 
+	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
+		forum.ChangerDeFilDeDiscution(w, r)
+	})
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
@@ -67,6 +71,7 @@ func main() {
 		if err != nil {
 			iD_fil_de_discussion = 0
 		}
+		// fmt.Println("on est en : ",iD_fil_de_discussion)
 		forum.ComplétéLaPageAccueil(w, r)
 		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
