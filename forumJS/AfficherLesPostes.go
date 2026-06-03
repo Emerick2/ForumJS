@@ -66,14 +66,16 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	AjouterUnCommentaire(w, r, 0, threadID, 0)
 
 	tableauPlacer := make([]int, 0)
+
+	AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 }
 
 func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
-	for i := 0; i < len(listePostes); i++ {
+	for i := 1; i < len(listePostes); i++ {
 		if listePostes[i].Answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
 			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
-			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id, décalage)
+			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id, décalage, false)
 			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire, décalage+1)
 		}
 	}
@@ -92,7 +94,7 @@ func EstDansLeTableau(tableau []int, valeur int) bool {
 	return false
 }
 
-func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool, décalage int) {
+func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool, décalage int, premierPoste bool) {
 	iD_publication := poste.Id
 	iD_utilisateur_qui_poste := poste.UserId
 
@@ -141,6 +143,13 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 	if err != nil {
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return
+	}
+	if (premierPoste){
+		tmpl, err = template.ParseFiles("pages/template-haut-file.html")
+		if err != nil {
+			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	err = tmpl.Execute(w, données)

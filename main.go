@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	_ "modernc.org/sqlite"
 
@@ -45,6 +46,10 @@ func main() {
 
 	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
 		forum.ChangerDeFilDeDiscution(w, r)
+	})
+
+	http.HandleFunc("/PartagerPage", func(w http.ResponseWriter, r *http.Request) {
+		PartagerPage(w, r)
 	})
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
@@ -168,4 +173,26 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 
 	forum.RevenirSurLaPageAccueil(w, r, answer, false, false)
 
+}
+
+func PartagerPage(w http.ResponseWriter, r *http.Request) string {
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println(err)
+		iD_fil_de_discussion = 0
+	}
+
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
+	}
+
+	if pos := strings.Index(referer, "?"); pos != -1 {
+		referer = referer[:pos]
+	}
+
+	referer = fmt.Sprintf("%s", referer)
+	referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
+	return referer
 }
