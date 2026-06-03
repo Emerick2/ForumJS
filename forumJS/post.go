@@ -2,6 +2,7 @@ package forumjs
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -22,6 +23,23 @@ func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int
 	VALUES (?, ?, ?, ?)`
 
 	_, err := db.Exec(requete, userID, threadID, content, answer)
+	return err
+}
+
+func CreateThread(idUtilisateur int, nomDuLabel string, contenuDuTexte string, label_name string, db *sql.DB) error {
+	dsnURI := "db/thread.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return err
+	}
+	defer db.Close()
+
+	requete := `
+	INSERT INTO Threads (user_id, name, message_content, label_name)
+	VALUES (?, ?, ?, ?)`
+
+	_, err = db.Exec(requete, idUtilisateur, nomDuLabel, contenuDuTexte, label_name)
 	return err
 }
 
@@ -62,4 +80,24 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	}
 
 	return listePosts, nil
+}
+
+func NombreElementDB(db *sql.DB, nomTable string) int {
+	query := `
+	SELECT id 
+	FROM Threads `
+
+	rows, err := db.Query(query)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	defer rows.Close()
+
+	total := 0
+	for rows.Next() {
+		total++
+	}
+	fmt.Println(total)
+	return total
 }

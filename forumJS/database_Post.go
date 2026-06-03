@@ -23,6 +23,8 @@ func InitDB() {
 		id          INTEGER PRIMARY KEY AUTOINCREMENT,
 		name        TEXT NOT NULL,
 		user_id     INTEGER NOT NULL,
+		message_content TEXT NOT NULL,
+		label_name  TEXT NOT NULL,
 		FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
 	);`
 

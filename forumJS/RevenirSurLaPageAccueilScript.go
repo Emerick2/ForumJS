@@ -7,11 +7,14 @@ import (
 	"strings"
 )
 
-func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publication int, changerCommentaire bool, nePlusSélectionnerUnCommentaire bool) {
+func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publication int, changerCommentaire bool, nePlusSélectionnerUnCommentaire bool, nouveauFilDeDiscution int) {
 	valeur := (r.FormValue("iD_fil_de_discussion"))
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
 		iD_fil_de_discussion = 0
+	}
+	if nouveauFilDeDiscution != -1 {
+		iD_fil_de_discussion = nouveauFilDeDiscution
 	}
 
 	valeur = (r.FormValue("iD_publication_commentaire"))
@@ -35,28 +38,28 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 		referer = referer[:pos]
 	}
 
-	nombreAjout := 0;
-	referer = fmt.Sprintf("%s",referer)
+	nombreAjout := 0
+	referer = fmt.Sprintf("%s", referer)
 	if iD_publication > 0 {
-		if (nombreAjout > 0){
+		if nombreAjout > 0 {
 			referer += "&"
 		} else {
 			referer += "?"
 		}
-		nombreAjout++;
+		nombreAjout++
 		referer += fmt.Sprintf("iD_publication_commentaire=%d", iD_publication_commentaire)
 	}
-	if (iD_fil_de_discussion>=0){
-		if (nombreAjout > 0){
+	if iD_fil_de_discussion >= 0 {
+		if nombreAjout > 0 {
 			referer += "&"
 		} else {
 			referer += "?"
 		}
-		nombreAjout++;
+		nombreAjout++
 		referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
 	}
 	if iD_publication > 0 {
-		nombreAjout++;
+		nombreAjout++
 		referer += fmt.Sprintf("#post-%d", iD_publication)
 	}
 

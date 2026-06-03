@@ -46,15 +46,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur d'ouverture :", err)
 		return
 	}
-
-	valeur := (r.FormValue("iD_fil_de_discussion"))
-	iD_fil_de_discussion, err := strconv.Atoi(valeur)
-	if err != nil {
-		fmt.Println("erreur : ", err)
-		iD_fil_de_discussion = 0
-	}
-	fmt.Println(iD_fil_de_discussion)
-
+	
 	defer db.Close()
 
 	listePostes, err := GetPostsByThread(threadID, db)

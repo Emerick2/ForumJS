@@ -21,6 +21,13 @@
             <form action='http://localhost:8080/ChangerPage' method='get'>
                 <button name="pageDemandé" value="inscription.html" type="submit">inscription</button>
             </form>
+
+            <form action='http://localhost:8080/NouveauFilDeDiscution' method='get'>
+                <input name="nomDuPoste" type="text" value="Nom du poste">
+	            <input name="nomDuLabel" type="text" value="Nom du label">
+	            <input name="contenuDuTexte" type="text" value="Contenu du poste">
+                <button type="submit">Créé un fil</button>
+            </form>
             
             <p>Bonjour {{.NomUtilisateur}}</p>
         </main>

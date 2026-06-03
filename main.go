@@ -52,6 +52,10 @@ func main() {
 		PartagerPage(w, r)
 	})
 
+	http.HandleFunc("/NouveauFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
+		forum.NouveauFilDeDiscution(w, r)
+	})
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
@@ -64,9 +68,7 @@ func main() {
 		valeur_iD_publication_commentaire := -1
 		if iD_publication_commentaire != "" {
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
-			if err != nil {
-				fmt.Println(err)
-			} else {
+			if err == nil {
 				valeur_iD_publication_commentaire = valeur
 			}
 		}
@@ -151,7 +153,7 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 
 	annulerCommentaire := r.FormValue("AnnulerCommentaire")
 	if annulerCommentaire == "oui" {
-		forum.RevenirSurLaPageAccueil(w, r, answer, true, true)
+		forum.RevenirSurLaPageAccueil(w, r, answer, true, true, -1)
 		return
 	}
 
@@ -171,7 +173,7 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 		forum.CreatePost(idUtilisateur, threadID, leTexte, db, answer)
 	}
 
-	forum.RevenirSurLaPageAccueil(w, r, answer, false, false)
+	forum.RevenirSurLaPageAccueil(w, r, answer, false, false, -1)
 
 }
 
