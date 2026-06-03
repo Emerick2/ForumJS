@@ -14,10 +14,7 @@ func (app *App) handleVoirPost(w http.ResponseWriter, r *http.Request) {
 
 	utilisateur := app.chercherUtilisateurSession(r)
 
-	idUtilisateur := ""
-	if utilisateur != nil {
-		idUtilisateur = utilisateur.ID
-	}
+	idUtilisateur := idOuVide(utilisateur)
 
 	// on cherche le post dans la base de données
 	post, err := app.db.GetPostByID(idPost, idUtilisateur)
@@ -37,7 +34,7 @@ func (app *App) handleVoirPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, _ := app.db.GetAllCategories()
+	categories := app.toutesLesCategories()
 
 	donnees := &models.TemplateData{
 		CurrentUser: utilisateur,

@@ -20,7 +20,7 @@ func (app *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 	utilisateur := app.chercherUtilisateurSession(r)
 
 	// on récupère toutes les catégories pour la sidebar
-	categories, _ := app.db.GetAllCategories()
+	categories := app.toutesLesCategories()
 
 	// on récupère les filtres depuis l'URL
 	// exemples : /?category=sport  ou  /?filter=mine
@@ -45,10 +45,7 @@ func (app *App) handleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ID de l'utilisateur connecté (vide si personne n'est connecté)
-	idUtilisateur := ""
-	if utilisateur != nil {
-		idUtilisateur = utilisateur.ID
-	}
+	idUtilisateur := idOuVide(utilisateur)
 
 	// on charge la liste des posts depuis la base de données
 	listePosts, err := app.db.ListPosts(filtrePosts, idUtilisateur)
