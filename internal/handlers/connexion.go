@@ -51,15 +51,23 @@ func creerCookieSession(w http.ResponseWriter, session *models.Session) {
 	})
 }
 
-// handleFormulaireConnexion affiche la page de connexion
-func (app *App) handleFormulaireConnexion(w http.ResponseWriter, r *http.Request) {
+// redigerSiDejaConnecte redirige vers "/" si l'utilisateur est déjà connecté
+// retourne true si la redirection a eu lieu (le handler doit faire return)
+func (app *App) redigerSiDejaConnecte(w http.ResponseWriter, r *http.Request) bool {
 	if app.chercherUtilisateurSession(r) != nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return true
+	}
+	return false
+}
+
+// handleFormulaireConnexion affiche la page de connexion
+func (app *App) handleFormulaireConnexion(w http.ResponseWriter, r *http.Request) {
+	if app.redigerSiDejaConnecte(w, r) {
 		return
 	}
 
-	categories, _ := app.db.GetAllCategories()
-	app.afficherPage(w, "login", &models.TemplateData{Categories: categories})
+	app.afficherPage(w, "login", &models.TemplateData{Categories: app.toutesLesCategories()})
 }
 
 // handleConnexion traite le formulaire de connexion (POST /login)
@@ -69,12 +77,10 @@ func (app *App) handleConnexion(w http.ResponseWriter, r *http.Request) {
 	email := strings.TrimSpace(r.FormValue("email"))
 	motDePasse := r.FormValue("password")
 
-	categories, _ := app.db.GetAllCategories()
-
 	if email == "" || motDePasse == "" {
 		app.afficherPage(w, "login", &models.TemplateData{
 			Error:      "Email et mot de passe requis",
-			Categories: categories,
+			Categories: app.toutesLesCategories(),
 		})
 		return
 	}
@@ -83,7 +89,7 @@ func (app *App) handleConnexion(w http.ResponseWriter, r *http.Request) {
 	if err != nil || utilisateur == nil {
 		app.afficherPage(w, "login", &models.TemplateData{
 			Error:      "Email ou mot de passe incorrect",
-			Categories: categories,
+			Categories: app.toutesLesCategories(),
 		})
 		return
 	}
@@ -93,7 +99,7 @@ func (app *App) handleConnexion(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.afficherPage(w, "login", &models.TemplateData{
 			Error:      "Email ou mot de passe incorrect",
-			Categories: categories,
+			Categories: app.toutesLesCategories(),
 		})
 		return
 	}
