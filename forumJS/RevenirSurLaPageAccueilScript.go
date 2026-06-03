@@ -35,8 +35,29 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 		referer = referer[:pos]
 	}
 
+	nombreAjout := 0;
+	referer = fmt.Sprintf("%s",referer)
 	if iD_publication > 0 {
-		referer = fmt.Sprintf("%s?iD_publication_commentaire=%d&iD_fil_de_discussion=%d#post-%d", referer, iD_publication_commentaire, iD_fil_de_discussion, iD_publication)
+		if (nombreAjout > 0){
+			referer += "&"
+		} else {
+			referer += "?"
+		}
+		nombreAjout++;
+		referer += fmt.Sprintf("iD_publication_commentaire=%d", iD_publication_commentaire)
+	}
+	if (iD_fil_de_discussion>=0){
+		if (nombreAjout > 0){
+			referer += "&"
+		} else {
+			referer += "?"
+		}
+		nombreAjout++;
+		referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
+	}
+	if iD_publication > 0 {
+		nombreAjout++;
+		referer += fmt.Sprintf("#post-%d", iD_publication)
 	}
 
 	http.Redirect(w, r, referer, http.StatusSeeOther)
