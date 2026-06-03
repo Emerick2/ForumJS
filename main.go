@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	_ "modernc.org/sqlite"
 
@@ -14,6 +15,8 @@ import (
 )
 
 func main() {
+	// forum.HashPassword("abc")
+	// forum.HashPassword("abc")
 	// Les méthode HTTP :
 	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
 		Inscription(w, r)
@@ -41,6 +44,14 @@ func main() {
 		forum.AjouterEspaceCommentaire(w, r)
 	})
 
+	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
+		forum.ChangerDeFilDeDiscution(w, r)
+	})
+
+	http.HandleFunc("/PartagerPage", func(w http.ResponseWriter, r *http.Request) {
+		PartagerPage(w, r)
+	})
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
@@ -52,7 +63,6 @@ func main() {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
 		if iD_publication_commentaire != "" {
-			fmt.Println("id commentaire : ", iD_publication_commentaire)
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
 			if err != nil {
 				fmt.Println(err)
@@ -64,10 +74,9 @@ func main() {
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
-			fmt.Println(err)
 			iD_fil_de_discussion = 0
 		}
-		fmt.Println(iD_fil_de_discussion)
+		// fmt.Println("on est en : ",iD_fil_de_discussion)
 		forum.ComplétéLaPageAccueil(w, r)
 		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
@@ -91,7 +100,7 @@ func Inscription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := r.FormValue("password")
+	password := forum.HashPassword(r.FormValue("password"))
 	nomUtilisateur := r.FormValue("nomUtilisateur")
 
 	réusie := forum.AjouterUnUtilisateur(w, email, password, nomUtilisateur)
@@ -107,7 +116,7 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := r.FormValue("password")
+	password := forum.HashPassword(r.FormValue("password"))
 
 	réusie := false
 	iD_Utilisateur := forum.ConnecterUtilisateur(email, password)
@@ -125,17 +134,25 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 }
 
 func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
-	valeur := (r.FormValue("iD_fil_de_discussion"))
+	valeur := (r.FormValue("answer"))
 	answer, err := strconv.Atoi(valeur)
 	if err != nil {
+		fmt.Println(err)
 		answer = 0
 	}
-	fmt.Println("Pensez à enregister answer : ",answer)
-	
+
 	valeur = (r.FormValue("iD_fil_de_discussion"))
+	fmt.Println("form : ", valeur)
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
 		iD_fil_de_discussion = 0
+	}
+	fmt.Println(iD_fil_de_discussion)
+
+	annulerCommentaire := r.FormValue("AnnulerCommentaire")
+	if annulerCommentaire == "oui" {
+		forum.RevenirSurLaPageAccueil(w, r, answer, true, true)
+		return
 	}
 
 	leTexte := r.FormValue("leTexte")
@@ -154,6 +171,28 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 		forum.CreatePost(idUtilisateur, threadID, leTexte, db, answer)
 	}
 
-	forum.RevenirSurLaPageAccueil(w, r, answer, false)
+	forum.RevenirSurLaPageAccueil(w, r, answer, false, false)
 
+}
+
+func PartagerPage(w http.ResponseWriter, r *http.Request) string {
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println(err)
+		iD_fil_de_discussion = 0
+	}
+
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
+	}
+
+	if pos := strings.Index(referer, "?"); pos != -1 {
+		referer = referer[:pos]
+	}
+
+	referer = fmt.Sprintf("%s", referer)
+	referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
+	return referer
 }

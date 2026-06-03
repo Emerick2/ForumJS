@@ -7,16 +7,7 @@ import (
 	"strings"
 )
 
-func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publication int, changerCommentaire bool) {
-	// referer := r.Header.Get("Referer")
-	// if referer == "" {
-	// 	referer = "/"
-	// }
-	// if iD_publication > 0 {
-	// 	referer = fmt.Sprintf("%s#post-%d", referer, iD_publication)
-	// }
-	// http.Redirect(w, r, referer, http.StatusSeeOther)
-
+func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publication int, changerCommentaire bool, nePlusSélectionnerUnCommentaire bool) {
 	valeur := (r.FormValue("iD_fil_de_discussion"))
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
@@ -31,6 +22,9 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 	if changerCommentaire {
 		iD_publication_commentaire = iD_publication
 	}
+	if nePlusSélectionnerUnCommentaire {
+		iD_publication_commentaire = -1
+	}
 
 	referer := r.Header.Get("Referer")
 	if referer == "" {
@@ -41,8 +35,29 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 		referer = referer[:pos]
 	}
 
+	nombreAjout := 0;
+	referer = fmt.Sprintf("%s",referer)
 	if iD_publication > 0 {
-		referer = fmt.Sprintf("%s?iD_publication_commentaire=%d&iD_fil_de_discussion=%d#post-%d", referer, iD_publication_commentaire, iD_fil_de_discussion, iD_publication)
+		if (nombreAjout > 0){
+			referer += "&"
+		} else {
+			referer += "?"
+		}
+		nombreAjout++;
+		referer += fmt.Sprintf("iD_publication_commentaire=%d", iD_publication_commentaire)
+	}
+	if (iD_fil_de_discussion>=0){
+		if (nombreAjout > 0){
+			referer += "&"
+		} else {
+			referer += "?"
+		}
+		nombreAjout++;
+		referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
+	}
+	if iD_publication > 0 {
+		nombreAjout++;
+		referer += fmt.Sprintf("#post-%d", iD_publication)
 	}
 
 	http.Redirect(w, r, referer, http.StatusSeeOther)

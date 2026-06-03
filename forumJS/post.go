@@ -13,7 +13,7 @@ type Post struct {
 	CreatedAt time.Time
 	Likes     int
 	Dislikes  int
-	answer    int
+	Answer    int
 }
 
 func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {
@@ -29,7 +29,7 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	query := `
 	SELECT id, user_id, thread_id, content, created_at, likes, dislikes, answer 
 	FROM Posts 
-	WHERE thread_id = ?`
+	WHERE thread_id = ? ORDER BY created_at ASC`
 
 	rows, err := db.Query(query, threadID)
 	if err != nil {
@@ -49,7 +49,7 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 			&unPost.CreatedAt,
 			&unPost.Likes,
 			&unPost.Dislikes,
-			&unPost.answer,
+			&unPost.Answer,
 		)
 		if err != nil {
 			return nil, err

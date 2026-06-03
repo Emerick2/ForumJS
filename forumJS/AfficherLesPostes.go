@@ -8,6 +8,36 @@ import (
 	"text/template"
 )
 
+// func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
+// 	// -1 si il n'y a rien.
+// 	dsnURI := "db/forum.db"
+// 	db, err := sql.Open("sqlite", dsnURI)
+// 	if err != nil {
+// 		fmt.Println("Erreur d'ouverture :", err)
+// 		return
+// 	}
+
+// 	defer db.Close()
+
+// 	listePostes, err := GetPostsByThread(threadID, db)
+// 	if err != nil {
+// 		fmt.Println("Erreur lors de la récupération des posts :", err)
+// 		return
+// 	}
+
+// 	valeur := (r.FormValue("iD_fil_de_discussion"))
+// 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+// 	if err != nil {
+// 		fmt.Println("erreur : ", err)
+// 		iD_fil_de_discussion = 0
+// 	}
+// 	fmt.Println(iD_fil_de_discussion)
+
+// 	AjouterUnCommentaire(w, r, 0, iD_fil_de_discussion, 0)
+// 	tableauPlacer := make([]int, 0)
+// 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+// }
+
 func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
 	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
@@ -17,6 +47,14 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println("erreur : ", err)
+		iD_fil_de_discussion = 0
+	}
+	fmt.Println(iD_fil_de_discussion)
+
 	defer db.Close()
 
 	listePostes, err := GetPostsByThread(threadID, db)
@@ -25,13 +63,38 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
-	AjouterUnCommentaire(w, r, 0, 0)
-	for i := 0; i < len(listePostes); i++ {
-		AfficherPost(listePostes[i], w, r, iD_publication_commentaire-1 == i)
+	AjouterUnCommentaire(w, r, 0, threadID, 0)
+
+	tableauPlacer := make([]int, 0)
+
+	AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
+	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+}
+
+func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
+	for i := 1; i < len(listePostes); i++ {
+		if listePostes[i].Answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
+			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
+			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id, décalage, false)
+			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire, décalage+1)
+		}
 	}
 }
 
-func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool) {
+/*
+un poste avec answer 3 signifie qu'il est le désendant de listePostes[i+1]. Cela signifie que dans l'ordre chronologique, je doit le mettre juste après.
+*/
+
+func EstDansLeTableau(tableau []int, valeur int) bool {
+	for i := 0; i < len(tableau); i++ {
+		if tableau[i] == valeur {
+			return true
+		}
+	}
+	return false
+}
+
+func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_espace_commentaire bool, décalage int, premierPoste bool) {
 	iD_publication := poste.Id
 	iD_utilisateur_qui_poste := poste.UserId
 
@@ -73,6 +136,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		"iconeAime":            iconeAime,
 		"iconeAimePas":         iconeAimePas,
 		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
+		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -80,24 +144,35 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return
 	}
+	if (premierPoste){
+		tmpl, err = template.ParseFiles("pages/template-haut-file.html")
+		if err != nil {
+			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+			return
+		}
+	}
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion)
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage+1)
 	}
 }
 
-func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int) {
+func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int, décalage int) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	données := map[string]interface{}{
-		"answer":       iD_publication_réponce,
+		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
+		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-commentaire.html")
@@ -108,6 +183,9 @@ func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }

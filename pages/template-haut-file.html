@@ -1,4 +1,4 @@
-<div class="unPoste" id={{.nomPosteID}} style={{.décalage}}>
+<div class="unPoste" id={{.nomPosteID}}>
     <form class="partieUtilisateur">
         <img class="photo">
         <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
@@ -23,13 +23,11 @@
                 </button>
                 <p class="nombre_de_aime_pas">{{.nombre_de_aime_pas}}</p>
             </form>
-            <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get'>
-                <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+            <form class="formulaireFlex" action='http://localhost:8080/PartagerPage' method='get'>
                 <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
-                <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
-                    <img src="./images/commentaire.svg">
+                <button type="submit" class="iconeCommentaire">
+                    <img src="images/partager.svg">
                 </button>
-                <p>Répondre</p>
             </form>
         </div>
     </div>
