@@ -100,6 +100,21 @@ func (app *App) afficherErreur(w http.ResponseWriter, r *http.Request, codeErreu
 	app.afficherPage(w, "error", donnees)
 }
 
+// toutesLesCategories retourne la liste des catégories pour la sidebar
+// on ignore l'erreur car les catégories sont toujours présentes (seedées au démarrage)
+func (app *App) toutesLesCategories() []models.Category {
+	categories, _ := app.db.GetAllCategories()
+	return categories
+}
+
+// idOuVide retourne l'ID de l'utilisateur ou une chaîne vide s'il n'est pas connecté
+func idOuVide(u *models.User) string {
+	if u == nil {
+		return ""
+	}
+	return u.ID
+}
+
 // seulementConnecte redirige vers /login si l'utilisateur n'est pas connecté
 func (app *App) seulementConnecte(suite http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
