@@ -62,13 +62,18 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur lors de la récupération des posts :", err)
 		return
 	}
+	if len(listePostes) > 0 {
+		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
 
-	AjouterUnCommentaire(w, r, 0, threadID, 0)
+		AjouterUnCommentaire(w, r, 0, threadID, 0)
+		if len(listePostes) > 1 {
 
-	tableauPlacer := make([]int, 0)
-
-	AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
-	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+			tableauPlacer := make([]int, 0)
+			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+		}
+	} else {
+		AjouterUnCommentaire(w, r, 0, threadID, 0)
+	}
 }
 
 func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
@@ -144,7 +149,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return
 	}
-	if (premierPoste){
+	if premierPoste {
 		tmpl, err = template.ParseFiles("pages/template-haut-file.html")
 		if err != nil {
 			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
@@ -162,7 +167,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage+1)
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage)
 	}
 }
 
