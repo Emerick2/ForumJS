@@ -117,8 +117,8 @@ func GetThread() ([]Thread, error) {
 		var unThread Thread
 		err := rows.Scan(
 			&unThread.Id,
-			&unThread.Name,
 			&unThread.User_id,
+			&unThread.Name,
 			&unThread.Message_content,
 			&unThread.Label_name,
 		)

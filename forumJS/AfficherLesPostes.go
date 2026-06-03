@@ -8,36 +8,6 @@ import (
 	"text/template"
 )
 
-// func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
-// 	// -1 si il n'y a rien.
-// 	dsnURI := "db/forum.db"
-// 	db, err := sql.Open("sqlite", dsnURI)
-// 	if err != nil {
-// 		fmt.Println("Erreur d'ouverture :", err)
-// 		return
-// 	}
-
-// 	defer db.Close()
-
-// 	listePostes, err := GetPostsByThread(threadID, db)
-// 	if err != nil {
-// 		fmt.Println("Erreur lors de la récupération des posts :", err)
-// 		return
-// 	}
-
-// 	valeur := (r.FormValue("iD_fil_de_discussion"))
-// 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
-// 	if err != nil {
-// 		fmt.Println("erreur : ", err)
-// 		iD_fil_de_discussion = 0
-// 	}
-// 	fmt.Println(iD_fil_de_discussion)
-
-// 	AjouterUnCommentaire(w, r, 0, iD_fil_de_discussion, 0)
-// 	tableauPlacer := make([]int, 0)
-// 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
-// }
-
 func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
 	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
@@ -149,7 +119,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		}
 		listeThread, err := GetThread();
 		if (err != nil) {
-			fmt.Println(nil)
+			fmt.Println(err)
 		}
 		fmt.Println(err == nil)
 		fmt.Println(len(listeThread))
