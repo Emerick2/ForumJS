@@ -16,6 +16,15 @@ func InitDB() {
 
 	defer db.Close()
 
+	dsnURI2 := "db/threads.db"
+	db2, err := sql.Open("sqlite", dsnURI2)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return
+	}
+
+	defer db.Close()
+
 	fmt.Println("Connexion à la base de donnée réussie !")
 
 	createThreads := `
@@ -28,7 +37,7 @@ func InitDB() {
 		FOREIGN KEY (user_id) REFERENCES utilisateurs(id)
 	);`
 
-	_, err = db.Exec(createThreads)
+	_, err = db2.Exec(createThreads)
 	if err != nil {
 		fmt.Println("Erreur de création Threads :", err)
 		return

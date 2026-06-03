@@ -27,7 +27,7 @@ func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int
 }
 
 func CreateThread(idUtilisateur int, nomDuLabel string, contenuDuTexte string, label_name string, db *sql.DB) error {
-	dsnURI := "db/thread.db"
+	dsnURI := "db/threads.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
 		fmt.Println("Erreur d'ouverture :", err)

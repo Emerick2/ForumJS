@@ -25,8 +25,20 @@ func NouveauFilDeDiscution(w http.ResponseWriter, r *http.Request) {
 
 	defer db.Close()
 
-	CreateThread(idUtilisateur, nomDuPoste, contenuDuTexte, nomDuLabel, db)
-	nouvelIdFilDeDiscution := NombreElementDB(db, "Threads")
+	dsnURI2 := "db/threads.db"
+	db2, err := sql.Open("sqlite", dsnURI2)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return
+	}
+
+	defer db2.Close()
+
+	err = CreateThread(idUtilisateur, nomDuPoste, contenuDuTexte, nomDuLabel, db2)
+	if (err != nil){
+		fmt.Println(err)
+	}
+	nouvelIdFilDeDiscution := NombreElementDB(db2, "Threads")
 	CreatePost(idUtilisateur, nouvelIdFilDeDiscution, contenuDuTexte, db, 0)
 
 	RevenirSurLaPageAccueil(w, r, 0, false, true, nouvelIdFilDeDiscution)
