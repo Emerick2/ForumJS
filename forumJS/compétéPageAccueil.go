@@ -31,6 +31,9 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }

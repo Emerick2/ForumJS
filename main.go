@@ -14,6 +14,8 @@ import (
 )
 
 func main() {
+	// forum.HashPassword("abc")
+	// forum.HashPassword("abc")
 	// Les méthode HTTP :
 	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
 		Inscription(w, r)
@@ -88,7 +90,7 @@ func Inscription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := r.FormValue("password")
+	password := forum.HashPassword(r.FormValue("password"))
 	nomUtilisateur := r.FormValue("nomUtilisateur")
 
 	réusie := forum.AjouterUnUtilisateur(w, email, password, nomUtilisateur)
@@ -104,7 +106,7 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := r.FormValue("password")
+	password := forum.HashPassword(r.FormValue("password"))
 
 	réusie := false
 	iD_Utilisateur := forum.ConnecterUtilisateur(email, password)
@@ -130,10 +132,12 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 	}
 
 	valeur = (r.FormValue("iD_fil_de_discussion"))
+	fmt.Println("form : ", valeur)
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
 		iD_fil_de_discussion = 0
 	}
+	fmt.Println(iD_fil_de_discussion)
 
 	annulerCommentaire := r.FormValue("AnnulerCommentaire")
 	if annulerCommentaire == "oui" {

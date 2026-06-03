@@ -8,6 +8,36 @@ import (
 	"text/template"
 )
 
+// func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
+// 	// -1 si il n'y a rien.
+// 	dsnURI := "db/forum.db"
+// 	db, err := sql.Open("sqlite", dsnURI)
+// 	if err != nil {
+// 		fmt.Println("Erreur d'ouverture :", err)
+// 		return
+// 	}
+
+// 	defer db.Close()
+
+// 	listePostes, err := GetPostsByThread(threadID, db)
+// 	if err != nil {
+// 		fmt.Println("Erreur lors de la récupération des posts :", err)
+// 		return
+// 	}
+
+// 	valeur := (r.FormValue("iD_fil_de_discussion"))
+// 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+// 	if err != nil {
+// 		fmt.Println("erreur : ", err)
+// 		iD_fil_de_discussion = 0
+// 	}
+// 	fmt.Println(iD_fil_de_discussion)
+
+// 	AjouterUnCommentaire(w, r, 0, iD_fil_de_discussion, 0)
+// 	tableauPlacer := make([]int, 0)
+// 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+// }
+
 func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
 	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
@@ -17,6 +47,14 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println("erreur : ", err)
+		iD_fil_de_discussion = 0
+	}
+	fmt.Println(iD_fil_de_discussion)
+
 	defer db.Close()
 
 	listePostes, err := GetPostsByThread(threadID, db)
@@ -25,14 +63,15 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
-	AjouterUnCommentaire(w, r, 0, 0, 0)
+	AjouterUnCommentaire(w, r, 0, threadID, 0)
+	
 	tableauPlacer := make([]int, 0)
 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 }
 
 func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
 	for i := 0; i < len(listePostes); i++ {
-		if listePostes[i].answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
+		if listePostes[i].Answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
 			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
 			AfficherPost(listePostes[i], w, r, iD_publication_commentaire == listePostes[i].Id, décalage)
 			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, iD_publication_commentaire, décalage+1)
@@ -106,6 +145,9 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 
@@ -132,6 +174,9 @@ func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }
