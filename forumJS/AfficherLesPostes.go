@@ -121,11 +121,10 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		if (err != nil) {
 			fmt.Println(err)
 		}
-		fmt.Println(err == nil)
-		fmt.Println(len(listeThread))
-		if (err == nil && len(listeThread) > iD_fil_de_discussion){
-			données["nomLabel"] = listeThread[iD_fil_de_discussion].Label_name
-			données["nomDiscution"] = listeThread[iD_fil_de_discussion].Name
+		id := iD_fil_de_discussion-1
+		if (err == nil && id >=0 && len(listeThread) > id){
+			données["nomLabel"] = listeThread[id].Label_name
+			données["nomDiscution"] = listeThread[id].Name
 		}
 	}
 
