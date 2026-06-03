@@ -42,20 +42,12 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 	nombreAjout := 0
 	referer = fmt.Sprintf("%s", referer)
 	if iD_publication > 0 {
-		if nombreAjout > 0 {
-			referer += "&"
-		} else {
-			referer += "?"
-		}
+		referer += TernaireStr(nombreAjout > 0, "&", "?")
 		nombreAjout++
 		referer += fmt.Sprintf("iD_publication_commentaire=%d", iD_publication_commentaire)
 	}
 	if iD_fil_de_discussion >= 0 {
-		if nombreAjout > 0 {
-			referer += "&"
-		} else {
-			referer += "?"
-		}
+		referer += TernaireStr(nombreAjout > 0, "&", "?")
 		nombreAjout++
 		referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
 	}
@@ -65,4 +57,12 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 	}
 
 	http.Redirect(w, r, referer, http.StatusSeeOther)
+}
+
+func TernaireStr(condition bool, valeur1 string, valeur2 string) string {
+	if condition {
+		return valeur1
+	} else {
+		return valeur2
+	}
 }
