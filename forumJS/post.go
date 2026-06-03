@@ -17,6 +17,14 @@ type Post struct {
 	Answer    int
 }
 
+type Thread struct {
+	Id              int
+	Name            string
+	User_id         int
+	Message_content string
+	Label_name      string
+}
+
 func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {
 	requete := `
 	INSERT INTO Posts (user_id, thread_id, content, answer)
@@ -80,6 +88,51 @@ func GetPostsByThread(threadID int, db *sql.DB) ([]Post, error) {
 	}
 
 	return listePosts, nil
+}
+
+func GetThread() ([]Thread, error) {
+	dsnURI := "db/threads.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return nil, err
+	}
+	defer db.Close()
+
+	query := `
+	SELECT id, user_id, name, message_content, label_name 
+	FROM Threads
+	ORDER BY id ASC`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	
+	listeThread := []Thread{}
+	
+	for rows.Next() {
+		var unThread Thread
+		err := rows.Scan(
+			&unThread.Id,
+			&unThread.Name,
+			&unThread.User_id,
+			&unThread.Message_content,
+			&unThread.Label_name,
+		)
+		if err != nil {
+			return nil, err
+		}
+		listeThread = append(listeThread, unThread)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return listeThread, nil
 }
 
 func NombreElementDB(db *sql.DB, nomTable string) int {

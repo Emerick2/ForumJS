@@ -46,7 +46,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur d'ouverture :", err)
 		return
 	}
-	
+
 	defer db.Close()
 
 	listePostes, err := GetPostsByThread(threadID, db)
@@ -146,6 +146,16 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		if err != nil {
 			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 			return
+		}
+		listeThread, err := GetThread();
+		if (err != nil) {
+			fmt.Println(nil)
+		}
+		fmt.Println(err == nil)
+		fmt.Println(len(listeThread))
+		if (err == nil && len(listeThread) > iD_fil_de_discussion){
+			données["nomLabel"] = listeThread[iD_fil_de_discussion].Label_name
+			données["nomDiscution"] = listeThread[iD_fil_de_discussion].Name
 		}
 	}
 

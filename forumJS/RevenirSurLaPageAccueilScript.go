@@ -32,6 +32,7 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 	referer := r.Header.Get("Referer")
 	if referer == "" {
 		referer = "/"
+		// referer = "/discution.html"
 	}
 
 	if pos := strings.Index(referer, "?"); pos != -1 {
