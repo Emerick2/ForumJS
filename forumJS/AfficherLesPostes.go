@@ -8,36 +8,6 @@ import (
 	"text/template"
 )
 
-// func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
-// 	// -1 si il n'y a rien.
-// 	dsnURI := "db/forum.db"
-// 	db, err := sql.Open("sqlite", dsnURI)
-// 	if err != nil {
-// 		fmt.Println("Erreur d'ouverture :", err)
-// 		return
-// 	}
-
-// 	defer db.Close()
-
-// 	listePostes, err := GetPostsByThread(threadID, db)
-// 	if err != nil {
-// 		fmt.Println("Erreur lors de la récupération des posts :", err)
-// 		return
-// 	}
-
-// 	valeur := (r.FormValue("iD_fil_de_discussion"))
-// 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
-// 	if err != nil {
-// 		fmt.Println("erreur : ", err)
-// 		iD_fil_de_discussion = 0
-// 	}
-// 	fmt.Println(iD_fil_de_discussion)
-
-// 	AjouterUnCommentaire(w, r, 0, iD_fil_de_discussion, 0)
-// 	tableauPlacer := make([]int, 0)
-// 	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
-// }
-
 func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
 	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
@@ -47,14 +17,6 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 
-	valeur := (r.FormValue("iD_fil_de_discussion"))
-	iD_fil_de_discussion, err := strconv.Atoi(valeur)
-	if err != nil {
-		fmt.Println("erreur : ", err)
-		iD_fil_de_discussion = 0
-	}
-	fmt.Println(iD_fil_de_discussion)
-
 	defer db.Close()
 
 	listePostes, err := GetPostsByThread(threadID, db)
@@ -62,17 +24,18 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur lors de la récupération des posts :", err)
 		return
 	}
+	if len(listePostes) > 0 {
+		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
 
-	AjouterUnCommentaire(w, r, 0, threadID, 0)
+		AjouterUnCommentaire(w, r, 0, threadID, 0)
+		if len(listePostes) > 1 {
 
-	if len(listePostes) == 0 {
-		return
+			tableauPlacer := make([]int, 0)
+			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+		}
+	} else {
+		AjouterUnCommentaire(w, r, 0, threadID, 0)
 	}
-
-	tableauPlacer := make([]int, 0)
-
-	AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
-	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 }
 
 func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {
@@ -148,11 +111,20 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 		return
 	}
-	if (premierPoste){
+	if premierPoste {
 		tmpl, err = template.ParseFiles("pages/template-haut-file.html")
 		if err != nil {
 			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 			return
+		}
+		listeThread, err := GetThread();
+		if (err != nil) {
+			fmt.Println(err)
+		}
+		id := iD_fil_de_discussion-1
+		if (err == nil && id >=0 && len(listeThread) > id){
+			données["nomLabel"] = listeThread[id].Label_name
+			données["nomDiscution"] = listeThread[id].Name
 		}
 	}
 
