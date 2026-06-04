@@ -21,6 +21,7 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 
 	données := map[string]interface{}{
 		"NomUtilisateur": nomAAfficher,
+		"EstConnecte":    idUtilisateur != 0,
 	}
 
 	tmpl, err := template.ParseFiles("pages/main.html")

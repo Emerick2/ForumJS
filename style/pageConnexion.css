@@ -2,6 +2,24 @@ main{
     text-align: center;
 }
 
+.btn-retour-forum {
+    display: inline-block;
+    margin: 16px 0 0 0;
+    padding: 7px 18px;
+    border: 1px solid #0079d3;
+    border-radius: 20px;
+    color: #0079d3;
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background 0.15s;
+}
+
+.btn-retour-forum:hover {
+    background-color: #e8f0fe;
+}
+
 h2{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
