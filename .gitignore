@@ -16,12 +16,5 @@ server
 .DS_Store
 Thumbs.db
 
-
-# Dockerfile
-# cmd/
-# go.mod
-# go.sum
-# docker-compose.yml
-# internal/db/
-# internal/handlers/app.go
-# internal/models/
+go.mod
+go.sum
