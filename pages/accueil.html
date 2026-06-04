@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="stylesheet" href="style/pageConnexion.css"/>
+        <link rel="stylesheet" href="style/pageAccueil.css"/>
+    </head>
+    <body>
+        <main>
+            <h1 class="titreForum">Le super FORUM</h1>
+
+            <div id="zoneConnexion">
+                <h2>Vous avez un compte ?<br/>Alors, connectez vous !</h2>
+                <form class="partieInscription" action='http://localhost:8080/Connexion' method='get'>
+                    <label for="email">E-Mail</label>
+                    <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
+                    <label for="password">Mot de passe</label>
+                    <input name="password" type="password" minlength="8" placeholder="Votre mot de passe"><br/>
+                    <button type="submit">Connexion</button>
+                </form>
+                <br/>
+                <button class="boutonBasculer" onclick="basculer()">Pas encore de compte ? S'inscrire</button>
+                <br/>
+                <a href="/" class="boutonBasculer">← Retour au forum</a>
+            </div>
+
+            <div id="zoneInscription" style="display:none;">
+                <h2>Vous n'avez pas de compte ?<br/>Alors, créé en un !</h2>
+                <form class="partieInscription" action='http://localhost:8080/Inscription' method='get'>
+                    <label for="email">E-Mail</label>
+                    <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
+                    <label for="password">Mot de passe</label>
+                    <input name="password" type="password" minlength="8" placeholder="Votre mot de passe"><br/>
+                    <label for="nomUtilisateur">Nom d'utilisateur</label>
+                    <input name="nomUtilisateur" type="text" minlength="3" placeholder="Votre nom"><br/>
+                    <button type="submit">Inscription</button>
+                </form>
+                <br/>
+                <button class="boutonBasculer" onclick="basculer()">J'ai déjà un compte ? Se connecter</button>
+                <br/>
+                <a href="/" class="boutonBasculer">← Retour au forum</a>
+            </div>
+        </main>
+
+        <script>
+            function basculer() {
+                var connexion = document.getElementById("zoneConnexion");
+                var inscription = document.getElementById("zoneInscription");
+                if (connexion.style.display === "none") {
+                    connexion.style.display = "block";
+                    inscription.style.display = "none";
+                } else {
+                    connexion.style.display = "none";
+                    inscription.style.display = "block";
+                }
+            }
+
+            // Si l'URL contient ?vue=inscription, afficher directement le formulaire d'inscription
+            if (new URLSearchParams(window.location.search).get("vue") === "inscription") {
+                document.getElementById("zoneConnexion").style.display = "none";
+                document.getElementById("zoneInscription").style.display = "block";
+            }
+        </script>
+    </body>
+</html>
