@@ -37,6 +37,18 @@ func CrééUnCookie(w http.ResponseWriter, id int) {
 	http.SetCookie(w, cookie)
 }
 
+func SupprimerCookie(w http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:     "session_utilisateur",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, cookie)
+}
+
 func VérifierCookie(r *http.Request) int {
 	cookie, err := r.Cookie("session_utilisateur")
 	if err != nil {
