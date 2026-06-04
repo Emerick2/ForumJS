@@ -52,17 +52,16 @@ func main() {
 		PartagerPage(w, r)
 	})
 
-<<<<<<< HEAD
 	http.HandleFunc("/Accueil", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "pages/accueil.html")
 	})
 
 	http.HandleFunc("/Deconnexion", func(w http.ResponseWriter, r *http.Request) {
 		forum.Deconnecter(w, r)
-=======
+	})
+
 	http.HandleFunc("/NouveauFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
 		forum.NouveauFilDeDiscution(w, r)
->>>>>>> Emerick
 	})
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
