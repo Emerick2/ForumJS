@@ -15,7 +15,6 @@
             <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
                 <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
                 <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
-                <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
             </form>
         </head>
         <main>
@@ -26,15 +25,16 @@
                 <button name="pageDemandé" value="inscription.html" type="submit">inscription</button>
             </form>
 
-            <form action='http://localhost:8080/NouveauFilDeDiscution' method='get'>
-                <input name="nomDuPoste" type="text" value="Nom du poste">
-	            <input name="nomDuLabel" type="text" value="Nom du label">
-	            <input name="contenuDuTexte" type="text" value="Contenu du poste">
-                <button type="submit">Créé un fil</button>
-            </form>
-            
-            <p>Bonjour {{.NomUtilisateur}}</p>
-            <h1>Bienvenu sur la page d'accueil !</h1>
+            <h2>Les statistiques générals du forum :</h2>
+            <p>Le nombre total de j'aime mis sur les commentaires : {{.NombreTotalAimeSurCommentaires}}</p>
+		    <p>Le nombre total de message publier : {{.NombreTotalMessagePublier}}</p>
+		    <p>Le nombre total d'utilisateur : {{.NombreTotalUtilisateur}}</p>
+
+            <h2>Les derniers messages publier :</h2>
+
+            <h2>Les fils de discution triés par ceux avec le plus de commentaires :</h2>
+
+		    <h2>La listes des derniers nouveaux utilisateurs du site :</h2>
         </main>
         <div class="block">
         </div>

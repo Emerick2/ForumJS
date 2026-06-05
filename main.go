@@ -73,15 +73,16 @@ func main() {
 			}
 		}
 
+		forum.TableauDeBord(w, r)
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
-			iD_fil_de_discussion = 0
+			forum.ComplétéLaPageAccueil(w, r)
+		} else {
+			// fmt.Println("on est en : ",iD_fil_de_discussion)
+			forum.ComplétéLaPageForum(w, r)
+			forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 		}
-		// fmt.Println("on est en : ",iD_fil_de_discussion)
-		// forum.ComplétéLaPageAccueil(w, r)
-		forum.ComplétéLaPageForum(w, r)
-		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
 
 	forum.InitDB()

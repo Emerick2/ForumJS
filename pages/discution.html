@@ -2,8 +2,8 @@
 <html lang="fr">
     <head>
         <meta charset="URF8"/>
-        <link rel="stylesheet" href="style/pageAccueil.css"/> 
-        <link rel="stylesheet" href="style/post.css"/> 
+        <link rel="stylesheet" href="../style/pageAccueil.css"/> 
+        <link rel="stylesheet" href="../style/post.css"/> 
         <link rel="stylesheet" href="../style/commentaire.css"/> 
     </head>
     <body>
@@ -18,6 +18,9 @@
             </form>
         </head>
         <main>
+            <form action='http://localhost:8080/ChangerPage' method='get'>
+                <button name="pageDemandé" value="main.html" type="submit">Accueil</button>
+            </form>
             <form action='http://localhost:8080/ChangerPage' method='get'>
                 <button name="pageDemandé" value="inscription.html" type="submit">inscription</button>
             </form>
