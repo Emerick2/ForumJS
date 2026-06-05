@@ -79,7 +79,8 @@ func main() {
 			iD_fil_de_discussion = 0
 		}
 		// fmt.Println("on est en : ",iD_fil_de_discussion)
-		forum.ComplétéLaPageAccueil(w, r)
+		// forum.ComplétéLaPageAccueil(w, r)
+		forum.ComplétéLaPageForum(w, r)
 		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
 
