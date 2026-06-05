@@ -8,11 +8,12 @@ import (
 )
 
 func TableauDeBord(w http.ResponseWriter, r *http.Request) {
-	DerniersMessagesPublié(5)
 	nombreTotalAimeSurCommentaires := NombreTotalAimeSurCommentaires()
 	nombreTotalMessagePublier := NombreTotalMessagePublier()
 	nombreTotalUtilisateur := NombreTotalUtilisateur()
-
+	derniersMessagesPublié := DerniersMessagesPublié(5)
+	derniersUtilisateursCréé := DerniersUtilisateursCréé(5)
+	
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tmpl, err := template.ParseFiles("pages/tableau-de-bord.html")
 	if err != nil {
@@ -22,8 +23,8 @@ func TableauDeBord(w http.ResponseWriter, r *http.Request) {
 
 	données := map[string]interface{}{
 		"NombreTotalAimeSurCommentaires": nombreTotalAimeSurCommentaires,
-		"NombreTotalMessagePublier": nombreTotalMessagePublier,
-		"NombreTotalUtilisateur": nombreTotalUtilisateur,
+		"NombreTotalMessagePublier":      nombreTotalMessagePublier,
+		"NombreTotalUtilisateur":         nombreTotalUtilisateur,
 	}
 
 	err = tmpl.Execute(w, données)
@@ -32,6 +33,14 @@ func TableauDeBord(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
+
+	for i := 0; i < len(derniersMessagesPublié); i++ {
+		AfficherPost(derniersMessagesPublié[i], w, r, false, 0, false)
+	}
+
+	for i := 0; i < len(derniersUtilisateursCréé); i++ {
+		AfficherUtilisateur(derniersUtilisateursCréé[i], w, r)
 	}
 
 	/*
@@ -205,4 +214,57 @@ func NombreTotalUtilisateur() int {
 	defer rows.Close()
 
 	return ConnaitreNombre(rows)
+}
+
+func DerniersUtilisateursCréé(limite int) []User {
+	// db, err := OuvrirDB("db/forum.db")
+	dsnURI := "db/user.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		return nil
+	}
+	defer db.Close()
+
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return nil
+	}
+
+	query := `
+	SELECT UserId, Email, NomUtilisateur, CreatedAt 
+	FROM user 
+	ORDER BY CreatedAt DESC
+	LIMIT ?;`
+
+	rows, err := db.Query(query, limite)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return nil
+	}
+	defer rows.Close()
+
+	listePosts := []User{}
+
+	for rows.Next() {
+		var unPost User
+		err := rows.Scan(
+			&unPost.Id,
+			&unPost.adresse_email,
+			&unPost.Name,
+			&unPost.CreatedAt,
+		)
+		if err != nil {
+			fmt.Println("Erreur :", err)
+			return nil
+		}
+		listePosts = append(listePosts, unPost)
+	}
+
+	if err = rows.Err(); err != nil {
+		fmt.Println("Erreur :", err)
+		return nil
+	}
+
+	fmt.Println(len(listePosts))
+	return listePosts
 }

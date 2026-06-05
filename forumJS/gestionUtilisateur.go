@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"text/template"
 )
 
 func AjouterUnUtilisateur(w http.ResponseWriter, valeurEmail string, valeurMotDePasse string, nomUtilisateur string) bool {
@@ -25,7 +26,8 @@ func AjouterUnUtilisateur(w http.ResponseWriter, valeurEmail string, valeurMotDe
 			UserId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			Email VARCHAR(80) NOT NULL,
 			MotDePasse VARCHAR(80) NOT NULL,
-			NomUtilisateur VARCHAR(80) NOT NULL
+			NomUtilisateur VARCHAR(80) NOT NULL,
+			CreatedAt   DATETIME DEFAULT CURRENT_TIMESTAMP
 		);
 	`)
 	if err != nil {
@@ -182,4 +184,27 @@ func ConnecterUtilisateur(email string, motDePasse string) int {
 	}
 
 	return 0
+}
+
+func AfficherUtilisateur(utilisateur User, w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tmpl, err := template.ParseFiles("pages/template-fiche-utilisateur.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	données := map[string]interface{}{
+		"nom_utilisateur": utilisateur.Name,
+		"adresse_email":      utilisateur.adresse_email,
+		"date_de_publication":         utilisateur.CreatedAt,
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
+		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
 }

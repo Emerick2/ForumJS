@@ -25,6 +25,13 @@ type Thread struct {
 	Label_name      string
 }
 
+type User struct {
+	Id            int
+	CreatedAt     time.Time
+	Name          string
+	adresse_email string
+}
+
 func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {
 	requete := `
 	INSERT INTO Posts (user_id, thread_id, content, answer)
@@ -110,9 +117,8 @@ func GetThread() ([]Thread, error) {
 	}
 	defer rows.Close()
 
-	
 	listeThread := []Thread{}
-	
+
 	for rows.Next() {
 		var unThread Thread
 		err := rows.Scan(

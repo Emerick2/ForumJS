@@ -73,10 +73,10 @@ func main() {
 			}
 		}
 
-		forum.TableauDeBord(w, r)
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
+			forum.TableauDeBord(w, r)
 			forum.ComplétéLaPageAccueil(w, r)
 		} else {
 			// fmt.Println("on est en : ",iD_fil_de_discussion)
