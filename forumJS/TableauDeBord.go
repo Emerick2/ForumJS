@@ -265,6 +265,6 @@ func DerniersUtilisateursCréé(limite int) []User {
 		return nil
 	}
 
-	fmt.Println(len(listePosts))
+	// fmt.Println(len(listePosts))
 	return listePosts
 }

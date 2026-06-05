@@ -1,0 +1,26 @@
+.bloc-profile {
+    background-color: rgb(255, 240, 221);
+    width: 10rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    border: solid 2px;
+    border-radius: 12px;
+}
+
+.titre-partie{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.1rem;
+    margin: 0;
+    margin-top: 10px;
+    color:rgb(124, 18, 18);
+    font-weight: bold;
+}
+
+.réponce-partie{
+    margin: 0;
+    margin-top: 3px;
+    margin-bottom: 10px;
+}
