@@ -55,6 +55,10 @@ func main() {
 	http.HandleFunc("/NouveauFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
 		forum.NouveauFilDeDiscution(w, r)
 	})
+
+	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
+		forum.Recherche(r.FormValue("Recherche"), w, r)
+	})
 	
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
@@ -87,7 +91,6 @@ func main() {
 	})
 
 	forum.InitDB()
-	forum.TestRecherche()
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")

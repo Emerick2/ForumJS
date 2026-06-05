@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="../style/pageAccueil.css"/> 
         <link rel="stylesheet" href="../style/post.css"/> 
         <link rel="stylesheet" href="../style/commentaire.css"/> 
+        <link rel="stylesheet" href="../style/barre-de-recherche.css"/> 
     </head>
     <body>
         <head>
@@ -36,5 +37,11 @@
         </main>
         <div class="block">
         </div>
+        <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
+            <input name="Recherche" placeholder="Rechercher...">
+            <button id="imageEnvoyerRecherche" type="submit">
+                <img src="../images/chercher.svg">
+            </button>
+        </form>
     </body>
 </html>

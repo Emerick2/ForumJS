@@ -1,12 +1,11 @@
 package forumjs
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
-func TestRecherche() {
-	Recherche("tome")
-}
-
-func Recherche(recherche string) {
+func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 	listeThread, err := GetThread()
 	if err != nil {
 		fmt.Println(err)
