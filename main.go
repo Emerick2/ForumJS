@@ -55,14 +55,14 @@ func main() {
 	http.HandleFunc("/NouveauFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
 		forum.NouveauFilDeDiscution(w, r)
 	})
-
+	
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
-
+	
 	// Au démarage du serveur :
 	log.Println("Serveur lancé sur http://localhost:8080")
-
+	
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
@@ -72,12 +72,13 @@ func main() {
 				valeur_iD_publication_commentaire = valeur
 			}
 		}
-
+		
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
 			forum.TableauDeBord(w, r)
 			forum.ComplétéLaPageAccueil(w, r)
+			
 		} else {
 			// fmt.Println("on est en : ",iD_fil_de_discussion)
 			forum.ComplétéLaPageForum(w, r)
@@ -86,6 +87,7 @@ func main() {
 	})
 
 	forum.InitDB()
+	forum.TestRecherche()
 
 	http.HandleFunc("/open", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")

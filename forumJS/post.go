@@ -141,6 +141,60 @@ func GetThread() ([]Thread, error) {
 	return listeThread, nil
 }
 
+func GetPost() []Post {
+	dsnURI := "db/forum.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		return nil
+	}
+	defer db.Close()
+
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return nil
+	}
+
+	query := `
+	SELECT id, user_id, thread_id, content, created_at, likes, dislikes, answer 
+	FROM Posts 
+	ORDER BY created_at DESC;`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return nil
+	}
+	defer rows.Close()
+
+	listePosts := []Post{}
+
+	for rows.Next() {
+		var unPost Post
+		err := rows.Scan(
+			&unPost.Id,
+			&unPost.UserId,
+			&unPost.ThreadId,
+			&unPost.Content,
+			&unPost.CreatedAt,
+			&unPost.Likes,
+			&unPost.Dislikes,
+			&unPost.Answer,
+		)
+		if err != nil {
+			fmt.Println("Erreur :", err)
+			return nil
+		}
+		listePosts = append(listePosts, unPost)
+	}
+
+	if err = rows.Err(); err != nil {
+		fmt.Println("Erreur :", err)
+		return nil
+	}
+
+	return listePosts
+}
+
 func NombreElementDB(db *sql.DB, nomTable string) int {
 	query := `
 	SELECT id 
