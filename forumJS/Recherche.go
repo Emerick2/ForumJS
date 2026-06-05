@@ -14,6 +14,7 @@ func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 	listePosts := GetPost()
 
 	textePris := []string{}
+	textePrisFil := []string{}
 	nombreRésultaFil := []Thread{}
 	nombreRésultaMessage := []Post{}
 
@@ -23,7 +24,7 @@ func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 		if peutÊtreVuAvecSeTermeDeRecherche {
 			nombreRésultaFil = append(nombreRésultaFil, listeThread[i])
 			textePris = append(textePris, mot)
-			fmt.Println(mot)
+			textePrisFil = append(textePris, mot)
 		}
 	}
 
@@ -33,10 +34,12 @@ func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 		if peutÊtreVuAvecSeTermeDeRecherche {
 			nombreRésultaMessage = append(nombreRésultaMessage, listePosts[i])
 			textePris = append(textePris, mot)
-			fmt.Println(mot)
+		} else if EstDansLaListe(mot, textePrisFil) {
+			nouvelleListe := []Post{listePosts[i]};
+			nombreRésultaMessage = append(nouvelleListe, nombreRésultaMessage...)
 		}
 	}
-	fmt.Println("Fin de la recherche")
+	AfficherRecherche(w, r, nombreRésultaMessage)
 }
 
 func EstDansLaListe(mot string, tableau []string) bool {
@@ -138,4 +141,12 @@ func ToUpper(texte string) string {
 		}
 	}
 	return résultat
+}
+
+func AfficherRecherche(w http.ResponseWriter, r *http.Request, nombreRésultaMessage []Post) {
+	ComplétéLaPageForum(w, r)
+
+	for i := 0; i < len(nombreRésultaMessage); i++ {
+		AfficherPost(nombreRésultaMessage[i], w, r, false, 0, false)
+	}
 }
