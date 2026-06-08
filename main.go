@@ -35,7 +35,7 @@ func main() {
 	http.HandleFunc("/ChangerPageSpéciale", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		pageDemandé := r.FormValue("pageDemandé")
-		forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, pageDemandé);
+		forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, pageDemandé)
 	})
 
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +65,12 @@ func main() {
 	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
 		forum.Recherche(r.FormValue("Recherche"), w, r)
 	})
+
+	http.HandleFunc("/Deconexion", func(w http.ResponseWriter, r *http.Request) {
+		forum.HandleDeconnexion(w, r)
+	})
+
+	// handleDeconnexion
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
