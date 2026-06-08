@@ -205,7 +205,7 @@ func AfficherUtilisateur(utilisateur User, w http.ResponseWriter, r *http.Reques
 	données := map[string]interface{}{
 		"nom_utilisateur":     utilisateur.Name,
 		"adresse_email":       utilisateur.Adresse_email,
-		"date_de_publication": utilisateur.CreatedAt,
+		"date_de_publication": Date(utilisateur.CreatedAt),
 	}
 
 	err = tmpl.Execute(w, données)

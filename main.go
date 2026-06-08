@@ -63,7 +63,14 @@ func main() {
 	})
 
 	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
-		forum.Recherche(r.FormValue("Recherche"), w, r)
+		valeur := (r.FormValue("iD_fil_de_discussion"))
+		_, err := strconv.Atoi(valeur)
+		if err != nil {
+			forum.Recherche(r.FormValue("Recherche"), w, r)
+		} else {
+			forum.Recherche(r.FormValue("Recherche"), w, r)
+			// forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "")
+		}
 	})
 
 	http.HandleFunc("/Deconexion", func(w http.ResponseWriter, r *http.Request) {
@@ -96,11 +103,11 @@ func main() {
 			pageSpéciale := r.FormValue("PageSpéciale")
 			if pageSpéciale == "TableauDeBord" {
 				forum.TableauDeBord(w, r)
-			}
-			if pageSpéciale == "nouveau-sujet" {
+			} else if pageSpéciale == "nouveau-sujet" {
 				http.ServeFile(w, r, "pages/nouveau-sujet.html")
+			} else {
+				forum.ComplétéLaPageAccueil(w, r)
 			}
-			forum.ComplétéLaPageAccueil(w, r)
 		} else {
 			// fmt.Println("on est en : ",iD_fil_de_discussion)
 			forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)

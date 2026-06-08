@@ -67,7 +67,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	iD_fil_de_discussion := poste.ThreadId
 	contenu_du_message := poste.Content
-	date_de_publication := poste.CreatedAt
+	date_de_publication := Date(poste.CreatedAt)
 	nombre_de_aime := poste.Likes
 	nombre_de_aime_pas := poste.Dislikes
 
@@ -117,12 +117,12 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 			http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
 			return
 		}
-		listeThread, err := GetThread();
-		if (err != nil) {
+		listeThread, err := GetThread()
+		if err != nil {
 			fmt.Println(err)
 		}
-		id := iD_fil_de_discussion-1
-		if (err == nil && id >=0 && len(listeThread) > id){
+		id := iD_fil_de_discussion - 1
+		if err == nil && id >= 0 && len(listeThread) > id {
 			données["nomLabel"] = listeThread[id].Label_name
 			données["nomDiscution"] = listeThread[id].Name
 		}
@@ -153,7 +153,7 @@ func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication
 		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
-		"pasPosiblitéAnuler" : pasPosiblitéAnuler,
+		"pasPosiblitéAnuler":   pasPosiblitéAnuler,
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-commentaire.html")
