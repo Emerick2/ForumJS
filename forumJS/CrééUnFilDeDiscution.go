@@ -41,5 +41,5 @@ func NouveauFilDeDiscution(w http.ResponseWriter, r *http.Request) {
 	nouvelIdFilDeDiscution := NombreElementDB(db2, "Threads")
 	CreatePost(idUtilisateur, nouvelIdFilDeDiscution, contenuDuTexte, db, 0)
 
-	RevenirSurLaPageAccueil(w, r, 0, false, true, nouvelIdFilDeDiscution)
+	RevenirSurLaPageAccueil(w, r, 0, false, true, nouvelIdFilDeDiscution, "")
 }

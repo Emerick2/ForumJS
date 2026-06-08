@@ -20,7 +20,7 @@ func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	RevenirSurLaPageAccueil(w, r, iD_publication, true, false, -1)
+	RevenirSurLaPageAccueil(w, r, iD_publication, true, false, -1, "")
 }
 
 func InteractionPost(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +66,7 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", changement)
 	}
 
-	RevenirSurLaPageAccueil(w, r, iD_publication, false, false, -1)
+	RevenirSurLaPageAccueil(w, r, iD_publication, false, false, -1, "")
 }
 
 func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) {
