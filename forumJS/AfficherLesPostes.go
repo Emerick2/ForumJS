@@ -25,16 +25,16 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		return
 	}
 	if len(listePostes) > 0 {
+		ComplétéLaPageForum(w, r)
 		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
 
 		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
 		if len(listePostes) > 1 {
-
 			tableauPlacer := make([]int, 0)
 			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 		}
 	} else {
-		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
+		RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "nouveau-sujet")
 	}
 }
 

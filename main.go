@@ -93,13 +93,16 @@ func main() {
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
-			if r.FormValue("PageSpéciale") == "TableauDeBord" {
+			pageSpéciale := r.FormValue("PageSpéciale")
+			if pageSpéciale == "TableauDeBord" {
 				forum.TableauDeBord(w, r)
+			}
+			if pageSpéciale == "nouveau-sujet" {
+				http.ServeFile(w, r, "pages/nouveau-sujet.html")
 			}
 			forum.ComplétéLaPageAccueil(w, r)
 		} else {
 			// fmt.Println("on est en : ",iD_fil_de_discussion)
-			forum.ComplétéLaPageForum(w, r)
 			forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 		}
 	})
