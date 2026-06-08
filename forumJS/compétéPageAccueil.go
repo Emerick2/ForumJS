@@ -6,6 +6,22 @@ import (
 	"text/template"
 )
 
+func FermerPageAccueil(w http.ResponseWriter, r *http.Request) {
+	idUtilisateur := VérifierCookie(r)
+	données := map[string]interface{}{
+		"EstConnecte": idUtilisateur != 0,
+	}
+	tmpl, err := template.ParseFiles("pages/main-fin.html")
+	if err != nil {
+		fmt.Println("Erreur fermeture page :", err)
+		return
+	}
+	err = tmpl.Execute(w, données)
+	if err != nil && !isBrokenPipe(err) {
+		fmt.Println("Erreur fermeture page :", err)
+	}
+}
+
 func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 

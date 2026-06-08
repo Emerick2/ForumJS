@@ -52,6 +52,13 @@ func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tablea
 un poste avec answer 3 signifie qu'il est le désendant de listePostes[i+1]. Cela signifie que dans l'ordre chronologique, je doit le mettre juste après.
 */
 
+func niveauClasse(décalage int) string {
+	if décalage > 2 {
+		décalage = 2
+	}
+	return "niveau-" + strconv.Itoa(décalage)
+}
+
 func EstDansLeTableau(tableau []int, valeur int) bool {
 	for i := 0; i < len(tableau); i++ {
 		if tableau[i] == valeur {
@@ -102,8 +109,8 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 		"iconeAime":            iconeAime,
 		"iconeAimePas":         iconeAimePas,
-		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
-		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
+		"nomPosteID": "post-" + strconv.Itoa(iD_publication),
+		"décalage":   niveauClasse(décalage),
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -148,7 +155,7 @@ func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication
 	données := map[string]interface{}{
 		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
-		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
+		"décalage":             niveauClasse(décalage),
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-commentaire.html")

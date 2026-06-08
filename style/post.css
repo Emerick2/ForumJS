@@ -1,54 +1,78 @@
-.unPoste{
-    background-color: rgba(255, 0, 0, 0.146);
+/* ── Carte post ── */
+.unPoste {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.partieUtilisateur{
+/* Commentaire direct sur le post */
+.unPoste.niveau-0 {
+    border-left: 3px solid #e0e0e0;
+    border-radius: 0 4px 4px 0;
+    margin-left: 1.5rem;
+}
+
+/* Réponse à un commentaire (et au-delà : même niveau) */
+.unPoste.niveau-1,
+.unPoste.niveau-2 {
+    border-left: 3px solid #aaa;
+    border-radius: 0 4px 4px 0;
+    margin-left: 3rem;
+}
+
+/* ── Entête utilisateur ── */
+.partieUtilisateur {
     display: flex;
     align-items: center;
 }
 
-.photo{
-    width: 30px;
-    height: 30px;
+.photo {
+    width: 1.875rem;
+    height: 1.875rem;
     border: solid;
     border-radius: 50%;
     border-width: 1px;
     background-color: white;
 }
 
-.nom_utilisateur{
-    margin-left: 10px;
+.nom_utilisateur {
+    margin-left: 0.625rem;
 }
 
-.date_de_publication{
+.date_de_publication {
     color: gray;
 }
 
-.date_de_publication::before{
+.date_de_publication::before {
     content: "•";
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 0.625rem;
+    margin-right: 0.625rem;
 }
 
-.partieTexte{
-    margin-left: 20px;
+/* ── Corps du post ── */
+.partieTexte {
+    margin-left: 1.25rem;
 }
 
-.partieInteraction{
+/* ── Interactions ── */
+.partieInteraction {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 0.625rem;
 }
 
-.formulaireFlex{
+.formulaireFlex {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 0.625rem;
 }
 
-.iconeAime, .iconeAimePas, .iconeCommentaire{
-    width: 20px;
-    height: 20px;
+.iconeAime, .iconeAimePas, .iconeCommentaire {
+    width: 1.25rem;
+    height: 1.25rem;
     border: solid;
     border-width: 0;
     padding: 0;
@@ -57,23 +81,45 @@
     cursor: pointer;
 }
 
-.iconeAime img{
+.iconeAime img {
     width: 100%;
     height: 100%;
     transform: rotateZ(-90deg);
 }
 
-.iconeAimePas img{
+.iconeAimePas img {
     width: 100%;
     height: 100%;
     transform: rotateZ(90deg);
 }
 
-.iconeCommentaire img{
+.iconeCommentaire img {
     width: 100%;
     height: 100%;
 }
 
-.invisible{
+.invisible {
     display: none;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+    .unPoste {
+        border-radius: 0;
+    }
+
+    /* Le post principal : full-width, sans marges latérales */
+    .unPoste:not([class*="niveau"]) {
+        margin-left: 0;
+    }
+
+    /* Commentaires : indentation réduite pour ne pas déborder */
+    .unPoste.niveau-0 {
+        margin-left: 0.5rem;
+    }
+
+    .unPoste.niveau-1,
+    .unPoste.niveau-2 {
+        margin-left: 1rem;
+    }
 }

@@ -1,0 +1,12 @@
+        </main>
+
+        <script>
+            var estConnecte = {{if .EstConnecte}}true{{else}}false{{end}};
+            if (!estConnecte) {
+                setTimeout(function() {
+                    document.getElementById("warning-invite").style.display = "flex";
+                }, 10 * 60 * 1000);
+            }
+        </script>
+    </body>
+</html>
