@@ -1,20 +1,16 @@
 package forumjs
 
 import (
-	"fmt"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
 func HashPassword(password string) string {
-	return password
-	fmt.Println(password)
+	// return password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return password
 	}
 
-	fmt.Println(string(hashedPassword))
 	return string(hashedPassword)
 }
 

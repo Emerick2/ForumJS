@@ -60,7 +60,7 @@ func AjouterUnUtilisateur(w http.ResponseWriter, valeurEmail string, valeurMotDe
 	rows, err = db.Query(`
 		INSERT INTO user (Email, MotDePasse, NomUtilisateur)
 		VALUES (?, ?, ?);
-	`, valeurEmail, valeurMotDePasse, nomUtilisateur)
+	`, valeurEmail, HashPassword(valeurMotDePasse), nomUtilisateur)
 	if err != nil {
 		fmt.Println("Erreur d'insertion :", err)
 		return false
@@ -164,7 +164,7 @@ func ConnecterUtilisateur(email string, motDePasse string) int {
 		return 0
 	}
 
-	rows, err := db.Query("SELECT UserId FROM user WHERE Email = ? AND MotDePasse = ?;", email, motDePasse)
+	rows, err := db.Query("SELECT UserId, MotDePasse FROM user WHERE Email = ?;", email)
 	if err != nil {
 		fmt.Println("Erreur de sélection :", err)
 		return 0
@@ -172,12 +172,20 @@ func ConnecterUtilisateur(email string, motDePasse string) int {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
+		var userRow User
+		err := rows.Scan(
+			&userRow.Id,
+			&userRow.Password,
+		)
+		if err != nil {
 			fmt.Println("scan error:", err)
 			return 0
 		}
-		return id
+		if err == nil {
+			if CheckPassword(userRow.Password, motDePasse) {
+				return userRow.Id
+			}
+		}
 	}
 	if err := rows.Err(); err != nil {
 		fmt.Println("rows error:", err)
@@ -195,9 +203,9 @@ func AfficherUtilisateur(utilisateur User, w http.ResponseWriter, r *http.Reques
 	}
 
 	données := map[string]interface{}{
-		"nom_utilisateur": utilisateur.Name,
-		"adresse_email":      utilisateur.adresse_email,
-		"date_de_publication":         utilisateur.CreatedAt,
+		"nom_utilisateur":     utilisateur.Name,
+		"adresse_email":       utilisateur.Adresse_email,
+		"date_de_publication": utilisateur.CreatedAt,
 	}
 
 	err = tmpl.Execute(w, données)

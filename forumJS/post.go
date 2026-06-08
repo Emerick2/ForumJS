@@ -29,7 +29,8 @@ type User struct {
 	Id            int
 	CreatedAt     time.Time
 	Name          string
-	adresse_email string
+	Adresse_email string
+	Password string
 }
 
 func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {

@@ -117,7 +117,7 @@ func Inscription(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := forum.HashPassword(r.FormValue("password"))
+	password := r.FormValue("password")
 	nomUtilisateur := r.FormValue("nomUtilisateur")
 
 	réusie := forum.AjouterUnUtilisateur(w, email, password, nomUtilisateur)
@@ -133,7 +133,7 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// w.Write([]byte(DémarerUnePartie(informations, r)))
 	email := r.FormValue("email")
-	password := forum.HashPassword(r.FormValue("password"))
+	password := r.FormValue("password")
 
 	réusie := false
 	iD_Utilisateur := forum.ConnecterUtilisateur(email, password)
