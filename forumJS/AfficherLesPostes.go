@@ -27,14 +27,14 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	if len(listePostes) > 0 {
 		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
 
-		AjouterUnCommentaire(w, r, 0, threadID, 0)
+		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
 		if len(listePostes) > 1 {
 
 			tableauPlacer := make([]int, 0)
 			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
 		}
 	} else {
-		AjouterUnCommentaire(w, r, 0, threadID, 0)
+		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
 	}
 }
 
@@ -138,17 +138,22 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	// placer le commentaire s'il y en à un :
 	if mettre_espace_commentaire {
-		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage)
+		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage, false)
 	}
 }
 
-func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int, décalage int) {
+func AjouterUnCommentaire(w http.ResponseWriter, r *http.Request, iD_publication_réponce int, iD_fil_de_discussion int, décalage int, premierCommentaire bool) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
+	pasPosiblitéAnuler := ""
+	if premierCommentaire {
+		pasPosiblitéAnuler = "display:none;"
+	}
 	données := map[string]interface{}{
 		"answer":               iD_publication_réponce,
 		"iD_fil_de_discussion": iD_fil_de_discussion,
 		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
+		"pasPosiblitéAnuler" : pasPosiblitéAnuler,
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-commentaire.html")
