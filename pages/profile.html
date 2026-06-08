@@ -2,15 +2,45 @@
 <html lang="fr">
     <head>
         <meta charset="URF8"/>
+        <title>Profile | Forusky</title>
+        <link rel="stylesheet" href="../style/pageAccueil.css"/> 
+        <link rel="stylesheet" href="../style/post.css"/> 
+        <link rel="stylesheet" href="../style/commentaire.css"/> 
+        <link rel="stylesheet" href="../style/barre-de-recherche.css"/> 
         <link rel="stylesheet" href="../style/profile.css"/> 
     </head>
     <body>
-        <!-- <head>
-            <h1>Le super FORUM</h1>
-            <button>Recherche de discution</button>
-            <button>alléatoire</button>
-            <button>mon profil</button>
-        </head> -->
+        <header>
+            <h1>Forusky</h1>
+            <div class="liste-boutons">
+                <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
+                    <form action='http://localhost:8080/ChangerPage' method='get'>
+                    <button name="pageDemandé" value="main.html" type="submit">Accueil</button>
+                </form>
+                <form action='http://localhost:8080/ChangerPage' method='get'>
+                    <button name="pageDemandé" value="inscription.html" type="submit">inscription</button>
+                </form>
+                <form action='http://localhost:8080/ChangerPage' method='get'>
+                    <button name="pageDemandé" value="nouveau-sujet.html" type="submit">Créé un sujet</button>
+                </form>
+                <form action='http://localhost:8080/ChangerPageSpéciale' method='get'>
+                    <button name="pageDemandé" value="TableauDeBord" type="submit">Tableau de bord</button>
+                </form>
+            </div>
+
+            <br>
+            <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
+            <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
+            <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
+            <br><br>
+            <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
+                <input name="Recherche" placeholder="Rechercher...">
+                <button id="imageEnvoyerRecherche" type="submit">
+                    <img src="../images/chercher.svg">
+                </button>
+            </form>
+            <br>
+        </header>
         <div class="profilUtilisateur">
             <img class="photo-de-profile"/>
             <h2 class="nomUtilisateur">Nom utilisateur</h2>

@@ -11,6 +11,7 @@
     width: 100vw;
     display: flex;
     justify-self: center;
+    background-color: white;
 }
 
 #barre-de-recherche input{
