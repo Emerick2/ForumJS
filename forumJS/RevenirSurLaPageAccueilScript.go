@@ -39,6 +39,10 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 		referer = referer[:pos]
 	}
 
+	if strings.Contains(referer, "/BarreDeRecherche") {
+		referer = strings.Replace(referer, "/BarreDeRecherche", "/", 1)
+	}
+
 	nombreAjout := 0
 	referer = fmt.Sprintf("%s", referer)
 	if pageSpéciale == "" {

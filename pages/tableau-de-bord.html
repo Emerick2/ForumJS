@@ -42,16 +42,68 @@
             <br>
         </header>
         <main>
+            <h2>Derniers messages publiés</h2>
+            
+            {{range .DerniersPosts}}
+                <div class="unPoste" id={{.UserId}}>
+                    <form class="partieUtilisateur">
+                        <img class="photo">
+                        <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
+                        <p class="date_de_publication">{{.CreatedAt}}</p>
+                    </form>
+                    <div class="partieTexte">
+                        <p class="contenu_du_message">{{.Content}}</p>
+                        <div class="partieInteraction">
+                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <button name="nomAction" value="aime" type="submit" class="iconeAime">
+                                    <img src={{.iconeAime}}>
+                                </button>
+                                <p class="nombre_de_aime">{{.Likes}}</p>
+                            </form>
+                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                                <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                                <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
+                                    <img src={{.iconeAimePas}}>
+                                </button>
+                                <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
+                            </form>
+                            <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get'>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
+                                    <img src="/images/commentaire.svg">
+                                </button>
+                                <p>Répondre</p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {{else}}
+                <p>Aucun message publié pour le moment.</p>
+            {{end}}
+
+            <h2>Derniers utilisateurs créés</h2>
+            
+            {{range .DerniersUsers}}
+                <form class="bloc-profile">
+                    <img class="photo">
+                    <p class="titre-partie">Nom d'utilisateur :</p>
+                    <p class="réponce-partie">{{.Name}}</p>
+                    <p class="titre-partie">Adresse e-mail :</p>
+                    <p class="réponce-partie">{{.Adresse_email}}</p>
+                    <p class="titre-partie">Date de création :</p>
+                    <p class="réponce-partie">{{.CreatedAt}}</p>
+                </form>
+            {{end}}
+            
+
             <h2>Les statistiques générals du forum :</h2>
             <p>Le nombre total de j'aime mis sur les commentaires : {{.NombreTotalAimeSurCommentaires}}</p>
 		    <p>Le nombre total de message publier : {{.NombreTotalMessagePublier}}</p>
 		    <p>Le nombre total d'utilisateur : {{.NombreTotalUtilisateur}}</p>
-
-            <h2>Les derniers messages publier :</h2>
-
-            <h2>Les fils de discution triés par ceux avec le plus de commentaires :</h2>
-
-		    <h2>La listes des derniers nouveaux utilisateurs du site :</h2>
 
             <!-- <form class="bloc-profile">
                 <img class="photo">
