@@ -8,8 +8,37 @@ import (
 	"text/template"
 )
 
+// func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
+// 	// -1 si il n'y a rien.
+// 	dsnURI := "db/forum.db"
+// 	db, err := sql.Open("sqlite", dsnURI)
+// 	if err != nil {
+// 		fmt.Println("Erreur d'ouverture :", err)
+// 		return
+// 	}
+
+// 	defer db.Close()
+
+// 	listePostes, err := GetPostsByThread(threadID, db)
+// 	if err != nil {
+// 		fmt.Println("Erreur lors de la récupération des posts :", err)
+// 		return
+// 	}
+// 	if len(listePostes) > 0 {
+// 		ComplétéLaPageForum(w, r)
+// 		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
+
+// 		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
+// 		if len(listePostes) > 1 {
+// 			tableauPlacer := make([]int, 0)
+// 			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
+// 		}
+// 	} else {
+// 		RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "nouveau-sujet")
+// 	}
+// }
+
 func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) {
-	// -1 si il n'y a rien.
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -24,18 +53,76 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur lors de la récupération des posts :", err)
 		return
 	}
-	if len(listePostes) > 0 {
-		ComplétéLaPageForum(w, r)
-		AfficherPost(listePostes[0], w, r, iD_publication_commentaire == listePostes[0].Id, 0, true)
+	listePostes = AjouterDonnéesPostes(listePostes, w, r, iD_publication_commentaire)
 
-		AjouterUnCommentaire(w, r, 0, threadID, 0, true)
-		if len(listePostes) > 1 {
-			tableauPlacer := make([]int, 0)
-			AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, 0, iD_publication_commentaire, 0)
-		}
-	} else {
-		RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "nouveau-sujet")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tmpl, err := template.ParseFiles("pages/discution.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
 	}
+
+	données := map[string]interface{}{
+		"ListePostes": listePostes,
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
+		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
+}
+
+func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) []Post {
+	for i := 0; i < len(listePostes); i++ {
+		unPost := listePostes[i]
+		unPost.NameUser = "Compte suprimé"
+		valeur := VoirUtilisateurs(unPost.UserId)
+		if valeur.nom != "" {
+			unPost.NameUser = valeur.nom
+		}
+
+		unPost.CreatedAtText = Date(unPost.CreatedAt)
+
+		unPost.IconeLike = "/images/aime.svg"
+		unPost.IconeDislike = "/images/aime.svg"
+
+		idUtilisateur := VérifierCookie(r)
+		if idUtilisateur != 0 {
+			if LireTableauInteractionUtilisateur(w, r, idUtilisateur, unPost.Id, unPost.ThreadId, "likes") {
+				unPost.IconeLike = "/images/aimeActif.svg"
+			}
+			if LireTableauInteractionUtilisateur(w, r, idUtilisateur, unPost.Id, unPost.ThreadId, "dislikes") {
+				unPost.IconeDislike = "/images/aimeActif.svg"
+			}
+		}
+
+		unPost.NameOfTheIdPost = "post-" + strconv.Itoa(unPost.Id)
+
+		if unPost.Answer != 0 {
+			unPost.TheMargin = "margin-left:50px;"
+			unPost.BlockComments = "display:none;"
+		}
+
+		if i == 0 {
+			unPost.BlockComments = "display:none;"
+		} else {
+			unPost.BlockShare = "display:none;"
+		}
+
+		if iD_publication_commentaire == unPost.Id {
+			if i == 0 {
+				unPost.OptionToCancel = "display:none;"
+			}
+		} else {
+			unPost.BlockNewComments = "display:none;"
+		}
+
+		listePostes[i] = unPost
+	}
+	return listePostes
 }
 
 func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, iD_publication_commentaire int, décalage int) {

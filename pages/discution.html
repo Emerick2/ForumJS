@@ -13,8 +13,7 @@
         <header>
             <h1>Forusky</h1>
             <div class="liste-boutons">
-                <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
-                    <form action='http://localhost:8080/ChangerPage' method='get'>
+                <form action='http://localhost:8080/AllerSurLaPageAccueil' method='get'>
                     <button name="pageDemandé" value="main.html" type="submit">Accueil</button>
                 </form>
                 <form action='http://localhost:8080/ChangerPage' method='get'>
@@ -29,9 +28,11 @@
             </div>
 
             <br>
-            <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
-            <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
-            <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
+            <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
+                <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
+                <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
+                <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
+            </form>
             <br><br>
             <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
                 <input name="Recherche" placeholder="Rechercher...">
@@ -45,7 +46,64 @@
             
             <p>Bonjour {{.NomUtilisateur}}</p>
 
+            <!-- J'ajoute ça pour tester l'ajout dynamique -->
+            {{range .ListePostes}}
+                <div class="unPoste" id={{.NameOfTheIdPost}} style="{{.TheMargin}}">
+                    <form class="partieUtilisateur">
+                        <img class="photo"/>
+                        <p class="nom_utilisateur">{{.NameUser}}</p>
+                        <p class="date_de_publication">{{.CreatedAtText}}</p>
+                    </form>
+                    <div class="partieTexte">
+                        <p class="contenu_du_message">{{.Content}}</p>
+                        <div class="partieInteraction">
+                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.UserId}}>
+                                <button name="nomAction" value="aime" type="submit" class="iconeAime">
+                                    <img src={{.IconeLike}}/>
+                                </button>
+                                <p class="nombre_de_aime">{{.Likes}}</p>
+                            </form>
+                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.UserId}}>
+                                <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
+                                    <img src={{.IconeDislike}}/>
+                                </button>
+                                <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
+                            </form>
+                            <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get' style="{{.BlockComments}}">
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.UserId}}>
+                                <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
+                                    <img src="/images/commentaire.svg"/>
+                                </button>
+                                <p>Répondre</p>
+                            </form>
+                            <div class="formulaireFlex" style="{{.BlockShare}}">
+                                <a type="submit" onclick="Partager()" class="iconeCommentaire">
+                                    <img src="/images/partager.svg"/>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <form action='http://localhost:8080/EnvoyerCommentaire' method='get' style="{{.BlockNewComments}}">
+                    <div class="zone-commentaire">
+                        <textarea name="leTexte" maxlength="10000" placeholder="Que voulez-vous dire ?"></textarea>
+                        <input class="invisible" name="answer" value={{.Id}}>
+                        <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                        <div class="boutons">
+                            <button class="btn-annuler" style="{{.OptionToCancel}}" name="AnnulerCommentaire" value="oui" type="submit">Annuler</button>
+                            <button class="btn-envoyer" type="submit">Envoyer</button>
+                        </div>
+                    </div>
+                </form>
+            {{else}}
+                <p>Aucun message publié pour le moment.</p>
+            {{end}}
         </main>
     </body>
 </html>

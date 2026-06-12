@@ -7,14 +7,24 @@ import (
 )
 
 type Post struct {
-	Id        int
-	UserId    int
-	ThreadId  int
-	Content   string
-	CreatedAt time.Time
-	Likes     int
-	Dislikes  int
-	Answer    int
+	Id               int
+	UserId           int
+	ThreadId         int
+	Content          string
+	CreatedAt        time.Time
+	Likes            int
+	Dislikes         int
+	Answer           int
+	CreatedAtText    string
+	NameUser         string
+	IconeLike        string
+	IconeDislike     string
+	NameOfTheIdPost  string
+	TheMargin        string
+	BlockComments    string
+	BlockShare       string
+	BlockNewComments string
+	OptionToCancel   string
 }
 
 type PostTableauDeBord struct {
@@ -23,10 +33,10 @@ type PostTableauDeBord struct {
 	ThreadId      int
 	Content       string
 	CreatedAt     time.Time
-	CreatedAtText string
 	Likes         int
 	Dislikes      int
 	Answer        int
+	CreatedAtText string
 	NameUser      string
 	IconeLike     string
 	IconeDislike  string

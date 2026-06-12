@@ -50,6 +50,10 @@ func main() {
 		forum.AjouterEspaceCommentaire(w, r)
 	})
 
+	http.HandleFunc("/AllerSurLaPageAccueil", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "/")
+	})
+
 	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
 		forum.ChangerDeFilDeDiscution(w, r)
 	})
@@ -84,6 +88,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
+
 		if iD_publication_commentaire != "" {
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
 			if err == nil {
@@ -115,6 +120,7 @@ func main() {
 		go func() {
 			_ = exec.Command("xdg-open", "http://localhost:8080/").Start()
 		}()
+
 		w.Write([]byte("Attempted to open browser"))
 	})
 
@@ -214,7 +220,6 @@ func PartagerPage(w http.ResponseWriter, r *http.Request) string {
 	if referer == "" {
 		referer = "/"
 	}
-
 	if pos := strings.Index(referer, "?"); pos != -1 {
 		referer = referer[:pos]
 	}
