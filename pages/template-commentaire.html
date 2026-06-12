@@ -1,8 +1,8 @@
 <form action='http://localhost:8080/EnvoyerCommentaire' method='get' style={{.décalage}}>
     <div class="zone-commentaire">
         <textarea name="leTexte" maxlength="10000" placeholder="Que voulez-vous dire ?"></textarea>
-        <input class="invisible" name="answer" value={{.answer}}/>
-        <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}/>
+        <input class="invisible" name="answer" value={{.answer}}>
+        <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
         <div class="boutons">
             <button class="btn-annuler" style={{.pasPosiblitéAnuler}} name="AnnulerCommentaire" value="oui" type="submit">Annuler</button>
             <button class="btn-envoyer" type="submit">Envoyer</button>

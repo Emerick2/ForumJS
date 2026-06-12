@@ -63,16 +63,16 @@
                                 <p class="nombre_de_aime">{{.Likes}}</p>
                             </form>
                             <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}/>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}/>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
                                     <img src={{.IconeDislike}}/>
                                 </button>
                                 <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
                             </form>
                             <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}/>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}/>
+                                <input class="invisible" name="iD_publication" value={{.Id}}>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
                                     <img src="/images/commentaire.svg"/>
                                 </button>
