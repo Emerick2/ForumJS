@@ -48,7 +48,7 @@
                 <div class="unPoste" id={{.UserId}}>
                     <form class="partieUtilisateur">
                         <img class="photo">
-                        <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
+                        <p class="nom_utilisateur">{{.NameUser}}</p>
                         <p class="date_de_publication">{{.CreatedAt}}</p>
                     </form>
                     <div class="partieTexte">
@@ -58,23 +58,23 @@
                                 <input class="invisible" name="iD_publication" value={{.Id}}>
                                 <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="aime" type="submit" class="iconeAime">
-                                    <img src={{.iconeAime}}>
+                                    <img src={{.IconeLike}}>
                                 </button>
                                 <p class="nombre_de_aime">{{.Likes}}</p>
                             </form>
                             <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.iD_publication}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                                <input class="invisible" name="iD_publication" value={{.Id}}/>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}/>
                                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
-                                    <img src={{.iconeAimePas}}>
+                                    <img src={{.IconeDislike}}/>
                                 </button>
                                 <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
                             </form>
                             <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <input class="invisible" name="iD_publication" value={{.Id}}/>
+                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}/>
                                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
-                                    <img src="/images/commentaire.svg">
+                                    <img src="/images/commentaire.svg"/>
                                 </button>
                                 <p>Répondre</p>
                             </form>

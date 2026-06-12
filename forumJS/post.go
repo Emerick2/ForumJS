@@ -17,6 +17,20 @@ type Post struct {
 	Answer    int
 }
 
+type PostTableauDeBord struct {
+	Id           int
+	UserId       int
+	ThreadId     int
+	Content      string
+	CreatedAt    time.Time
+	Likes        int
+	Dislikes     int
+	Answer       int
+	NameUser     string
+	IconeLike    string
+	IconeDislike string
+}
+
 type Thread struct {
 	Id              int
 	Name            string
@@ -30,7 +44,7 @@ type User struct {
 	CreatedAt     time.Time
 	Name          string
 	Adresse_email string
-	Password string
+	Password      string
 }
 
 func CreatePost(userID int, threadID int, content string, db *sql.DB, answer int) error {

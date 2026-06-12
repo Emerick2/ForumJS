@@ -58,7 +58,7 @@ func TableauDeBord(w http.ResponseWriter, r *http.Request) {
 	nombreTotalAimeSurCommentaires := NombreTotalAimeSurCommentaires()
 	nombreTotalMessagePublier := NombreTotalMessagePublier()
 	nombreTotalUtilisateur := NombreTotalUtilisateur()
-	derniersMessagesPublié := DerniersMessagesPublié(5)
+	derniersMessagesPublié := DerniersMessagesPublié(5, w, r)
 	derniersUtilisateursCréé := DerniersUtilisateursCréé(5)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -107,7 +107,7 @@ func ConnaitreNombre(rows *sql.Rows) int {
 	return total
 }
 
-func DerniersMessagesPublié(nombreMaximum int) []Post {
+func DerniersMessagesPublié(nombreMaximum int, w http.ResponseWriter, r *http.Request) []PostTableauDeBord {
 	// db, err := OuvrirDB("db/forum.db")
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
@@ -134,10 +134,10 @@ func DerniersMessagesPublié(nombreMaximum int) []Post {
 	}
 	defer rows.Close()
 
-	listePosts := []Post{}
+	listePosts := []PostTableauDeBord{}
 
 	for rows.Next() {
-		var unPost Post
+		var unPost PostTableauDeBord
 		err := rows.Scan(
 			&unPost.Id,
 			&unPost.UserId,
@@ -152,6 +152,25 @@ func DerniersMessagesPublié(nombreMaximum int) []Post {
 			fmt.Println("Erreur :", err)
 			return nil
 		}
+		unPost.NameUser = "Compte suprimé"
+		valeur := VoirUtilisateurs(unPost.UserId)
+		if valeur.nom != "" {
+			unPost.NameUser = valeur.nom
+		}
+
+		unPost.IconeLike = "/images/aime.svg"
+		unPost.IconeDislike = "/images/aime.svg"
+
+		idUtilisateur := VérifierCookie(r)
+		if idUtilisateur != 0 {
+			if LireTableauInteractionUtilisateur(w, r, idUtilisateur, unPost.Id, unPost.ThreadId, "likes") {
+				unPost.IconeLike = "/images/aimeActif.svg"
+			}
+			if LireTableauInteractionUtilisateur(w, r, idUtilisateur, unPost.Id, unPost.ThreadId, "dislikes") {
+				unPost.IconeDislike = "/images/aimeActif.svg"
+			}
+		}
+
 		listePosts = append(listePosts, unPost)
 	}
 

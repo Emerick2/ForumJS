@@ -79,16 +79,16 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	iconeAime := "images/aime.svg"
-	iconeAimePas := "images/aime.svg"
+	iconeAime := "/images/aime.svg"
+	iconeAimePas := "/images/aime.svg"
 
 	idUtilisateur := VérifierCookie(r)
 	if idUtilisateur != 0 {
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
-			iconeAime = "images/aimeActif.svg"
+			iconeAime = "/images/aimeActif.svg"
 		}
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
-			iconeAimePas = "images/aimeActif.svg"
+			iconeAimePas = "/images/aimeActif.svg"
 		}
 	}
 
