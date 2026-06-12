@@ -35,7 +35,7 @@ func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 			nombreRésultaMessage = append(nombreRésultaMessage, listePosts[i])
 			textePris = append(textePris, mot)
 		} else if EstDansLaListe(mot, textePrisFil) {
-			nouvelleListe := []Post{listePosts[i]};
+			nouvelleListe := []Post{listePosts[i]}
 			nombreRésultaMessage = append(nouvelleListe, nombreRésultaMessage...)
 		}
 	}
@@ -89,6 +89,9 @@ trouve : quimange, avecquiilest, qui
 */
 
 func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool {
+	if résultat == "" || recherche == "" {
+		return false
+	}
 	résultat = ToUpper(résultat)
 	recherche = ToUpper(recherche)
 	// 	recherche : 'qui'
@@ -118,6 +121,9 @@ func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool 
 func ToUpper(texte string) string {
 	//cette fonction ne fonctionne pas sur tout les accents.
 	résultat := ""
+	if texte == "" {
+		return résultat
+	}
 	runes := []rune(texte)
 	for i := 0; i < len(texte); i++ {
 		if runes[i] >= 97 && runes[i] <= 122 {
@@ -140,6 +146,7 @@ func ToUpper(texte string) string {
 			}
 		}
 	}
+	fmt.Println(résultat)
 	return résultat
 }
 

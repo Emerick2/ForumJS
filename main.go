@@ -63,14 +63,7 @@ func main() {
 	})
 
 	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
-		valeur := (r.FormValue("iD_fil_de_discussion"))
-		_, err := strconv.Atoi(valeur)
-		if err != nil {
-			forum.Recherche(r.FormValue("Recherche"), w, r)
-		} else {
-			forum.Recherche(r.FormValue("Recherche"), w, r)
-			// forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "")
-		}
+		forum.Recherche(r.FormValue("Recherche"), w, r)
 	})
 
 	http.HandleFunc("/Deconexion", func(w http.ResponseWriter, r *http.Request) {

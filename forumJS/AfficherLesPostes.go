@@ -92,6 +92,17 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		}
 	}
 
+	// Avent que l'on ne bloquer les réponces récursives :
+	// leDécalage := "margin-left:" + strconv.Itoa(décalage*50) + "px;"
+
+	// Maintenant :
+	leDécalage := "margin-left:0px;"
+	bloquerCommentaire := ""
+	if décalage > 0 {
+		leDécalage = "margin-left:50px;"
+		bloquerCommentaire = "display:none;"
+	}
+
 	données := map[string]interface{}{
 		"nom_utilisateur":      nom_utilisateur,
 		"contenu_du_message":   contenu_du_message,
@@ -103,7 +114,8 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		"iconeAime":            iconeAime,
 		"iconeAimePas":         iconeAimePas,
 		"nomPosteID":           "post-" + strconv.Itoa(iD_publication),
-		"décalage":             "margin-left:" + strconv.Itoa(décalage*50) + "px;",
+		"décalage":             leDécalage,
+		"bloquerCommentaire":   bloquerCommentaire,
 	}
 
 	tmpl, err := template.ParseFiles("pages/template-post.html")
@@ -136,8 +148,7 @@ func AfficherPost(poste Post, w http.ResponseWriter, r *http.Request, mettre_esp
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 
-	// placer le commentaire s'il y en à un :
-	if mettre_espace_commentaire {
+	if mettre_espace_commentaire && !premierPoste {
 		AjouterUnCommentaire(w, r, iD_publication, iD_fil_de_discussion, décalage, false)
 	}
 }
