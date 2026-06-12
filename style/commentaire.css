@@ -24,12 +24,36 @@ textarea {
 
 .btn-annuler {
     border-radius: 10px;
-    background-color: red;
-    color: white;
+    background-color: rgb(189, 0, 0);
+    color: rgb(255, 255, 255);
+}
+
+.btn-annuler:hover {
+    transition: 0.2s;
+    background-color: rgb(232, 73, 73);
 }
 
 .btn-envoyer {
     border-radius: 10px;
     background-color: blue;
     color: white;
+}
+
+.btn-envoyer:hover {
+    transition: 0.2s;
+    background-color: rgb(108, 108, 250);
+}
+
+
+.btn-annuler, .btn-envoyer {
+    transition: 0.2s;
+    border: solid 1px black;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.btn-annuler:hover, .btn-envoyer:hover {
+    transition: 0.2s;
+    transform: scale(1.2);
 }

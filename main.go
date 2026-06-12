@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	_ "modernc.org/sqlite"
 
@@ -14,6 +15,8 @@ import (
 )
 
 func main() {
+	// forum.HashPassword("abc")
+	// forum.HashPassword("abc")
 	// Les méthode HTTP :
 	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
 		Inscription(w, r)
@@ -29,6 +32,12 @@ func main() {
 		http.ServeFile(w, r, "pages/"+pageDemandé)
 	})
 
+	http.HandleFunc("/ChangerPageSpéciale", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		pageDemandé := r.FormValue("pageDemandé")
+		forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, pageDemandé)
+	})
+
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
 		forum.InteractionPost(w, r)
 	})
@@ -41,10 +50,40 @@ func main() {
 		forum.AjouterEspaceCommentaire(w, r)
 	})
 
+	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
+		forum.ChangerDeFilDeDiscution(w, r)
+	})
+
+	http.HandleFunc("/PartagerPage", func(w http.ResponseWriter, r *http.Request) {
+		PartagerPage(w, r)
+	})
+
+	http.HandleFunc("/NouveauFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
+		forum.NouveauFilDeDiscution(w, r)
+	})
+
+	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
+		valeur := (r.FormValue("iD_fil_de_discussion"))
+		_, err := strconv.Atoi(valeur)
+		if err != nil {
+			forum.Recherche(r.FormValue("Recherche"), w, r)
+		} else {
+			forum.Recherche(r.FormValue("Recherche"), w, r)
+			// forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "")
+		}
+	})
+
+	http.HandleFunc("/Deconexion", func(w http.ResponseWriter, r *http.Request) {
+		forum.HandleDeconnexion(w, r)
+	})
+
+	// handleDeconnexion
+
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
 
+	fmt.Println(forum.CheckPassword(forum.HashPassword("abc"), "abc"))
 	// Au démarage du serveur :
 	log.Println("Serveur lancé sur http://localhost:8080")
 
@@ -52,11 +91,8 @@ func main() {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
 		if iD_publication_commentaire != "" {
-			fmt.Println("id commentaire : ", iD_publication_commentaire)
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
-			if err != nil {
-				fmt.Println(err)
-			} else {
+			if err == nil {
 				valeur_iD_publication_commentaire = valeur
 			}
 		}
@@ -64,12 +100,18 @@ func main() {
 		valeur := (r.FormValue("iD_fil_de_discussion"))
 		iD_fil_de_discussion, err := strconv.Atoi(valeur)
 		if err != nil {
-			fmt.Println(err)
-			iD_fil_de_discussion = 0
+			pageSpéciale := r.FormValue("PageSpéciale")
+			if pageSpéciale == "TableauDeBord" {
+				forum.TableauDeBord(w, r)
+			} else if pageSpéciale == "nouveau-sujet" {
+				http.ServeFile(w, r, "pages/nouveau-sujet.html")
+			} else {
+				forum.ComplétéLaPageAccueil(w, r)
+			}
+		} else {
+			// fmt.Println("on est en : ",iD_fil_de_discussion)
+			forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 		}
-		fmt.Println(iD_fil_de_discussion)
-		forum.ComplétéLaPageAccueil(w, r)
-		forum.AfficherToutLesPost(iD_fil_de_discussion, w, r, valeur_iD_publication_commentaire)
 	})
 
 	forum.InitDB()
@@ -125,17 +167,25 @@ func Connexion(w http.ResponseWriter, r *http.Request) {
 }
 
 func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
-	valeur := (r.FormValue("iD_fil_de_discussion"))
+	valeur := (r.FormValue("answer"))
 	answer, err := strconv.Atoi(valeur)
 	if err != nil {
+		fmt.Println(err)
 		answer = 0
 	}
-	fmt.Println("Pensez à enregister answer : ",answer)
-	
+
 	valeur = (r.FormValue("iD_fil_de_discussion"))
+	fmt.Println("form : ", valeur)
 	iD_fil_de_discussion, err := strconv.Atoi(valeur)
 	if err != nil {
 		iD_fil_de_discussion = 0
+	}
+	fmt.Println(iD_fil_de_discussion)
+
+	annulerCommentaire := r.FormValue("AnnulerCommentaire")
+	if annulerCommentaire == "oui" {
+		forum.RevenirSurLaPageAccueil(w, r, answer, true, true, -1, "")
+		return
 	}
 
 	leTexte := r.FormValue("leTexte")
@@ -154,6 +204,28 @@ func EnvoyerCommentaire(w http.ResponseWriter, r *http.Request) {
 		forum.CreatePost(idUtilisateur, threadID, leTexte, db, answer)
 	}
 
-	forum.RevenirSurLaPageAccueil(w, r, answer, false)
+	forum.RevenirSurLaPageAccueil(w, r, answer, false, false, -1, "")
 
+}
+
+func PartagerPage(w http.ResponseWriter, r *http.Request) string {
+	valeur := (r.FormValue("iD_fil_de_discussion"))
+	iD_fil_de_discussion, err := strconv.Atoi(valeur)
+	if err != nil {
+		fmt.Println(err)
+		iD_fil_de_discussion = 0
+	}
+
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
+	}
+
+	if pos := strings.Index(referer, "?"); pos != -1 {
+		referer = referer[:pos]
+	}
+
+	referer = fmt.Sprintf("%s", referer)
+	referer += fmt.Sprintf("iD_fil_de_discussion=%d", iD_fil_de_discussion)
+	return referer
 }

@@ -1,6 +1,6 @@
-<div class="unPoste" id={{.nomPosteID}}>
+<div class="unPoste" id={{.nomPosteID}} style={{.décalage}}>
     <form class="partieUtilisateur">
-        <img class="photo">
+        <img class="photo"/>
         <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
         <p class="date_de_publication">{{.date_de_publication}}</p>
     </form>
@@ -11,7 +11,7 @@
                 <input class="invisible" name="iD_publication" value={{.iD_publication}}>
                 <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
                 <button name="nomAction" value="aime" type="submit" class="iconeAime">
-                    <img src={{.iconeAime}}>
+                    <img src={{.iconeAime}}/>
                 </button>
                 <p class="nombre_de_aime">{{.nombre_de_aime}}</p>
             </form>
@@ -19,7 +19,7 @@
                 <input class="invisible" name="iD_publication" value={{.iD_publication}}>
                 <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
-                    <img src={{.iconeAimePas}}>
+                    <img src={{.iconeAimePas}}/>
                 </button>
                 <p class="nombre_de_aime_pas">{{.nombre_de_aime_pas}}</p>
             </form>
@@ -27,7 +27,7 @@
                 <input class="invisible" name="iD_publication" value={{.iD_publication}}>
                 <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
-                    <img src="./images/commentaire.svg">
+                    <img src="/images/commentaire.svg"/>
                 </button>
                 <p>Répondre</p>
             </form>

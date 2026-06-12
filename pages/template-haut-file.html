@@ -1,0 +1,43 @@
+<div class="unPoste" id={{.nomPosteID}}>
+    <p class="nom_utilisateur">{{.nomDiscution}}</p>
+    <p class="date_de_publication">{{.nomLabel}}</p>
+    <form class="partieUtilisateur">
+        <img class="photo"/>
+        <p class="nom_utilisateur">{{.nom_utilisateur}}</p>
+        <p class="date_de_publication">{{.date_de_publication}}</p>
+    </form>
+    <div class="partieTexte">
+        <p class="contenu_du_message">{{.contenu_du_message}}</p>
+        <div class="partieInteraction">
+            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                <button name="nomAction" value="aime" type="submit" class="iconeAime">
+                    <img src={{.iconeAime}}/>
+                </button>
+                <p class="nombre_de_aime">{{.nombre_de_aime}}</p>
+            </form>
+            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
+                <input class="invisible" name="iD_publication" value={{.iD_publication}}>
+                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
+                    <img src={{.iconeAimePas}}/>
+                </button>
+                <p class="nombre_de_aime_pas">{{.nombre_de_aime_pas}}</p>
+            </form>
+            <!-- <form class="formulaireFlex" action='http://localhost:8080/PartagerPage' method='get'>
+                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                <button type="submit" class="iconeCommentaire">
+                    <img src="images/partager.svg">
+                </button>
+            </form> -->
+            <div class="formulaireFlex">
+                <input class="invisible" name="iD_fil_de_discussion" value={{.iD_fil_de_discussion}}>
+                <a type="submit" onclick="Partager()" class="iconeCommentaire">
+                    <img src="/images/partager.svg"/>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>

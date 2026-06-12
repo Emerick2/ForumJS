@@ -1,0 +1,59 @@
+#formulaire-nouuveau-sujet{
+    border: solid 2px;
+    border-radius: 30px;
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px;
+    row-gap: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 100vw;
+    max-width: 400px;
+}
+
+#formulaire-nouuveau-sujet input{
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 8px;
+    border: solid 1px;
+    font-size: 1.2rem;
+}
+
+#formulaire-nouuveau-sujet label{
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+
+.long-input{
+    height: 100px;
+}
+
+.bouton-validation-formulaire {
+    transition: 0.2s;
+    height: 4rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: blueviolet;
+    border: solid 0px;
+    border-radius: 18px;
+    background-color: rgb(241, 227, 255);
+    box-shadow: 0px 8px rgb(198, 140, 255);
+}
+
+.bouton-validation-formulaire:hover {
+    transition: 0.2s;
+    background-color: rgb(231, 207, 255);
+    box-shadow: 0px 5px rgb(198, 140, 255);
+    transform: translateY(3px);
+}
+
+.bouton-validation-formulaire:active {
+    transition: 0.2s;
+    background-color: rgb(218, 189, 247);
+    box-shadow: 0px 0px rgb(198, 140, 255);
+    transform: translateY(8px);
+}

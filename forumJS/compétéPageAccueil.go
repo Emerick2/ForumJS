@@ -31,6 +31,29 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 
 	err = tmpl.Execute(w, données)
 	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
+		fmt.Println("Erreur lors de l'exécution du template :", err)
+	}
+}
+
+
+func ComplétéLaPageForum(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tmpl, err := template.ParseFiles("pages/discution.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	données := map[string]interface{}{}
+	
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }
