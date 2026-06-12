@@ -158,6 +158,8 @@ func DerniersMessagesPublié(nombreMaximum int, w http.ResponseWriter, r *http.R
 			unPost.NameUser = valeur.nom
 		}
 
+		unPost.CreatedAtText = Date(unPost.CreatedAt)
+
 		unPost.IconeLike = "/images/aime.svg"
 		unPost.IconeDislike = "/images/aime.svg"
 
@@ -307,6 +309,7 @@ func DerniersUtilisateursCréé(limite int) []User {
 			fmt.Println("Erreur :", err)
 			return nil
 		}
+		unPost.CreatedAtText = Date(unPost.CreatedAt)
 		listePosts = append(listePosts, unPost)
 	}
 

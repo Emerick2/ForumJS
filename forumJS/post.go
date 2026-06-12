@@ -18,17 +18,18 @@ type Post struct {
 }
 
 type PostTableauDeBord struct {
-	Id           int
-	UserId       int
-	ThreadId     int
-	Content      string
-	CreatedAt    time.Time
-	Likes        int
-	Dislikes     int
-	Answer       int
-	NameUser     string
-	IconeLike    string
-	IconeDislike string
+	Id            int
+	UserId        int
+	ThreadId      int
+	Content       string
+	CreatedAt     time.Time
+	CreatedAtText string
+	Likes         int
+	Dislikes      int
+	Answer        int
+	NameUser      string
+	IconeLike     string
+	IconeDislike  string
 }
 
 type Thread struct {
@@ -42,6 +43,7 @@ type Thread struct {
 type User struct {
 	Id            int
 	CreatedAt     time.Time
+	CreatedAtText string
 	Name          string
 	Adresse_email string
 	Password      string
