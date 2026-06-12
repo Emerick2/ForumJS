@@ -3,6 +3,7 @@ package forumjs
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
@@ -24,7 +25,7 @@ func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
 		if peutÊtreVuAvecSeTermeDeRecherche {
 			nombreRésultaFil = append(nombreRésultaFil, listeThread[i])
 			textePris = append(textePris, mot)
-			textePrisFil = append(textePris, mot)
+			textePrisFil = append(textePrisFil, mot)
 		}
 	}
 
@@ -92,8 +93,8 @@ func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool 
 	if résultat == "" || recherche == "" {
 		return false
 	}
-	résultat = ToUpper(résultat)
-	recherche = ToUpper(recherche)
+	résultat = strings.ToUpper(résultat)
+	recherche = strings.ToUpper(recherche)
 	// 	recherche : 'qui'
 	// 	résultat : 'qui mange', 'avec qui il est', 'qui'
 	if résultat == recherche || len(recherche) == 0 {
@@ -116,38 +117,6 @@ func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool 
 		}
 	}
 	return false
-}
-
-func ToUpper(texte string) string {
-	//cette fonction ne fonctionne pas sur tout les accents.
-	résultat := ""
-	if texte == "" {
-		return résultat
-	}
-	runes := []rune(texte)
-	for i := 0; i < len(texte); i++ {
-		if runes[i] >= 97 && runes[i] <= 122 {
-			résultat += (string)(runes[i] - 32)
-		} else {
-			listeMinuscule := []rune{'é', 'è', 'ô', 'û', 'â', 'ê', 'î', 'ö', 'ë', 'ü', 32}
-			listeMajuscule := []rune{'É', 'È', 'Ô', 'Û', 'Â', 'Ê', 'Î', 'Ö', 'Ë', 'Ü', 0}
-			vu := false
-			for j := 0; j < len(listeMinuscule); j++ {
-				if len(listeMajuscule) > j {
-					if runes[i] == listeMinuscule[j] {
-						runes[i] = listeMajuscule[j]
-						vu = true
-						break
-					}
-				}
-			}
-			if !vu {
-				résultat += (string)(runes[i])
-			}
-		}
-	}
-	fmt.Println(résultat)
-	return résultat
 }
 
 func AfficherRecherche(w http.ResponseWriter, r *http.Request, nombreRésultaMessage []Post) {
