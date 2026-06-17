@@ -16,7 +16,7 @@ func AjouterEspaceCommentaire(w http.ResponseWriter, r *http.Request) {
 
 	idUtilisateur := VérifierCookie(r)
 	if idUtilisateur == 0 {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.ServeFile(w, r, "pages/inscription.html")
 		return
 	}
 
@@ -37,6 +37,7 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 	}
 	idUtilisateur := VérifierCookie(r)
 	if idUtilisateur == 0 {
+		http.ServeFile(w, r, "pages/inscription.html")
 		return
 	}
 

@@ -48,6 +48,20 @@
         <main>   
             <p>Bonjour {{.NomUtilisateur}}</p>
             <h1>Bienvenu sur la page d'accueil !</h1>
+
+            {{range .ListeLabel}}
+            <form action='http://localhost:8080/RechercheParLabel' method='get'>
+                <button name="NomDuLabel" value="{{.Nom}}" type="submit">{{.Nom}}</button>
+            </form>
+            {{end}}
+
+            <h2>{{.TitreListePostes}}</h2>
+            {{range .ListePostes}}
+            <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
+                <p>{{.Contenue}}</p>
+                <button name="iD_fil_de_discussion" value="{{.ID_fil_de_discussion}}" type="submit">{{.Nom}}</button>
+            </form>
+            {{end}}
         </main>
         <div class="block">
         </div>

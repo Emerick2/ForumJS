@@ -7,6 +7,12 @@ import (
 	"text/template"
 )
 
+type PartieBouton struct {
+	Nom                  string
+	Contenue             string
+	ID_fil_de_discussion int
+}
+
 func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
@@ -20,8 +26,40 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	listeLabel := ListeLabel()
+	récupéréLesFilsDeDiscution := RécupéréLesFilsDeDiscution("Livre")
+
+	var listeLabelStruct []PartieBouton
+	for i := 0; i < len(listeLabel); i++ {
+		var nouveauPartieBouton PartieBouton
+		nouveauPartieBouton.Nom = listeLabel[i]
+
+		listeLabelStruct = append(listeLabelStruct, nouveauPartieBouton)
+	}
+
+	titreListePostes := ""
+	labelChercher := "Livre"
+	var listePostesStruct []PartieBouton
+	for i := 0; i < len(récupéréLesFilsDeDiscution); i++ {
+		if récupéréLesFilsDeDiscution[i].Label_name == labelChercher {
+			if len(listeLabelStruct) > 0 {
+				titreListePostes = "Les poste de ce label :"
+			}
+
+			var nouveauPartieBouton PartieBouton
+			nouveauPartieBouton.Nom = récupéréLesFilsDeDiscution[i].Name
+			nouveauPartieBouton.Contenue = récupéréLesFilsDeDiscution[i].Message_content
+			nouveauPartieBouton.ID_fil_de_discussion = récupéréLesFilsDeDiscution[i].Id //ConnaitreFilDeDiscutionParIDMessage(récupéréLesFilsDeDiscution[i].User_id, récupéréLesFilsDeDiscution[i].Message_content)
+
+			listePostesStruct = append(listePostesStruct, nouveauPartieBouton)
+		}
+	}
+
 	données := map[string]interface{}{
-		"NomUtilisateur": nomAAfficher,
+		"NomUtilisateur":   nomAAfficher,
+		"ListeLabel":       listeLabelStruct,
+		"TitreListePostes": titreListePostes,
+		"ListePostes":      listePostesStruct,
 	}
 
 	tmpl, err := template.ParseFiles("pages/main.html")
@@ -38,10 +76,6 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 
-	listeLabel := ListeLabel()
-	récupéréLesFilsDeDiscution := RécupéréLesFilsDeDiscution("Livre")
-	fmt.Println(len(listeLabel))
-	fmt.Println(len(récupéréLesFilsDeDiscution))
 }
 
 func ComplétéLaPageForum(w http.ResponseWriter, r *http.Request) {
@@ -152,4 +186,39 @@ func RécupéréLesFilsDeDiscution(recherche string) []Thread {
 	}
 
 	return listeThread
+}
+
+func ConnaitreFilDeDiscutionParIDMessage(userId int, content string) int {
+	dsnURI := "db/forum.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return 0
+	}
+	defer db.Close()
+
+	query := `
+	SELECT thread_id
+	FROM Posts
+	WHERE UserId = ? Content = ?`
+
+	rows, err := db.Query(query, userId, content)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		identifiant := 0
+		err := rows.Scan(
+			&identifiant,
+		)
+		if err != nil {
+			fmt.Println("Erreur : ", err)
+		}
+		return identifiant
+	}
+	fmt.Println("Rien n'a été trouver")
+	return 0
 }
