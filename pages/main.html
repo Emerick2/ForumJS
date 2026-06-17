@@ -50,7 +50,7 @@
             <h1>Bienvenu sur la page d'accueil !</h1>
 
             {{range .ListeLabel}}
-            <form action='http://localhost:8080/RechercheParLabel' method='get'>
+            <form action='http://localhost:8080/' method='get'>
                 <button name="NomDuLabel" value="{{.Nom}}" type="submit">{{.Nom}}</button>
             </form>
             {{end}}

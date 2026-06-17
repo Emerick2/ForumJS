@@ -74,11 +74,6 @@ func main() {
 		forum.HandleDeconnexion(w, r)
 	})
 
-	http.HandleFunc("/RechercheParLabel", func(w http.ResponseWriter, r *http.Request) {
-		nomDuLabel := r.FormValue("NomDuLabel")
-		fmt.Println("Nom du label :", nomDuLabel)
-	})
-
 	// handleDeconnexion
 
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))

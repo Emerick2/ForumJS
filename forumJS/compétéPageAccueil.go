@@ -38,7 +38,7 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	}
 
 	titreListePostes := ""
-	labelChercher := "Livre"
+	labelChercher := r.FormValue("NomDuLabel")
 	var listePostesStruct []PartieBouton
 	for i := 0; i < len(récupéréLesFilsDeDiscution); i++ {
 		if récupéréLesFilsDeDiscution[i].Label_name == labelChercher {
