@@ -1,56 +1,83 @@
+# FORUSKY - le forum
+
+### Contexte du Projet
+
+L'objectif de notre projet était de réaliser un forum en utilisant les langages de programmation Go, SQL, HTML, CSS et JS.
+Nous avons choisi le nom Forusky puisqu'il s'agit d'une fusion entre Husky (une race de chien) et forum.
+
+### Structure du Projet
 
 ```
 db
-	forum.db	                            # Basses de données contenant les messages.		
-	interactionUtilisateur.db               # Base de données contenants les intéractions des utilisateurs.
-	threads.db                              # Basse de données contenant la liste des sujet de discution.
-	user.db                                 # Basse de données contenant les utilisateur
+    forum.db                                # Base de données contenant les messages.     
+    interactionUtilisateur.db               # Base de données contenant les interactions des utilisateurs.
+    threads.db                              # Base de données contenant la liste des sujets de discussion.
+    user.db                                 # Base de données contenant les utilisateurs.
 
 forumJS
-	AfficherLesPostes.go                    # Affichage les postes
-	compétéPageAccueil.go                   # Complété la page d'accueil.
-	cookie.go                               # Créé et vérifier les cookies de secions.
-	CrééUnFilDeDiscution.go                 # Créé un fil de discution.
-	database_Post.go                        # Sauvegarder les postes dans la base de données.
-	date.go                                 # Transformer une date Time.Time en un string bien formater.
-	deconnexion.go                          # Permettre à l'utilisateur de se déconnecter.
-	FilDeDiscution.go                       # Gestion des fils de discutions.
-	gestionUtilisateur.go                   # Gestion des utilisateurs.
-	http_errors.go                          # Gestion des erreur http.
-	motdepasse.go                           # Gestion des mots de passes.
-	post.go                                 # Sauvegarde, lecture et structure des postes.
-	postes.go                               # Gestion de l'intéraction des utilisateurs avec les postes.
-	Recherche.go                            # Barre de recherche.
-	RevenirSurLaPageAccueilScript.go        # Script pour changer de pages dynamiquement.
-	StructureUtilisateur.go                 # Structure des utilisateurs.
-	TableauDeBord.go                        # Complété la page tableau de bord.
+    AfficherLesPostes.go                    # Affichage des posts.
+    compétéPageAccueil.go                   # Complète la page d'accueil.
+    cookie.go                               # Crée et vérifie les cookies de session.
+    CrééUnFilDeDiscution.go                 # Crée un fil de discussion.
+    database_Post.go                        # Sauvegarde les posts dans la base de données.
+    date.go                                 # Transforme une date time.Time en une chaîne bien formatée.
+    deconnexion.go                          # Permet à l'utilisateur de se déconnecter.
+    FilDeDiscution.go                       # Gestion des fils de discussion.
+    gestionUtilisateur.go                   # Gestion des utilisateurs.
+    http_errors.go                          # Gestion des erreurs HTTP.
+    motdepasse.go                           # Gestion des mots de passe.
+    post.go                                 # Sauvegarde, lecture et structure des posts.
+    postes.go                               # Gestion de l'interaction des utilisateurs avec les posts.
+    Recherche.go                            # Barre de recherche.
+    RevenirSurLaPageAccueilScript.go        # Script pour changer de page dynamiquement.
+    StructureUtilisateur.go                 # Structure des utilisateurs.
+    TableauDeBord.go                        # Complète la page du tableau de bord.
 
-images                                      # Un dossier contenant toutes les images du projet.
+images                                      # Dossier contenant toutes les images du projet.
 
 js
-	Partager.js                             # Enregistrer le lien de la page dans le press papier de l'utilisateur.
+    Partager.js                             # Enregistre le lien de la page dans le presse-papiers de l'utilisateur.
 
 pages
-	discution.html                          # Page ou l'on peut lire les postes.
-	inscription.html                        # Page pour s'inscrire.
-	main.html                               # Page d'accueil.
-	nouveau-sujet.html                      # Page pour écrire un nouveau sujet.
-	tableau-de-bord.html                    # Page du tableau de bord.
-	template-commentaire.html               # Template pour ajouter un commenataire.
-	template-fiche-utilisateur.html         # Template pour ajouter une fiche d'utilisateur.
-	template-haut-file.html                 # Template pour ajouter les premières partie de fil de discution.
-	template-post.html                      # Template pour les posts.
+    discution.html                          # Page où l'on peut lire les posts.
+    inscription.html                        # Page pour s'inscrire.
+    main.html                               # Page d'accueil.
+    nouveau-sujet.html                      # Page pour écrire un nouveau sujet.
+    tableau-de-bord.html                    # Page du tableau de bord.
+    template-commentaire.html               # Template pour ajouter un commentaire.
+    template-fiche-utilisateur.html         # Template pour ajouter une fiche d'utilisateur.
+    template-haut-file.html                 # Template pour ajouter la première partie d'un fil de discussion.
+    template-post.html                      # Template pour les posts.
 
 style
-	barre-de-recherche.css                  # Barre de recherche.
-	bloc-profile.css                        # Partie des profiles.
-	commentaire.css                         # Partie commentaire.
-	NouveauFilDeDiscution.css               # Fil de discution.
-	pageAccueil.css                         # Page d'accueil.
-	pageConnexion.css                       # Page de connexion.
-	post.css                                # Partie des postes.
-	profile.css                             # Partie des profiles.
-	tableau-de-bord.css                     # Page du tableau de bord.
+    barre-de-recherche.css                  # Style de la barre de recherche.
+    bloc-profile.css                        # Style de la partie des profils.
+    commentaire.css                         # Style de la partie commentaires.
+    NouveauFilDeDiscution.css               # Style du fil de discussion.
+    pageAccueil.css                         # Style de la page d'accueil.
+    pageConnexion.css                       # Style de la page de connexion.
+    post.css                                # Style de la partie des posts.
+    profile.css                             # Style de la partie des profils.
+    tableau-de-bord.css                     # Style de la page du tableau de bord.
 
-main.go                                     # C'est le script qui lance le programme.
+main.go                                     # Script principal qui lance le programme.
+
 ```
+
+### Technologies Utilisées
+
+* **Backend :** Go, SQL
+* **Frontend :** HTML5, CSS3, JavaScript
+
+### Comment l'utiliser ?
+
+```bash
+go run .
+
+```
+
+### Réalisé par :
+
+* Émerick
+* Benjamin
+* Paul Elie
