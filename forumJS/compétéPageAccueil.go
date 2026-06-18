@@ -27,7 +27,8 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	}
 
 	listeLabel := ListeLabel()
-	récupéréLesFilsDeDiscution := RécupéréLesFilsDeDiscution("Livre")
+	labelChercher := r.FormValue("NomDuLabel")
+	récupéréLesFilsDeDiscution := RécupéréLesFilsDeDiscution(labelChercher)
 
 	var listeLabelStruct []PartieBouton
 	for i := 0; i < len(listeLabel); i++ {
@@ -38,21 +39,18 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	}
 
 	titreListePostes := ""
-	labelChercher := r.FormValue("NomDuLabel")
 	var listePostesStruct []PartieBouton
 	for i := 0; i < len(récupéréLesFilsDeDiscution); i++ {
-		if récupéréLesFilsDeDiscution[i].Label_name == labelChercher {
-			if len(listeLabelStruct) > 0 {
-				titreListePostes = "Les poste de ce label :"
-			}
-
-			var nouveauPartieBouton PartieBouton
-			nouveauPartieBouton.Nom = récupéréLesFilsDeDiscution[i].Name
-			nouveauPartieBouton.Contenue = récupéréLesFilsDeDiscution[i].Message_content
-			nouveauPartieBouton.ID_fil_de_discussion = récupéréLesFilsDeDiscution[i].Id //ConnaitreFilDeDiscutionParIDMessage(récupéréLesFilsDeDiscution[i].User_id, récupéréLesFilsDeDiscution[i].Message_content)
-
-			listePostesStruct = append(listePostesStruct, nouveauPartieBouton)
+		if len(listeLabelStruct) > 0 {
+			titreListePostes = "Les poste de ce label :"
 		}
+
+		var nouveauPartieBouton PartieBouton
+		nouveauPartieBouton.Nom = récupéréLesFilsDeDiscution[i].Name
+		nouveauPartieBouton.Contenue = récupéréLesFilsDeDiscution[i].Message_content
+		nouveauPartieBouton.ID_fil_de_discussion = récupéréLesFilsDeDiscution[i].Id //ConnaitreFilDeDiscutionParIDMessage(récupéréLesFilsDeDiscution[i].User_id, récupéréLesFilsDeDiscution[i].Message_content)
+
+		listePostesStruct = append(listePostesStruct, nouveauPartieBouton)	
 	}
 
 	données := map[string]interface{}{
