@@ -8,8 +8,8 @@
         <link rel="stylesheet" href="../style/pageAccueil.css"/> 
         <link rel="stylesheet" href="../style/post.css"/> 
         <link rel="stylesheet" href="../style/commentaire.css"/> 
-        
         <link rel="stylesheet" href="../style/barre-de-recherche.css"/> 
+        <link rel="icon" type="image/png" href="/images/logo-furusky.png"/>
     </head>
     <body>
         <header>
@@ -40,20 +40,20 @@
         </header>
 
         <main>   
-            <p>Bonjour {{.NomUtilisateur}}</p>
+            <p>Bonjour {{.NomUtilisateur | html}}</p>
             <h1>Bienvenu sur la page d'accueil !</h1>
 
             {{range .ListeLabel}}
             <form action='http://localhost:8080/' method='get'>
-                <button name="NomDuLabel" value="{{.Nom}}" type="submit">{{.Nom}}</button>
+                <button name="NomDuLabel" value="{{.Nom}}" type="submit">{{.Nom | html}}</button>
             </form>
             {{end}}
 
             <h2>{{.TitreListePostes}}</h2>
             {{range .ListePostes}}
             <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
-                <p>{{.Contenue}}</p>
-                <button name="iD_fil_de_discussion" value="{{.ID_fil_de_discussion}}" type="submit">{{.Nom}}</button>
+                <p>{{.Contenue | html}}</p>
+                <button name="iD_fil_de_discussion" value="{{.ID_fil_de_discussion}}" type="submit">{{.Nom | html}}</button>
             </form>
             {{end}}
         </main>

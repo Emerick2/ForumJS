@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="../style/commentaire.css"/> 
         <link rel="stylesheet" href="../style/barre-de-recherche.css"/> 
         <script defer src="../js/Partager.js"></script>
+        <link rel="icon" type="image/png" href="/images/logo-furusky.png"/>
     </head>
     <body>
         <header>
@@ -36,44 +37,50 @@
             </form>
             <br>
         </header>
+        
         <main>
             {{range .ListePostes}}
-                <div class="unPoste" id={{.NameOfTheIdPost}} style="{{.TheMargin}}">
-                    <h5>{{.TexteFil}}</h5>
-                    <form class="partieUtilisateur">
+                <div class="unPoste" id="{{.NameOfTheIdPost}}" style="{{.TheMargin}}">
+                    <h5>{{.TexteFil | html}}</h5>
+                    
+                    <div class="partieUtilisateur">
                         <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur"/>
-                        <p class="nom_utilisateur">{{.NameUser}}</p>
+                        <p class="nom_utilisateur">{{.NameUser | html}}</p>
                         <p class="date_de_publication">{{.CreatedAtText}}</p>
-                    </form>
+                    </div>
+
                     <div class="partieTexte">
-                        <p class="contenu_du_message">{{.Content}}</p>
+                        <p class="contenu_du_message">{{.Content | html}}</p>
                         <div class="partieInteraction">
                             <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="aime" type="submit" class="iconeAime">
-                                    <img src={{.IconeLike}} alt="icone de j'aime"/>
+                                    <img src="{{.IconeLike}}" alt="icone de j'aime"/>
                                 </button>
                                 <p class="nombre_de_aime">{{.Likes}}</p>
                             </form>
+                            
                             <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
-                                    <img src={{.IconeDislike}} alt="icone de je n'aime pas"/>
+                                    <img src="{{.IconeDislike}}" alt="icone de je n'aime pas"/>
                                 </button>
                                 <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
                             </form>
+                            
                             <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get' style="{{.BlockComments}}">
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
                                     <img src="/images/commentaire.svg" alt="icone pour mettre un commentaire"/>
                                 </button>
                                 <p>Répondre</p>
                             </form>
+                            
                             <div class="formulaireFlex" style="{{.BlockShare}}">
-                                <a type="submit" onclick="Partager()" class="iconeCommentaire">
+                                <a type="button" onclick="Partager()" class="iconeCommentaire">
                                     <img src="/images/partager.svg" alt="icone pour partager"/>
                                 </a>
                             </div>
@@ -84,18 +91,18 @@
                 <form action='http://localhost:8080/EnvoyerCommentaire' method='get' style="{{.BlockNewComments}}">
                     <div class="zone-commentaire">
                         <textarea name="leTexte" maxlength="10000" placeholder="Que voulez-vous dire ?"></textarea>
-                        <input class="invisible" name="answer" value={{.Id}}>
-                        <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                        <input class="invisible" name="answer" value="{{.Id}}">
+                        <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                         <div class="boutons">
                             <button class="btn-annuler" style="{{.OptionToCancel}}" name="AnnulerCommentaire" value="oui" type="submit">Annuler</button>
                             <button class="btn-envoyer" type="submit">Envoyer</button>
                         </div>
                     </div>
-                </form>
-            {{else}}
+                </form> {{else}}
                 <p>Aucun message publié pour le moment.</p>
             {{end}}
         </main>
+
         <footer>
             <p>Forusky (2026) - <a href="https://github.com/Emerick2">Émerick</a> | <a href="https://github.com/Benjylem">Benjamin</a> | <a href="https://github.com/pauloo10-ynov">Paul Elie</a></p>
         </footer>

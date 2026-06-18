@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="../style/commentaire.css"/> 
         <link rel="stylesheet" href="../style/bloc-profile.css"/> 
         <link rel="stylesheet" href="../style/tableau-de-bord.css"/> 
+        <link rel="icon" type="image/png" href="/images/logo-furusky.png"/>
     </head>
     <body>
         <header>
@@ -44,12 +45,12 @@
                 <div class="unPoste" id="{{.UserId}}">
                     <div class="partieUtilisateur">
                         <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur">
-                        <p class="nom_utilisateur">{{.NameUser}}</p>
-                        <p class="date_de_publication">{{.CreatedAtText}}</p>
+                        <p class="nom_utilisateur">{{.NameUser | html}}</p>
+                        <p class="date_de_publication">{{.CreatedAtText | html}}</p>
                     </div>
 
                     <div class="partieTexte">
-                        <p class="contenu_du_message">{{.Content}}</p>
+                        <p class="contenu_du_message">{{.Content | html}}</p>
                         
                         <div class="partieInteraction">
                             <form class="formulaireFlex" action="http://localhost:8080/InteractionPost" method="get">
@@ -93,9 +94,9 @@
                 <form class="bloc-profile">
                     <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur">
                     <p class="titre-partie">Nom d'utilisateur :</p>
-                    <p class="réponce-partie">{{.Name}}</p>
+                    <p class="réponce-partie">{{.Name | html}}</p>
                     <p class="titre-partie">Adresse e-mail :</p>
-                    <p class="réponce-partie">{{.Adresse_email}}</p>
+                    <p class="réponce-partie">{{.Adresse_email | html}}</p>
                     <p class="titre-partie">Date de création :</p>
                     <p class="réponce-partie">{{.CreatedAt}}</p>
                 </form>

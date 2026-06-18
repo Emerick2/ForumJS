@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="../style/commentaire.css"/> 
         <link rel="stylesheet" href="../style/barre-de-recherche.css"/> 
         <link rel="stylesheet" href="../style/pageConnexion.css"/>
+        <link rel="icon" type="image/png" href="/images/logo-furusky.png"/>
     </head>
     <body>
         <header>
@@ -37,7 +38,7 @@
             <br>
         </header>
         <main>
-            <h2>Vous avez un compte ?<br/>Alors, connectez vous !</h2>
+            <h2>Vous avez un compte ?<br/>Alors, connectez-vous !</h2>
             <form class="partieInscription" action='http://localhost:8080/Connexion' method='get'>
                 <label for="email">E-Mail</label>
                 <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
@@ -47,7 +48,7 @@
             </form>
             <!-- <hr> -->
             <br/><br/>
-            <h2>Vous n'avez pas de compte ?<br/>Alors, créé en un !</h2>
+            <h2>Vous n'avez pas de compte ?<br/>Alors, créez-en-un !</h2>
             <form class="partieInscription" action='http://localhost:8080/Inscription' method='get'>
                 <label for="email">E-Mail</label>
                 <input name="email" type="email" placeholder="Votre e-mail" minlength="3"><br/>
@@ -58,7 +59,7 @@
                 <button type="submit">Inscription</button>
             </form>
             <br/><br/>
-            <h2>Vous ête connecter et vous voulez vous déconnectez ?<br/>Alors, déconnectez-vous !</h2>
+            <h2>Vous êtes connecté et vous voulez vous déconnecter ?<br/>Alors, déconnectez-vous !</h2>
             <form class="partieInscription" action='http://localhost:8080/Deconexion' method='get'>
                 <button type="submit">Déconnexion</button>
             </form>

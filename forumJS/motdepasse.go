@@ -20,10 +20,3 @@ func CheckPassword(hashedPassword string, password string) bool {
 	}
 	return false
 }
-
-/*
-azerty
-
-c3grty
-
-*/

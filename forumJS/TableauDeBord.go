@@ -7,53 +7,6 @@ import (
 	"text/template"
 )
 
-// func TableauDeBord(w http.ResponseWriter, r *http.Request) {
-// 	nombreTotalAimeSurCommentaires := NombreTotalAimeSurCommentaires()
-// 	nombreTotalMessagePublier := NombreTotalMessagePublier()
-// 	nombreTotalUtilisateur := NombreTotalUtilisateur()
-// 	derniersMessagesPublié := DerniersMessagesPublié(5)
-// 	derniersUtilisateursCréé := DerniersUtilisateursCréé(5)
-
-// 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-// 	tmpl, err := template.ParseFiles("pages/tableau-de-bord.html")
-// 	if err != nil {
-// 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	données := map[string]interface{}{
-// 		"NombreTotalAimeSurCommentaires": nombreTotalAimeSurCommentaires,
-// 		"NombreTotalMessagePublier":      nombreTotalMessagePublier,
-// 		"NombreTotalUtilisateur":         nombreTotalUtilisateur,
-// 	}
-
-// 	err = tmpl.Execute(w, données)
-// 	if err != nil {
-// 		if isBrokenPipe(err) {
-// 			return
-// 		}
-// 		fmt.Println("Erreur lors de l'exécution du template :", err)
-// 	}
-
-// 	for i := 0; i < len(derniersMessagesPublié); i++ {
-// 		AfficherPost(derniersMessagesPublié[i], w, r, false, 0, false)
-// 	}
-
-// 	for i := 0; i < len(derniersUtilisateursCréé); i++ {
-// 		AfficherUtilisateur(derniersUtilisateursCréé[i], w, r)
-// 	}
-
-// 	/*
-// 		*Les derniers messages publié.
-// 		Le nombre total de j'aime mis sur les commentaires
-// 		Le nombre total de message publier
-// 		Le nombre total d'utilisateur
-// 		Les fils de discution triés par ceux avec le plus de commentaires
-
-// 		une listes pour voirs tous les utilisateurs du site.
-// 	*/
-// }
-
 func TableauDeBord(w http.ResponseWriter, r *http.Request) {
 	nombreTotalAimeSurCommentaires := NombreTotalAimeSurCommentaires()
 	nombreTotalMessagePublier := NombreTotalMessagePublier()
@@ -108,7 +61,6 @@ func ConnaitreNombre(rows *sql.Rows) int {
 }
 
 func DerniersMessagesPublié(nombreMaximum int, w http.ResponseWriter, r *http.Request) []PostTableauDeBord {
-	// db, err := OuvrirDB("db/forum.db")
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -185,7 +137,6 @@ func DerniersMessagesPublié(nombreMaximum int, w http.ResponseWriter, r *http.R
 }
 
 func NombreTotalAimeSurCommentaires() int {
-	// db, err := OuvrirDB("db/forum.db")
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -213,7 +164,6 @@ func NombreTotalAimeSurCommentaires() int {
 }
 
 func NombreTotalMessagePublier() int {
-	// db, err := OuvrirDB("db/forum.db")
 	dsnURI := "db/forum.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
@@ -268,7 +218,6 @@ func NombreTotalUtilisateur() int {
 }
 
 func DerniersUtilisateursCréé(limite int) []User {
-	// db, err := OuvrirDB("db/forum.db")
 	dsnURI := "db/user.db"
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {

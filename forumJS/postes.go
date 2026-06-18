@@ -107,36 +107,6 @@ func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string,
 	}
 }
 
-// func LireUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) int {
-// 	db, err := sql.Open("sqlite", dsnURI)
-// 	if err != nil {
-// 		fmt.Println("Erreur d'ouverture :", err)
-// 		return 0
-// 	}
-
-// 	defer db.Close()
-
-// 	if clef != "likes" && clef != "dislikes" {
-// 		http.Error(w, "Colonne invalide", http.StatusBadRequest)
-// 		return 0
-// 	}
-
-// 	requete := fmt.Sprintf("SELECT %s FROM %s WHERE id = ? AND thread_id = ? LIMIT 1", clef, nomTable)
-// 	var valeurRecup int
-// 	err = db.QueryRow(requete, iD_publication, iD_fil_de_discussion).Scan(&valeurRecup)
-// 	if err != nil {
-// 		if err == sql.ErrNoRows {
-// 			http.Error(w, "Poste non trouvé", http.StatusNotFound)
-// 			return 0
-// 		}
-// 		http.Error(w, "Erreur lors de la récupération des données", http.StatusInternalServerError)
-// 		fmt.Println("QueryRow error:", err)
-// 		return 0
-// 	}
-
-// 	return valeurRecup + modification
-// }
-
 func LireTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, UserId int, iD_publication int, iD_fil_de_discussion int, clef string) bool {
 	// retourne true si l'utilisateur a déjà interagi pour ce post.
 
