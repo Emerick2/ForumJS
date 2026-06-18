@@ -181,7 +181,6 @@ func DerniersMessagesPublié(nombreMaximum int, w http.ResponseWriter, r *http.R
 		return nil
 	}
 
-	fmt.Println(len(listePosts))
 	return listePosts
 }
 
@@ -318,6 +317,5 @@ func DerniersUtilisateursCréé(limite int) []User {
 		return nil
 	}
 
-	// fmt.Println(len(listePosts))
 	return listePosts
 }

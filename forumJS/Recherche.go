@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"text/template"
 )
 
 func Recherche(recherche string, w http.ResponseWriter, r *http.Request) {
@@ -120,9 +121,24 @@ func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool 
 }
 
 func AfficherRecherche(w http.ResponseWriter, r *http.Request, nombreRésultaMessage []Post) {
-	ComplétéLaPageForum(w, r)
+	nombreRésultaMessage = AjouterDonnéesPostes(nombreRésultaMessage, w, r, -1)
 
-	for i := 0; i < len(nombreRésultaMessage); i++ {
-		AfficherPost(nombreRésultaMessage[i], w, r, false, 0, false)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tmpl, err := template.ParseFiles("pages/discution.html")
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+		return
+	}
+
+	données := map[string]interface{}{
+		"ListePostes": nombreRésultaMessage,
+	}
+
+	err = tmpl.Execute(w, données)
+	if err != nil {
+		if isBrokenPipe(err) {
+			return
+		}
+		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
 }

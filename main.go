@@ -39,6 +39,7 @@ func main() {
 	})
 
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("-1")
 		forum.InteractionPost(w, r)
 	})
 
