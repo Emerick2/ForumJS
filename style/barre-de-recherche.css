@@ -1,3 +1,5 @@
+@import url('base.css');
+
 #barre-de-recherche{
     transition: 0.3s;
     display: block;
