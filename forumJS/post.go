@@ -25,6 +25,9 @@ type Post struct {
 	BlockShare       string
 	BlockNewComments string
 	OptionToCancel   string
+	NameThread       string
+	LabelThread      string
+	TexteFil         string
 }
 
 type PostTableauDeBord struct {

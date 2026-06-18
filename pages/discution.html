@@ -43,11 +43,9 @@
             <br>
         </header>
         <main>
-            
-            <p>Bonjour {{.NomUtilisateur}}</p>
-
             {{range .ListePostes}}
                 <div class="unPoste" id={{.NameOfTheIdPost}} style="{{.TheMargin}}">
+                    <h5>{{.TexteFil}}</h5>
                     <form class="partieUtilisateur">
                         <img class="photo"/>
                         <p class="nom_utilisateur">{{.NameUser}}</p>
