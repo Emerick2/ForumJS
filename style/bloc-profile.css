@@ -68,6 +68,7 @@
 .stat-icon{
     width:45px;
     height:45px;
+    aspect-ratio: 1/1;
     border-radius:50%;
     background:#7c1212;
     color:white;

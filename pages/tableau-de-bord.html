@@ -36,7 +36,7 @@
             <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
                 <input name="Recherche" placeholder="Rechercher...">
                 <button id="imageEnvoyerRecherche" type="submit">
-                    <img src="../images/chercher.svg">
+                    <img src="../images/chercher.svg" alt="icone de recherche">
                 </button>
             </form>
             <br>
@@ -47,10 +47,10 @@
             {{range .DerniersPosts}}
                 <div class="unPoste" id="{{.UserId}}">
                     <div class="partieUtilisateur">
-                        <img class="photo" src="/images/default-avatar.png" alt="">
+                        <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur">
                         <p class="nom_utilisateur">{{.NameUser}}</p>
                         <p class="date_de_publication">{{.CreatedAtText}}</p>
-                    </form>
+                    </div>
 
                     <div class="partieTexte">
                         <p class="contenu_du_message">{{.Content}}</p>
@@ -95,7 +95,7 @@
             <div class="grille-utilisateurs">
             {{range .DerniersUsers}}
                 <form class="bloc-profile">
-                    <img class="photo">
+                    <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur">
                     <p class="titre-partie">Nom d'utilisateur :</p>
                     <p class="réponce-partie">{{.Name}}</p>
                     <p class="titre-partie">Adresse e-mail :</p>
@@ -136,7 +136,8 @@
                 </div>
 
             </div>
-            
+        </main>
+
         <footer>
             <p>Forusky (2026) - <a href="https://github.com/Emerick2">Émerick</a> | <a href="https://github.com/Benjylem">Benjamin</a> | <a href="https://github.com/pauloo10-ynov">Paul Elie</a></p>
         </footer>

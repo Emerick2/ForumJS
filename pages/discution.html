@@ -37,7 +37,7 @@
             <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
                 <input name="Recherche" placeholder="Rechercher...">
                 <button id="imageEnvoyerRecherche" type="submit">
-                    <img src="../images/chercher.svg">
+                    <img src="../images/chercher.svg" alt="icone de recherche">
                 </button>
             </form>
             <br>
@@ -47,7 +47,7 @@
                 <div class="unPoste" id={{.NameOfTheIdPost}} style="{{.TheMargin}}">
                     <h5>{{.TexteFil}}</h5>
                     <form class="partieUtilisateur">
-                        <img class="photo"/>
+                        <img class="photo" src="/images/default-avatar.png" alt="icone de profil de l'utilisateur"/>
                         <p class="nom_utilisateur">{{.NameUser}}</p>
                         <p class="date_de_publication">{{.CreatedAtText}}</p>
                     </form>
@@ -58,7 +58,7 @@
                                 <input class="invisible" name="iD_publication" value={{.Id}}>
                                 <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="aime" type="submit" class="iconeAime">
-                                    <img src={{.IconeLike}}/>
+                                    <img src={{.IconeLike}} alt="icone de j'aime"/>
                                 </button>
                                 <p class="nombre_de_aime">{{.Likes}}</p>
                             </form>
@@ -66,7 +66,7 @@
                                 <input class="invisible" name="iD_publication" value={{.Id}}>
                                 <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
-                                    <img src={{.IconeDislike}}/>
+                                    <img src={{.IconeDislike}} alt="icone de je n'aime pas"/>
                                 </button>
                                 <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
                             </form>
@@ -74,13 +74,13 @@
                                 <input class="invisible" name="iD_publication" value={{.Id}}>
                                 <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
                                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
-                                    <img src="/images/commentaire.svg"/>
+                                    <img src="/images/commentaire.svg" alt="icone pour mettre un commentaire"/>
                                 </button>
                                 <p>Répondre</p>
                             </form>
                             <div class="formulaireFlex" style="{{.BlockShare}}">
                                 <a type="submit" onclick="Partager()" class="iconeCommentaire">
-                                    <img src="/images/partager.svg"/>
+                                    <img src="/images/partager.svg" alt="icone pour partager"/>
                                 </a>
                             </div>
                         </div>
