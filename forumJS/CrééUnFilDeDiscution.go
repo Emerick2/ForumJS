@@ -9,6 +9,7 @@ import (
 func NouveauFilDeDiscution(w http.ResponseWriter, r *http.Request) {
 	idUtilisateur := VérifierCookie(r)
 	if idUtilisateur == 0 {
+		http.ServeFile(w, r, "pages/inscription.html")
 		return
 	}
 
@@ -35,7 +36,7 @@ func NouveauFilDeDiscution(w http.ResponseWriter, r *http.Request) {
 	defer db2.Close()
 
 	err = CreateThread(idUtilisateur, nomDuPoste, contenuDuTexte, nomDuLabel, db2)
-	if (err != nil){
+	if err != nil {
 		fmt.Println(err)
 	}
 	nouvelIdFilDeDiscution := NombreElementDB(db2, "Threads")

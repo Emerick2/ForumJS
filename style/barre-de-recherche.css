@@ -1,6 +1,7 @@
 @import url('base.css');
 
 #barre-de-recherche{
+    transition: 0.3s;
     display: block;
     border: solid;
     border-width: 1px;
@@ -16,12 +17,19 @@
     background-color: white;
 }
 
+#barre-de-recherche:focus-within {
+    transition: 0.3s;
+    border-width: 2px;
+}
+
+
 #barre-de-recherche input{
     width: 100%;
     border-width: 0px;
     padding-left: 15px;
     padding-right: 15px;
     font-size: 1.3rem;
+    outline: none;
 }
 
 #imageEnvoyerRecherche {

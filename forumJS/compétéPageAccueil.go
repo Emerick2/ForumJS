@@ -1,10 +1,17 @@
 package forumjs
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"text/template"
 )
+
+type PartieBouton struct {
+	Nom                  string
+	Contenue             string
+	ID_fil_de_discussion int
+}
 
 func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -19,8 +26,40 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	listeLabel := ListeLabel()
+	récupéréLesFilsDeDiscution := RécupéréLesFilsDeDiscution("Livre")
+
+	var listeLabelStruct []PartieBouton
+	for i := 0; i < len(listeLabel); i++ {
+		var nouveauPartieBouton PartieBouton
+		nouveauPartieBouton.Nom = listeLabel[i]
+
+		listeLabelStruct = append(listeLabelStruct, nouveauPartieBouton)
+	}
+
+	titreListePostes := ""
+	labelChercher := r.FormValue("NomDuLabel")
+	var listePostesStruct []PartieBouton
+	for i := 0; i < len(récupéréLesFilsDeDiscution); i++ {
+		if récupéréLesFilsDeDiscution[i].Label_name == labelChercher {
+			if len(listeLabelStruct) > 0 {
+				titreListePostes = "Les poste de ce label :"
+			}
+
+			var nouveauPartieBouton PartieBouton
+			nouveauPartieBouton.Nom = récupéréLesFilsDeDiscution[i].Name
+			nouveauPartieBouton.Contenue = récupéréLesFilsDeDiscution[i].Message_content
+			nouveauPartieBouton.ID_fil_de_discussion = récupéréLesFilsDeDiscution[i].Id //ConnaitreFilDeDiscutionParIDMessage(récupéréLesFilsDeDiscution[i].User_id, récupéréLesFilsDeDiscution[i].Message_content)
+
+			listePostesStruct = append(listePostesStruct, nouveauPartieBouton)
+		}
+	}
+
 	données := map[string]interface{}{
-		"NomUtilisateur": nomAAfficher,
+		"NomUtilisateur":   nomAAfficher,
+		"ListeLabel":       listeLabelStruct,
+		"TitreListePostes": titreListePostes,
+		"ListePostes":      listePostesStruct,
 	}
 
 	tmpl, err := template.ParseFiles("pages/main.html")
@@ -36,24 +75,150 @@ func ComplétéLaPageAccueil(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println("Erreur lors de l'exécution du template :", err)
 	}
+
 }
 
+// func ComplétéLaPageForum(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+// 	tmpl, err := template.ParseFiles("pages/discution.html")
+// 	if err != nil {
+// 		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
+// 		return
+// 	}
 
-func ComplétéLaPageForum(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	tmpl, err := template.ParseFiles("pages/discution.html")
+// 	données := map[string]interface{}{}
+
+// 	err = tmpl.Execute(w, données)
+// 	if err != nil {
+// 		if isBrokenPipe(err) {
+// 			return
+// 		}
+// 		fmt.Println("Erreur lors de l'exécution du template :", err)
+// 	}
+// }
+
+func ListeLabel() []string {
+	listeLabel := []string{}
+
+	dsnURI := "db/threads.db"
+	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
-		http.Error(w, "Erreur lors du chargement de la page", http.StatusInternalServerError)
-		return
+		fmt.Println("Erreur d'ouverture :", err)
+		return listeLabel
 	}
+	defer db.Close()
 
-	données := map[string]interface{}{}
-	
-	err = tmpl.Execute(w, données)
+	query := `
+	SELECT DISTINCT label_name 
+	FROM Threads
+	ORDER BY label_name ASC`
+
+	rows, err := db.Query(query)
 	if err != nil {
-		if isBrokenPipe(err) {
-			return
+		fmt.Println("Erreur :", err)
+		return listeLabel
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var unLabel string
+		err := rows.Scan(
+			&unLabel,
+		)
+		if err != nil {
+			fmt.Println("Erreur :", err)
+			return listeLabel
 		}
-		fmt.Println("Erreur lors de l'exécution du template :", err)
+		listeLabel = append(listeLabel, unLabel)
 	}
+
+	if err = rows.Err(); err != nil {
+		fmt.Println("Erreur :", err)
+		return listeLabel
+	}
+
+	return listeLabel
+}
+
+func RécupéréLesFilsDeDiscution(recherche string) []Thread {
+	listeThread := []Thread{}
+
+	dsnURI := "db/threads.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return listeThread
+	}
+	defer db.Close()
+
+	query := `
+	SELECT id, user_id, name, message_content, label_name
+	FROM Threads
+	WHERE Label_name = ?
+	ORDER BY id ASC`
+
+	rows, err := db.Query(query, recherche)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return listeThread
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var unThread Thread
+		err := rows.Scan(
+			&unThread.Id,
+			&unThread.User_id,
+			&unThread.Name,
+			&unThread.Message_content,
+			&unThread.Label_name,
+		)
+		if err != nil {
+			fmt.Println("Erreur :", err)
+			return listeThread
+		}
+		listeThread = append(listeThread, unThread)
+	}
+
+	if err = rows.Err(); err != nil {
+		fmt.Println("Erreur :", err)
+		return listeThread
+	}
+
+	return listeThread
+}
+
+func ConnaitreFilDeDiscutionParIDMessage(userId int, content string) int {
+	dsnURI := "db/forum.db"
+	db, err := sql.Open("sqlite", dsnURI)
+	if err != nil {
+		fmt.Println("Erreur d'ouverture :", err)
+		return 0
+	}
+	defer db.Close()
+
+	query := `
+	SELECT thread_id
+	FROM Posts
+	WHERE UserId = ? Content = ?`
+
+	rows, err := db.Query(query, userId, content)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		identifiant := 0
+		err := rows.Scan(
+			&identifiant,
+		)
+		if err != nil {
+			fmt.Println("Erreur : ", err)
+		}
+		return identifiant
+	}
+	fmt.Println("Rien n'a été trouver")
+	return 0
 }

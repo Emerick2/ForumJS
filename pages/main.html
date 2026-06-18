@@ -15,8 +15,7 @@
         <header>
             <h1>Forusky</h1>
             <div class="liste-boutons">
-                <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
-                    <form action='http://localhost:8080/ChangerPage' method='get'>
+                <form action='http://localhost:8080/AllerSurLaPageAccueil' method='get'>
                     <button name="pageDemandé" value="main.html" type="submit">Accueil</button>
                 </form>
                 <form action='http://localhost:8080/ChangerPage' method='get'>
@@ -31,9 +30,11 @@
             </div>
 
             <br>
-            <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
-            <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
-            <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
+            <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
+                <button name="iD_fil_de_discussion" value="1" type="submit">file 1</button>
+                <button name="iD_fil_de_discussion" value="2" type="submit">file 2</button>
+                <button name="iD_fil_de_discussion" value="8" type="submit">file 8</button>
+            </form>
             <br><br>
             <form id="barre-de-recherche" action='http://localhost:8080/BarreDeRecherche' method='get'>
                 <input name="Recherche" placeholder="Rechercher...">
@@ -45,13 +46,37 @@
         </header>
 
         <main>   
-            <p>Bonjour {{.NomUtilisateur}}</p>
-            <h1>Bienvenu sur la page d'accueil !</h1>
-        </main>
-        <div class="block">
-        </div>
-        <footer>
+            <p class="texte-bonjour">Bonjour {{.NomUtilisateur}}</p>
+            <h1 class="titre-bienvenue">Bienvenu sur la page d'accueil !</h1>
+
+            <div class="section-labels-accueil">
+                <h3 class="titre-labels-horizontal">🏷️ Labels</h3>
+                <div class="liste-labels-horizontale">
+                    {{range .ListeLabel}}
+                    <form action='http://localhost:8080/' method='get'>
+                        <button class="btn-label-accueil" name="NomDuLabel" value="{{.Nom}}" type="submit">{{.Nom}}</button>
+                    </form>
+                    {{end}}
+                </div>
+            </div>
+
+            <section class="flux-principal">
+                <h2 class="titre-posts">{{.TitreListePostes}}</h2>
+                <div class="flux-posts">
+                    {{range .ListePostes}}
+                    <form class="carte-post-accueil" action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
+                        <p class="contenu-post">{{.Contenue}}</p>
+                        <button class="btn-post-lien" name="iD_fil_de_discussion" value="{{.ID_fil_de_discussion}}" type="submit">{{.Nom}}</button>
+                    </form>
+                    {{end}}
+                </div>
+            </section>
+       </main>
+       
+       <div class="block">
+       </div>
+       <footer>
             <p>Forusky (2026) - <a href="https://github.com/Emerick2">Émerick</a> | <a href="https://github.com/Benjylem">Benjamin</a> | <a href="https://github.com/pauloo10-ynov">Paul Elie</a></p>
-        </footer>
+       </footer>
     </body>
 </html>

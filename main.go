@@ -39,6 +39,7 @@ func main() {
 	})
 
 	http.HandleFunc("/InteractionPost", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("-1")
 		forum.InteractionPost(w, r)
 	})
 
@@ -48,6 +49,10 @@ func main() {
 
 	http.HandleFunc("/AjouterEspaceCommentaire", func(w http.ResponseWriter, r *http.Request) {
 		forum.AjouterEspaceCommentaire(w, r)
+	})
+
+	http.HandleFunc("/AllerSurLaPageAccueil", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "/")
 	})
 
 	http.HandleFunc("/ChangerDeFilDeDiscution", func(w http.ResponseWriter, r *http.Request) {
@@ -63,14 +68,7 @@ func main() {
 	})
 
 	http.HandleFunc("/BarreDeRecherche", func(w http.ResponseWriter, r *http.Request) {
-		valeur := (r.FormValue("iD_fil_de_discussion"))
-		_, err := strconv.Atoi(valeur)
-		if err != nil {
-			forum.Recherche(r.FormValue("Recherche"), w, r)
-		} else {
-			forum.Recherche(r.FormValue("Recherche"), w, r)
-			// forum.RevenirSurLaPageAccueil(w, r, 0, false, true, 0, "")
-		}
+		forum.Recherche(r.FormValue("Recherche"), w, r)
 	})
 
 	http.HandleFunc("/Deconexion", func(w http.ResponseWriter, r *http.Request) {
@@ -82,6 +80,7 @@ func main() {
 	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("./style"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("./pages"))))
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./js"))))
 
 	fmt.Println(forum.CheckPassword(forum.HashPassword("abc"), "abc"))
 	// Au démarage du serveur :
@@ -90,6 +89,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		iD_publication_commentaire := r.FormValue("iD_publication_commentaire")
 		valeur_iD_publication_commentaire := -1
+
 		if iD_publication_commentaire != "" {
 			valeur, err := strconv.Atoi(iD_publication_commentaire)
 			if err == nil {
@@ -121,6 +121,7 @@ func main() {
 		go func() {
 			_ = exec.Command("xdg-open", "http://localhost:8080/").Start()
 		}()
+
 		w.Write([]byte("Attempted to open browser"))
 	})
 
@@ -220,7 +221,6 @@ func PartagerPage(w http.ResponseWriter, r *http.Request) string {
 	if referer == "" {
 		referer = "/"
 	}
-
 	if pos := strings.Index(referer, "?"); pos != -1 {
 		referer = referer[:pos]
 	}

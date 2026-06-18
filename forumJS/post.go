@@ -7,28 +7,42 @@ import (
 )
 
 type Post struct {
-	Id        int
-	UserId    int
-	ThreadId  int
-	Content   string
-	CreatedAt time.Time
-	Likes     int
-	Dislikes  int
-	Answer    int
+	Id               int
+	UserId           int
+	ThreadId         int
+	Content          string
+	CreatedAt        time.Time
+	Likes            int
+	Dislikes         int
+	Answer           int
+	CreatedAtText    string
+	NameUser         string
+	IconeLike        string
+	IconeDislike     string
+	NameOfTheIdPost  string
+	TheMargin        string
+	BlockComments    string
+	BlockShare       string
+	BlockNewComments string
+	OptionToCancel   string
+	NameThread       string
+	LabelThread      string
+	TexteFil         string
 }
 
 type PostTableauDeBord struct {
-	Id           int
-	UserId       int
-	ThreadId     int
-	Content      string
-	CreatedAt    time.Time
-	Likes        int
-	Dislikes     int
-	Answer       int
-	NameUser     string
-	IconeLike    string
-	IconeDislike string
+	Id            int
+	UserId        int
+	ThreadId      int
+	Content       string
+	CreatedAt     time.Time
+	Likes         int
+	Dislikes      int
+	Answer        int
+	CreatedAtText string
+	NameUser      string
+	IconeLike     string
+	IconeDislike  string
 }
 
 type Thread struct {
@@ -42,6 +56,7 @@ type Thread struct {
 type User struct {
 	Id            int
 	CreatedAt     time.Time
+	CreatedAtText string
 	Name          string
 	Adresse_email string
 	Password      string

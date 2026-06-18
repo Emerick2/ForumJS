@@ -3,8 +3,8 @@ package forumjs
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
-	"strings"
 )
 
 func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publication int, changerCommentaire bool, nePlusSélectionnerUnCommentaire bool, nouveauFilDeDiscution int, pageSpéciale string) {
@@ -35,13 +35,31 @@ func RevenirSurLaPageAccueil(w http.ResponseWriter, r *http.Request, iD_publicat
 		// referer = "/discution.html"
 	}
 
-	if pos := strings.Index(referer, "?"); pos != -1 {
-		referer = referer[:pos]
+	// referer = ""
+	// listePartieURL := strings.Split(referer, "/")
+	// fmt.Println(listePartieURL)
+	// for i := 0; i < len(listePartieURL)-1; i++ {
+	// 	referer += listePartieURL[i];
+	// 	if (i+1 < len(listePartieURL)-1){
+	// 		referer += "/"
+	// 	}
+	// }
+
+	// fmt.Println("url : ",referer)
+	// if pos := strings.Index(referer, "?"); pos != -1 {
+	// 	referer = referer[:pos]
+	// }
+
+	// if strings.Contains(referer, "/BarreDeRecherche") {
+	// 	referer = strings.Replace(referer, "/BarreDeRecherche", "/", 1)
+	// }
+
+	u, err := url.Parse(referer)
+	if err != nil {
+		return
 	}
 
-	if strings.Contains(referer, "/BarreDeRecherche") {
-		referer = strings.Replace(referer, "/BarreDeRecherche", "/", 1)
-	}
+	referer = u.Scheme + "://" + u.Host + "/"
 
 	nombreAjout := 0
 	referer = fmt.Sprintf("%s", referer)

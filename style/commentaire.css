@@ -57,3 +57,81 @@ textarea {
     transition: 0.2s;
     transform: scale(1.2);
 }
+
+.formulaire-commentaire-flux {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 500px; 
+    margin-top: -10px; 
+    margin-bottom: 25px;
+    align-self: center; 
+}
+
+.formulaire-commentaire-flux .zone-commentaire {
+    background-color: rgba(255, 239, 220, 0.45); 
+    border: 1px solid #E6D5C3;
+    border-top: none; 
+    border-radius: 0 0 15px 15px; 
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formulaire-commentaire-flux textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 10px;
+    border: 1px solid #E6D5C3;
+    border-radius: 8px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #333;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.formulaire-commentaire-flux textarea:focus {
+    border-color: #ff4500; 
+}
+
+.formulaire-commentaire-flux .boutons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.formulaire-commentaire-flux .btn-envoyer {
+    background-color: #ff4500;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: opacity 0.15s;
+}
+
+.formulaire-commentaire-flux .btn-envoyer:hover {
+    opacity: 0.9;
+}
+
+.formulaire-commentaire-flux .btn-annuler {
+    background: none;
+    border: 1px solid #888;
+    color: #555;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.15s;
+}
+
+.formulaire-commentaire-flux .btn-annuler:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}

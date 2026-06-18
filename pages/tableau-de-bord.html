@@ -8,13 +8,13 @@
         <link rel="stylesheet" href="../style/post.css"/> 
         <link rel="stylesheet" href="../style/commentaire.css"/> 
         <link rel="stylesheet" href="../style/bloc-profile.css"/> 
+        <link rel="stylesheet" href="../style/tableau-de-bord.css"/> 
     </head>
     <body>
         <header>
             <h1>Forusky</h1>
             <div class="liste-boutons">
-                <form action='http://localhost:8080/ChangerDeFilDeDiscution' method='get'>
-                    <form action='http://localhost:8080/ChangerPage' method='get'>
+                <form action='http://localhost:8080/AllerSurLaPageAccueil' method='get'>
                     <button name="pageDemandé" value="main.html" type="submit">Accueil</button>
                 </form>
                 <form action='http://localhost:8080/ChangerPage' method='get'>
@@ -49,9 +49,8 @@
                     <div class="partieUtilisateur">
                         <img class="photo" src="/images/default-avatar.png" alt="">
                         <p class="nom_utilisateur">{{.NameUser}}</p>
-                        <p class="date_de_publication">{{.CreatedAt}}</p>
-                    </div>
-                    
+                        <p class="date_de_publication">{{.CreatedAtText}}</p>
+                    </form>
                     <div class="partieTexte">
                         <p class="contenu_du_message">{{.Content}}</p>
                         
@@ -134,6 +133,7 @@
                 </div>
 
             </div>
+            </main>
         <footer>
             <p>Forusky (2026) - <a href="https://github.com/Emerick2">Émerick</a> | <a href="https://github.com/Benjylem">Benjamin</a> | <a href="https://github.com/pauloo10-ynov">Paul Elie</a></p>
         </footer>

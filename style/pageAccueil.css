@@ -233,3 +233,110 @@ footer a{
     transition:0.2s;
     background-color: #ccdfed;
 }
+
+/* ── Textes du haut ── */
+.texte-bonjour {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.titre-bienvenue {
+    margin-top: 5px;
+    margin-bottom: 25px;
+    font-size: 2rem;
+}
+
+/* ── Bloc Labels en dessous du titre ── */
+.section-labels-accueil {
+    background-color: rgba(255, 239, 220, 0.45); /* Ton fond crème DA */
+    border: 1px solid #E6D5C3;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+}
+
+.titre-labels-horizontal {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+/* Aligne les formulaires/boutons de labels horizontalement */
+.liste-labels-horizontale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Boutons des labels stylisés */
+.btn-label-accueil {
+    background-color: white;
+    border: 1px solid #E6D5C3;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #444;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-label-accueil:hover {
+    background-color: #ff4500; /* Ton orange header */
+    color: white;
+    border-color: #ff4500;
+    transform: translateY(-2px); /* Petit effet de survol vers le haut */
+}
+
+/* ── Section des Postes ── */
+.titre-posts {
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.flux-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Cartes des posts */
+.carte-post-accueil {
+    background-color: rgba(255, 239, 220, 0.25);
+    border: 1px solid #E6D5C3;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: background-color 0.2s;
+}
+
+.carte-post-accueil:hover {
+    background-color: rgba(255, 239, 220, 0.5);
+}
+
+.contenu-post {
+    margin: 0;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.btn-post-lien {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    color: #0079d3;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.95rem;
+}
+
+.btn-post-lien:hover {
+    text-decoration: underline;
+}
