@@ -2,7 +2,7 @@
     border: solid 2px;
     border-radius: 30px;
     display: flex;
-    justify-self: center;
+    align-self: center;
     justify-content: center;
     flex-direction: column;
     padding: 30px;

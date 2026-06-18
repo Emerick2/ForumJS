@@ -14,13 +14,13 @@ h2{
     background-color: rgb(254, 245, 255);
     border: solid 4px blue;
     box-shadow: 4px 4px rgb(35, 35, 88);
-
     border-radius: 18px;
     display: flex;
     justify-self: center;
     flex-direction: column;
     padding: 15px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    align-self: center;
 }
 
 .partieInscription:hover{
