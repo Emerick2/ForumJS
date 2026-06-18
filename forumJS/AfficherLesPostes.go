@@ -23,7 +23,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur lors de la récupération des posts :", err)
 		return
 	}
-	listePostes = AjouterDonnéesPostes(listePostes, w, r, iD_publication_commentaire)
+	listePostes = AjouterDonnéesPostes(listePostes, w, r, iD_publication_commentaire, true)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tmpl, err := template.ParseFiles("pages/discution.html")
@@ -45,7 +45,7 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	}
 }
 
-func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int) []Post {
+func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int, utiliserInterfacePublication bool) []Post {
 	for i := 0; i < len(listePostes); i++ {
 		unPost := listePostes[i]
 		unPost.NameUser = "Compte suprimé"
@@ -77,36 +77,40 @@ func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Re
 
 		unPost.NameOfTheIdPost = "post-" + strconv.Itoa(unPost.Id)
 
-		if unPost.Answer != 0 {
+		if unPost.Answer != 0 && utiliserInterfacePublication {
 			unPost.TheMargin = "margin-left:50px;"
 			unPost.BlockComments = "display:none;"
 			fmt.Println("Indice 1 -", unPost.Id)
 		}
 
-		if i != 0 && iD_publication_commentaire != unPost.Id {
-			unPost.BlockNewComments = "display:none;"
-		} else {
-			unPost.BlockComments = "display:none;"
-			fmt.Println("Indice 2 -", unPost.Id)
-		}
-		if i == 0 {
-			unPost.OptionToCancel = "display:none;"
-			// données du fil de discution :
-			dsnURI := "db/threads.db"
-			db, err := sql.Open("sqlite", dsnURI)
-			if err != nil {
-				fmt.Println("Erreur d'ouverture :", err)
+		if utiliserInterfacePublication {
+			if i != 0 && iD_publication_commentaire != unPost.Id {
+				unPost.BlockNewComments = "display:none;"
+			} else {
+				unPost.BlockComments = "display:none;"
+				fmt.Println("Indice 2 -", unPost.Id)
 			}
-			defer db.Close()
+			if i == 0 {
+				unPost.OptionToCancel = "display:none;"
+				// données du fil de discution :
+				dsnURI := "db/threads.db"
+				db, err := sql.Open("sqlite", dsnURI)
+				if err != nil {
+					fmt.Println("Erreur d'ouverture :", err)
+				}
+				defer db.Close()
 
-			requete := fmt.Sprintf("SELECT name, label_name FROM Threads WHERE id = ?")
+				requete := fmt.Sprintf("SELECT name, label_name FROM Threads WHERE id = ?")
 
-			err = db.QueryRow(requete, unPost.ThreadId).Scan(
-				&unPost.NameThread,
-				&unPost.LabelThread,
-			)
+				err = db.QueryRow(requete, unPost.ThreadId).Scan(
+					&unPost.NameThread,
+					&unPost.LabelThread,
+				)
 
-			unPost.TexteFil = unPost.NameThread + " [" + unPost.LabelThread + "]"
+				unPost.TexteFil = unPost.NameThread + " [" + unPost.LabelThread + "]"
+			}
+		} else {
+			unPost.BlockNewComments = "display:none;"
 		}
 		listePostes[i] = unPost
 	}

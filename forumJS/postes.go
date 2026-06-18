@@ -49,10 +49,10 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 			changement = -1
 		}
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes") {
-			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", -1, "Posts")
+			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", -1)
 			SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", -1)
 		}
-		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", changement, "Posts")
+		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", changement)
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes", changement)
 	} else if nomAction == "aimePas" {
 		changement := 1
@@ -60,17 +60,17 @@ func InteractionPost(w http.ResponseWriter, r *http.Request) {
 			changement = -1
 		}
 		if LireTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes") {
-			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", -1, "Posts")
+			SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "likes", -1)
 			SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "likes", -1)
 		}
-		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", changement, "Posts")
+		SauvegarderUneValeur(w, r, dsnURI, iD_publication, iD_fil_de_discussion, "dislikes", changement)
 		SauvegarderTableauInteractionUtilisateur(w, r, idUtilisateur, iD_publication, iD_fil_de_discussion, "dislikes", changement)
 	}
 
 	RevenirSurLaPageAccueil(w, r, iD_publication, false, false, -1, "")
 }
 
-func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) {
+func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int) {
 	db, err := sql.Open("sqlite", dsnURI)
 	if err != nil {
 		fmt.Println("Erreur d'ouverture :", err)
@@ -84,7 +84,7 @@ func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string,
 		return
 	}
 
-	requete := fmt.Sprintf("SELECT %s FROM %s WHERE id = ? AND thread_id = ? LIMIT 1", clef, nomTable)
+	requete := fmt.Sprintf("SELECT %s FROM Posts WHERE id = ? AND thread_id = ? LIMIT 1", clef)
 	var valeurRecup int
 	err = db.QueryRow(requete, iD_publication, iD_fil_de_discussion).Scan(&valeurRecup)
 	if err != nil {
@@ -98,7 +98,7 @@ func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string,
 	}
 
 	valeurObtenu := valeurRecup + modification
-	updateReq := fmt.Sprintf("UPDATE %s SET %s = ? WHERE id = ? AND thread_id = ?", nomTable, clef)
+	updateReq := fmt.Sprintf("UPDATE Posts SET %s = ? WHERE id = ? AND thread_id = ?", clef)
 	_, err = db.Exec(updateReq, valeurObtenu, iD_publication, iD_fil_de_discussion)
 	if err != nil {
 		http.Error(w, "Erreur lors de la sauvegarde des données", http.StatusInternalServerError)
@@ -107,35 +107,35 @@ func SauvegarderUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string,
 	}
 }
 
-func LireUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) int {
-	db, err := sql.Open("sqlite", dsnURI)
-	if err != nil {
-		fmt.Println("Erreur d'ouverture :", err)
-		return 0
-	}
+// func LireUneValeur(w http.ResponseWriter, r *http.Request, dsnURI string, iD_publication int, iD_fil_de_discussion int, clef string, modification int, nomTable string) int {
+// 	db, err := sql.Open("sqlite", dsnURI)
+// 	if err != nil {
+// 		fmt.Println("Erreur d'ouverture :", err)
+// 		return 0
+// 	}
 
-	defer db.Close()
+// 	defer db.Close()
 
-	if clef != "likes" && clef != "dislikes" {
-		http.Error(w, "Colonne invalide", http.StatusBadRequest)
-		return 0
-	}
+// 	if clef != "likes" && clef != "dislikes" {
+// 		http.Error(w, "Colonne invalide", http.StatusBadRequest)
+// 		return 0
+// 	}
 
-	requete := fmt.Sprintf("SELECT %s FROM %s WHERE id = ? AND thread_id = ? LIMIT 1", clef, nomTable)
-	var valeurRecup int
-	err = db.QueryRow(requete, iD_publication, iD_fil_de_discussion).Scan(&valeurRecup)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "Poste non trouvé", http.StatusNotFound)
-			return 0
-		}
-		http.Error(w, "Erreur lors de la récupération des données", http.StatusInternalServerError)
-		fmt.Println("QueryRow error:", err)
-		return 0
-	}
+// 	requete := fmt.Sprintf("SELECT %s FROM %s WHERE id = ? AND thread_id = ? LIMIT 1", clef, nomTable)
+// 	var valeurRecup int
+// 	err = db.QueryRow(requete, iD_publication, iD_fil_de_discussion).Scan(&valeurRecup)
+// 	if err != nil {
+// 		if err == sql.ErrNoRows {
+// 			http.Error(w, "Poste non trouvé", http.StatusNotFound)
+// 			return 0
+// 		}
+// 		http.Error(w, "Erreur lors de la récupération des données", http.StatusInternalServerError)
+// 		fmt.Println("QueryRow error:", err)
+// 		return 0
+// 	}
 
-	return valeurRecup + modification
-}
+// 	return valeurRecup + modification
+// }
 
 func LireTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, UserId int, iD_publication int, iD_fil_de_discussion int, clef string) bool {
 	// retourne true si l'utilisateur a déjà interagi pour ce post.
@@ -162,6 +162,10 @@ func LireTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Request, U
 	if err != nil {
 		fmt.Println("Erreur de création Threads :", err)
 		return false
+	}
+
+	if clef != "likes" && clef != "dislikes" {
+		clef = "likes"
 	}
 
 	requete := fmt.Sprintf("SELECT %s FROM interactionUtilisateur WHERE UserId = ? AND iD_publication = ? AND iD_fil_de_discussion = ? LIMIT 1", clef)
@@ -210,6 +214,10 @@ func SauvegarderTableauInteractionUtilisateur(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		fmt.Println("Erreur d'insertion interactionUtilisateur :", err)
 		return
+	}
+
+	if clef != "likes" && clef != "dislikes" {
+		clef = "likes"
 	}
 
 	updateReq := fmt.Sprintf("UPDATE interactionUtilisateur SET %s = ? WHERE UserId = ? AND iD_publication = ? AND iD_fil_de_discussion = ?", clef)
