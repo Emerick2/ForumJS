@@ -23,7 +23,16 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 		fmt.Println("Erreur lors de la récupération des posts :", err)
 		return
 	}
-	listePostes = AjouterDonnéesPostes(listePostes, w, r, iD_publication_commentaire, true)
+
+	premierIDPoste := listePostes[0].Id
+
+	listePostes = AjouterDonnéesPostes(listePostes, w, r, iD_publication_commentaire, true, premierIDPoste)
+
+	var tableauPlacer []int
+	var nouvelleListe []Post
+	AfficherToutLesPostRécursif(w, r, &tableauPlacer, listePostes, premierIDPoste, &nouvelleListe)
+
+	listePostes = nouvelleListe
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tmpl, err := template.ParseFiles("pages/discution.html")
@@ -45,19 +54,13 @@ func AfficherToutLesPost(threadID int, w http.ResponseWriter, r *http.Request, i
 	}
 }
 
-func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int, utiliserInterfacePublication bool) []Post {
+func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Request, iD_publication_commentaire int, utiliserInterfacePublication bool, premierIDPoste int) []Post {
 	for i := 0; i < len(listePostes); i++ {
 		unPost := listePostes[i]
 		unPost.NameUser = "Compte suprimé"
 		valeur := VoirUtilisateurs(unPost.UserId)
 		if valeur.nom != "" {
 			unPost.NameUser = valeur.nom
-		}
-
-		if i == 0 {
-			unPost.Answer = 0
-		} else {
-			unPost.Answer = unPost.Id
 		}
 
 		unPost.CreatedAtText = Date(unPost.CreatedAt)
@@ -77,18 +80,19 @@ func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Re
 
 		unPost.NameOfTheIdPost = "post-" + strconv.Itoa(unPost.Id)
 
-		if unPost.Answer != 0 && utiliserInterfacePublication {
+		if (unPost.Answer != 0 && unPost.Answer != premierIDPoste) && utiliserInterfacePublication {
 			unPost.TheMargin = "margin-left:50px;"
 			unPost.BlockComments = "display:none;"
-			fmt.Println("Indice 1 -", unPost.Id)
 		}
 
 		if utiliserInterfacePublication {
+			if i != 0 {
+				unPost.BlockShare = "display:none;"
+			}
 			if i != 0 && iD_publication_commentaire != unPost.Id {
 				unPost.BlockNewComments = "display:none;"
 			} else {
 				unPost.BlockComments = "display:none;"
-				fmt.Println("Indice 2 -", unPost.Id)
 			}
 			if i == 0 {
 				unPost.OptionToCancel = "display:none;"
@@ -126,6 +130,16 @@ func AjouterDonnéesPostes(listePostes []Post, w http.ResponseWriter, r *http.Re
 // 		}
 // 	}
 // }
+
+func AfficherToutLesPostRécursif(w http.ResponseWriter, r *http.Request, tableauPlacer *[]int, listePostes []Post, answerRechercher int, nouvelleListe *[]Post) {
+	for i := 1; i < len(listePostes); i++ {
+		if listePostes[i].Answer == answerRechercher && !EstDansLeTableau(*tableauPlacer, listePostes[i].Id) {
+			*tableauPlacer = append(*tableauPlacer, listePostes[i].Id)
+			*nouvelleListe = append(*nouvelleListe, listePostes[i])
+			AfficherToutLesPostRécursif(w, r, tableauPlacer, listePostes, listePostes[i].Id, nouvelleListe)
+		}
+	}
+}
 
 /*
 un poste avec answer 3 signifie qu'il est le désendant de listePostes[i+1]. Cela signifie que dans l'ordre chronologique, je doit le mettre juste après.

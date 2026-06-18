@@ -121,7 +121,7 @@ func PeutÊtreVuAvecSeTermeDeRecherche(résultat string, recherche string) bool 
 }
 
 func AfficherRecherche(w http.ResponseWriter, r *http.Request, nombreRésultaMessage []Post) {
-	nombreRésultaMessage = AjouterDonnéesPostes(nombreRésultaMessage, w, r, -1, false)
+	nombreRésultaMessage = AjouterDonnéesPostes(nombreRésultaMessage, w, r, -1, false, 0)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tmpl, err := template.ParseFiles("pages/discution.html")

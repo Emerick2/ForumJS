@@ -15,8 +15,6 @@ import (
 )
 
 func main() {
-	// forum.HashPassword("abc")
-	// forum.HashPassword("abc")
 	// Les méthode HTTP :
 	http.HandleFunc("/Inscription", func(w http.ResponseWriter, r *http.Request) {
 		Inscription(w, r)
