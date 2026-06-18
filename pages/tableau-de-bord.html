@@ -42,39 +42,43 @@
             <br>
         </header>
         <main>
-            <h2>Derniers messages publiés</h2>
-            
+            <h2>📜 Derniers messages publiés</h2>
+
             {{range .DerniersPosts}}
-                <div class="unPoste" id={{.UserId}}>
-                    <form class="partieUtilisateur">
-                        <img class="photo">
+                <div class="unPoste" id="{{.UserId}}">
+                    <div class="partieUtilisateur">
+                        <img class="photo" src="/images/default-avatar.png" alt="">
                         <p class="nom_utilisateur">{{.NameUser}}</p>
                         <p class="date_de_publication">{{.CreatedAt}}</p>
-                    </form>
+                    </div>
+                    
                     <div class="partieTexte">
                         <p class="contenu_du_message">{{.Content}}</p>
+                        
                         <div class="partieInteraction">
-                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                            <form class="formulaireFlex" action="http://localhost:8080/InteractionPost" method="get">
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="aime" type="submit" class="iconeAime">
-                                    <img src={{.IconeLike}}>
+                                    <img src="{{.IconeLike}}" alt="Like">
                                 </button>
                                 <p class="nombre_de_aime">{{.Likes}}</p>
                             </form>
-                            <form class="formulaireFlex" action='http://localhost:8080/InteractionPost' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                            
+                            <form class="formulaireFlex" action="http://localhost:8080/InteractionPost" method="get">
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="aimePas" type="submit" class="iconeAimePas">
-                                    <img src={{.IconeDislike}}/>
+                                    <img src="{{.IconeDislike}}" alt="Dislike">
                                 </button>
                                 <p class="nombre_de_aime_pas">{{.Dislikes}}</p>
                             </form>
-                            <form class="formulaireFlex" action='http://localhost:8080/AjouterEspaceCommentaire' method='get'>
-                                <input class="invisible" name="iD_publication" value={{.Id}}>
-                                <input class="invisible" name="iD_fil_de_discussion" value={{.ThreadId}}>
+                            
+                            <form class="formulaireFlex" action="http://localhost:8080/AjouterEspaceCommentaire" method="get">
+                                <input class="invisible" name="iD_publication" value="{{.Id}}">
+                                <input class="invisible" name="iD_fil_de_discussion" value="{{.ThreadId}}">
                                 <button name="nomAction" value="commentaire" type="submit" class="iconeCommentaire">
-                                    <img src="/images/commentaire.svg"/>
+                                    <img src="/images/commentaire.svg" alt="Commentaire">
                                 </button>
                                 <p>Répondre</p>
                             </form>
@@ -82,11 +86,12 @@
                     </div>
                 </div>
             {{else}}
-                <p>Aucun message publié pour le moment.</p>
+                <p class="aucun_message">Aucun message publié pour le moment.</p>
             {{end}}
 
-            <h2>Derniers utilisateurs créés</h2>
+            <h2>👥 Derniers utilisateurs créés</h2>
             
+            <div class="grille-utilisateurs">
             {{range .DerniersUsers}}
                 <form class="bloc-profile">
                     <img class="photo">
@@ -98,24 +103,39 @@
                     <p class="réponce-partie">{{.CreatedAt}}</p>
                 </form>
             {{end}}
+            </div>
             
+            <h2 class="titre-stats">📊 Les statistiques générales du forum</h2>
 
-            <h2>Les statistiques générals du forum :</h2>
-            <p>Le nombre total de j'aime mis sur les commentaires : {{.NombreTotalAimeSurCommentaires}}</p>
-		    <p>Le nombre total de message publier : {{.NombreTotalMessagePublier}}</p>
-		    <p>Le nombre total d'utilisateur : {{.NombreTotalUtilisateur}}</p>
+            <div class="stats-grid">
 
-            <!-- <form class="bloc-profile">
-                <img class="photo">
-                <p class="titre-partie">Nom d'utilisateur :</p>
-                <p class="réponce-partie">{{.nom_utilisateur}}</p>
-                <p class="titre-partie">Adresse e-mail :</p>
-                <p class="réponce-partie">{{.adresse_email}}</p>
-                <p class="titre-partie">Date de création :</p>
-                <p class="réponce-partie">{{.date_de_publication}}</p>
-            </form> -->
-        </main>
-        <div class="block">
-        </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-content">
+                        <p class="stat-title">J'aime sur les commentaires</p>
+                        <p class="stat-number">{{.NombreTotalAimeSurCommentaires}}</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <p class="stat-title">Messages publiés</p>
+                        <p class="stat-number">{{.NombreTotalMessagePublier}}</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <p class="stat-title">Utilisateurs inscrits</p>
+                        <p class="stat-number">{{.NombreTotalUtilisateur}}</p>
+                    </div>
+                </div>
+
+            </div>
+        <footer>
+            <p>Forusky (2026) - <a href="https://github.com/Emerick2">Émerick</a> | <a href="https://github.com/Benjylem">Benjamin</a> | <a href="https://github.com/pauloo10-ynov">Paul Elie</a></p>
+        </footer>
     </body>
 </html>
