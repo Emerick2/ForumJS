@@ -1,2 +1,27 @@
-go.mod
-go.sum
+# Base de données SQLite (fichiers locaux, jamais sur git)
+*.db
+*.db-shm
+*.db-wal
+
+# Binaire compilé
+forum
+/forum
+server
+/server
+
+# Variables d'environnement (mots de passe, clés secrètes)
+.env
+
+# Dossiers système
+.DS_Store
+Thumbs.db
+
+
+# Dockerfile
+# cmd/
+# go.mod
+# go.sum
+# docker-compose.yml
+# internal/db/
+# internal/handlers/app.go
+# internal/models/
