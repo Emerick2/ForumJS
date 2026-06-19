@@ -44,10 +44,6 @@ pages
     main.html                               # Page d'accueil.
     nouveau-sujet.html                      # Page pour écrire un nouveau sujet.
     tableau-de-bord.html                    # Page du tableau de bord.
-    template-commentaire.html               # Template pour ajouter un commentaire.
-    template-fiche-utilisateur.html         # Template pour ajouter une fiche d'utilisateur.
-    template-haut-file.html                 # Template pour ajouter la première partie d'un fil de discussion.
-    template-post.html                      # Template pour les posts.
 
 style
     barre-de-recherche.css                  # Style de la barre de recherche.
